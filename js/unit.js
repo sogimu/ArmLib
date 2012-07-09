@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
  
-var Arm = Arm || {} // возвращает первое истинное или последнее не истинное
+var Arm = Arm || {} // РІРѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ РёСЃС‚РёРЅРЅРѕРµ РёР»Рё РїРѕСЃР»РµРґРЅРµРµ РЅРµ РёСЃС‚РёРЅРЅРѕРµ
 extend(Arm,'Stage'); 
 extend(Arm,'Object');
 extend(Arm,'Rect');
@@ -16,33 +16,80 @@ extend(Arm,'Circle');
 Arm.Stage = (function () { 
 var collection=[], contex={}, intervalId='', fps=60
 	
-	var update = function() { // Метод вызывающий update()	у всех обектов в обектах типа Arm.Object, добавленныйх на обработку
-		log('update');
+	var update = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ update()	Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+		if( collection.length > 0) {
+		
+			for (var i in collection){
+				
+				collection[i].update();
+				log('update()');
+			}
+			return true;
+		} else {
+		
+				log("Error: Arm.Stage, update() 'collection is empty!' ");
+				return false;
+		}
 	}
-	var draw = function() { // Метод вызывающий draw() у всех обектов в обектах типа Arm.Object, добавленныйх на обработку
-		log('draw');
+	var draw = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ draw() Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ РІ РѕР±РµРєС‚Р°С… С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹Р№С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+		if( collection.length > 0) {
+			for (var i in collection){
+	
+				collection[i].draw();
+				log('draw()');
+				
+			}	
+			return true;
+		} else {
+		
+			log("Error: Arm.Stage, draw() 'collection is empty!' ");
+			return false;
+		}
 	}
 	var process = function() {
 		update();
 		draw();
 	}
 	
-	var add = function(O) { // Метод добавляет обект типа Arm.Object на обработку
-		collection.push( O );
-		return true;
+	var add = function(O) { // РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+		if (collection.push( O )) {
+		
+			return true;
+			log(collection)
+		} else {
+			
+			log("Error: Arm.Stage, add() '?' ");
+			return false;
+		}
 	}
-	var remove = function(O) { // Метод удаляет обект типа Arm.Object из обработки
-		return true;
-	}
-	var stop = function() { // Запускает движок
+	var remove = function(O) { // РњРµС‚РѕРґ СѓРґР°Р»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РёР· РѕР±СЂР°Р±РѕС‚РєРё
+		if( collection.length > 0) {
+			var index = 0;
+			
+			for (var i in collection){
+				if (collection[i] === O) {
+					
+					collection.splice(index, 1);
+					return true;
+	
+				} else {
+	
+					log("Error: Arm.Stage, remove() 'collection is empty!' ");
+					return false;
+				}
+				index++;
+			}
+		}	
+	}	
+	var stop = function() { // Р—Р°РїСѓСЃРєР°РµС‚ РґРІРёР¶РѕРє
 		clearInterval( intervalId )
 	}
-	var run = function() { // Останавливает движок
+	var run = function() { // РћСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґРІРёР¶РѕРє
 		intervalId = setInterval( process, 1000 / fps );
 		return true;
 	}
 
-// общедоступные методы -- конструктор 
+// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
 var Constr = function(O) {
 		var container = document.getElementById(O.container)
 		var canvas = document.createElement('canvas');
@@ -53,10 +100,10 @@ var Constr = function(O) {
 		contex = canvas.getContext('2d');
 		return true;
 }; 
-// общедоступные методы -- прототип 
+// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РїСЂРѕС‚РѕС‚РёРї 
 
 Constr.prototype = { 
-	constructor: Arm.Drawing.Stage, 
+	constructor: Arm.Stage, 
 	version: "0.1",
 	add: add,
 	remove: remove,
@@ -65,12 +112,12 @@ Constr.prototype = {
 	run: run,
 	stop: stop
 }; 
-// вернуть конструктор, 
-// создающий новое пространство имен 
+// РІРµСЂРЅСѓС‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, 
+// СЃРѕР·РґР°СЋС‰РёР№ РЅРѕРІРѕРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјРµРЅ 
 return Constr;
 }()); 
 
-Arm.Drawing.Shape = (function () { 
+Arm.Object = (function () { 
 var x=0, y=0, fill='#0a0', stroke='#fff';
 	var update = function(i) {
 		log('update');
@@ -101,7 +148,7 @@ var x=0, y=0, fill='#0a0', stroke='#fff';
 	}
 	
 
-	// общедоступные методы -- конструктор 
+	// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
 	var Constr = function(i) {
 	return {
 			x: x,
@@ -118,16 +165,13 @@ var x=0, y=0, fill='#0a0', stroke='#fff';
 			//getStroke: getStroke
 		};
 	}; 
-// общедоступные методы -- прототип 
+// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РїСЂРѕС‚РѕС‚РёРї 
 
 	Constr.prototype = { 
-		constructor: Arm.Drawing.Shape, 
+		constructor: Arm.Object, 
 		version: "0.1" 
 	}; 
-// вернуть конструктор, 
-// создающий новое пространство имен 
+// РІРµСЂРЅСѓС‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, 
+// СЃРѕР·РґР°СЋС‰РёР№ РЅРѕРІРѕРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјРµРЅ 
 return Constr;
 }()); 
-
-Shape = Arm.Drawing.Shape;
-Drawing = Arm.Drawing;

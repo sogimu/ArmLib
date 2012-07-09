@@ -9,7 +9,11 @@
 window.onload = function(){
 
 	var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
-
+	var s = {update: function() {}}
+	log(stage.add(s));
+	log(stage.remove(s));
+	//stage.update();
+	/*
 	var ball = new Arm.Object({
 		update: function() {
 		},
@@ -28,5 +32,5 @@ window.onload = function(){
 	stage.remove( ball1 );
 
 	arm.run( stage );
-
+*/
 };
