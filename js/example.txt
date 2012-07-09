@@ -1,0 +1,22 @@
+// Пример предпологаемого использования
+
+var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
+
+var ball = new Arm.Object({
+	update: function() {
+	},
+	shape: [ Rect({x: x,y: y}), Rect({x: x + 10,y: y + 10})],
+	x: 0,
+	y: 0,
+	run: function() {
+	},
+	stand: function() {
+	}
+});
+var ball1 = ball.clone();
+var ball2 = ball.clone();
+
+stage.add(  ball1 );
+stage.remove( ball1 );
+
+arm.run( stage );
