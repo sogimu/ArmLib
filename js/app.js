@@ -8,13 +8,14 @@
 
 window.onload = function(){
 
-	//var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
-	//stage.add(s);
-	//stage.remove(s);
-	//stage.run()	
+    //var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
+    //stage.add(s);
+    //stage.remove(s);
+    //stage.run()	
 	
-	var rect = new Rect({y:43, width:100, height:100});
-	//log(rect.setX(43))
-	log(rect.getX())
-	log(rect)
+    var rect1 = new Rect({x: 12,y: 23, stroke: '#ref', zIndex: 0});
+    var rect2 = new Rect({x: 10,y: 13, stroke: '#adw', zIndex: 1});
+    console.log(rect1.clone())
+    console.log( rect1 );        
+    console.log( rect2 );
 };

@@ -49,7 +49,7 @@ function clone(o) {
             if(v && 'object' === typeof v) {
                 c[p] = clone(v);
             }
-        else {
+			else {
                 c[p] = v;
             }
         }

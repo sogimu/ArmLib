@@ -125,62 +125,55 @@ Constr.prototype = {
 return Constr;
 }()); 
 
-var Shape = function(){
-}
-Shape.prototype = {
-	x: 0, y: 0, stroke: '#fff',
-	update: function(i) {
-		log('update');
-		return true;
-	},
-	draw: function(i) {
-		log('draw')
-		return true;
-	},
-	setX: function(O){
-		var flag=true;
-		type = typeof(O);
-		this.x = ( type === 'object')? O.x: (type === 'number')? O: flag = false;
-		return flag;
-	},
-	getX: function(){
-		log(this.x);
-		return (typeof(this.x) == 'number')? this.x : false;
-	},
-	setY: function(O){
-		var flag=true;
-		type = typeof(O);
-		this.y = ( type === 'object')? O.y: (type === 'number')? O: flag = false;
-		return flag;
-	},
-	getY: function(){
-		return (typeof(this.y) == 'number')? this.y : false;
-	}
+var CShape = (function() {
+    var CShape = function() {
+        this.x = '0';
+        this.y = '0';
+        this.stroke = '#sdc';
+        this.zIndex = 0;
+    };
+    CShape.prototype = {
+        setX: function(O) {
+            this.x = O;
+        },
+        setY: function(O) {
+            this.y = O;
+        },                    
+        setStroke: function(O) {
+            this.stroke = O;
+        },
+        setzIndex: function(O) {
+            this.zIndex = O;
+        },
+        clone: function() {
+            var obj = {};
+            /*for(var i in this){
+                alert(i)
+                obj[i] = this[i];
+            }*/
+            copy(obj.prototype, this.prototype);
+            for(var i in this.prototype){
+                obj.prototype[i] = this.prototype[i];
+            }
+            return obj;
+        }
+    }
+    return CShape;
+}());
 
-}
 
+Arm.Rect = (function() {
+    var CRect = function(O) {
+        this.setX(O.x);
+        this.setY(O.y);
+        this.setStroke(O.stroke);
+        this.setzIndex(O.zIndex);
+    };
+    CRect.prototype = {
 
-
-
-Arm.Rect = (function () { 
-var x=0, y=0, width=1, height=1, fill='#0a0';	
-
-	// общедоступные методы -- конструктор 
-	var Constr = function(O) {
-		this.x = (O.x != 'undefined')? O.x : 0;
-		this.y = (O.y != 'undefined')? O.y : 0;
-		this.width = (O.width != 'undefined')? O.width : 1;
-		this.height = (O.height != 'undefined')? O.height : 1;
-	}; 
-// общедоступные методы -- прототип 
-	Constr.prototype = { 
-		constructor: Arm.Object, 
-		version: "0.1",
-	}; 
-	copy(Constr.prototype, Shape.prototype);
-// вернуть конструктор, 
-// создающий новое пространство имен 
-return Constr;
+    }
+    CRect.prototype = CShape.prototype;
+    return CRect;
 }()); 
 
 var Rect = Arm.Rect;
