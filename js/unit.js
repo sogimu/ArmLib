@@ -17,13 +17,12 @@ Arm.Stage = (function () {
 var collection=[], contex={}, intervalId='', fps=60
 	
 	var update = function() { // Метод вызывающий update()	у всех обектов типа Arm.Object, добавленных на обработку
+		//log(collection)
 		if( collection.length > 0) {
-		
-			for (var i in collection){
+			for (var i=0; i<collection.length; i++) {
 				
 				collection[i].update();
-				log('update()');
-			}
+				log("Message: Arm.Stage, update()");			}
 			return true;
 		} else {
 		
@@ -33,10 +32,10 @@ var collection=[], contex={}, intervalId='', fps=60
 	}
 	var draw = function() { // Метод вызывающий draw() у всех обектов в обектах типа Arm.Object, добавленныйх на обработку
 		if( collection.length > 0) {
-			for (var i in collection){
+			for (var i=0; i<collection.length; i++) {
 	
 				collection[i].draw();
-				log('draw()');
+				log("Message: Arm.Stage, draw()");
 				
 			}	
 			return true;
@@ -53,9 +52,8 @@ var collection=[], contex={}, intervalId='', fps=60
 	
 	var add = function(O) { // Метод добавляет обект типа Arm.Object на обработку
 		if (collection.push( O )) {
-		
+			log("Message: Arm.Stage, add() 'added object!' ");
 			return true;
-			log(collection)
 		} else {
 			
 			log("Error: Arm.Stage, add() '?' ");
@@ -68,8 +66,9 @@ var collection=[], contex={}, intervalId='', fps=60
 			
 			for (var i in collection){
 				if (collection[i] === O) {
-					
+		
 					collection.splice(index, 1);
+					log("Message: Arm.Stage, remove() 'remove object!' ");
 					return true;
 	
 				} else {
@@ -81,12 +80,21 @@ var collection=[], contex={}, intervalId='', fps=60
 			}
 		}	
 	}	
-	var stop = function() { // Запускает движок
-		clearInterval( intervalId )
+	var stop = function() { // Останавливает движок
+		if ( clearInterval( intervalId ) ) {
+			log("Message: Arm.Stage, stop()");
+		} else {
+			log("Error: Arm.Stage, stop() '?' ");
+		}
 	}
-	var run = function() { // Останавливает движок
+	var run = function() { // Запускает движок
 		intervalId = setInterval( process, 1000 / fps );
-		return true;
+		if ( intervalId ) {
+			log("Message: Arm.Stage, run()");
+			return true;
+			} else {
+			log("Error: Arm.Stage, run() '?' ");
+		}
 	}
 
 // общедоступные методы -- конструктор 
@@ -117,61 +125,62 @@ Constr.prototype = {
 return Constr;
 }()); 
 
-Arm.Object = (function () { 
-var x=0, y=0, fill='#0a0', stroke='#fff';
-	var update = function(i) {
+var Shape = function(){
+}
+Shape.prototype = {
+	x: 0, y: 0, stroke: '#fff',
+	update: function(i) {
 		log('update');
 		return true;
-	}
-	var draw = function(i) {
+	},
+	draw: function(i) {
 		log('draw')
 		return true;
-	}
-	var setX = function(i){
+	},
+	setX: function(O){
 		var flag=true;
-		type = typeof(i);
-		this.x = ( type === 'object')? i.x: (type === 'number')? i: flag = false;
+		type = typeof(O);
+		this.x = ( type === 'object')? O.x: (type === 'number')? O: flag = false;
 		return flag;
-	}
-	var setY = function(i){
+	},
+	getX: function(){
+		log(this.x);
+		return (typeof(this.x) == 'number')? this.x : false;
+	},
+	setY: function(O){
 		var flag=true;
-		type = typeof(i);
-		this.y = ( type == 'object')? i.y: (type == 'number')? i: flag = false;
+		type = typeof(O);
+		this.y = ( type === 'object')? O.y: (type === 'number')? O: flag = false;
 		return flag;
+	},
+	getY: function(){
+		return (typeof(this.y) == 'number')? this.y : false;
 	}
-	var getX = function(){
-		return (typeof(this.x) === 'number')? x: false;
-	}
-	var getY = function(i){
-		
-		return (typeof(i) === 'number')? x: false;
-	}
-	
+
+}
+
+
+
+
+Arm.Rect = (function () { 
+var x=0, y=0, width=1, height=1, fill='#0a0';	
 
 	// общедоступные методы -- конструктор 
-	var Constr = function(i) {
-	return {
-			x: x,
-			y: y,
-	//		update: update,
-	//		draw: draw,
-	//		setX: setX,
-			setY: setY,
-			getX: getX,
-			getY: getY,
-			//setFill: setFill,
-			//getFill: getFill,
-			//setStroke: setStroke,
-			//getStroke: getStroke
-		};
+	var Constr = function(O) {
+		this.x = (O.x != 'undefined')? O.x : 0;
+		this.y = (O.y != 'undefined')? O.y : 0;
+		this.width = (O.width != 'undefined')? O.width : 1;
+		this.height = (O.height != 'undefined')? O.height : 1;
 	}; 
 // общедоступные методы -- прототип 
-
 	Constr.prototype = { 
 		constructor: Arm.Object, 
-		version: "0.1" 
+		version: "0.1",
 	}; 
+	copy(Constr.prototype, Shape.prototype);
 // вернуть конструктор, 
 // создающий новое пространство имен 
 return Constr;
 }()); 
+
+var Rect = Arm.Rect;

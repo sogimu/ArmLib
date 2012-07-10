@@ -61,7 +61,9 @@ function clone(o) {
 function copy(dst) {
   for(var i=1; i<arguments.length; i++) {
     var obj = arguments[i];
-    for(var key in obj) dst[key] = obj[key];
+    for(var key in obj) {
+		dst[key] = obj[key];
+	}
   }
   return dst;
 }
