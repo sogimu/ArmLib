@@ -15,7 +15,9 @@ window.onload = function(){
 	
     var rect1 = new Rect({x: 12,y: 23, stroke: '#ref', zIndex: 0});
     var rect2 = new Rect({x: 10,y: 13, stroke: '#adw', zIndex: 1});
-    console.log(rect1.clone())
-    console.log( rect1 );        
-    console.log( rect2 );
+    console.log( rect1 );
+    console.log( rect1.clone() );    
+    
+    log()
+ 
 };

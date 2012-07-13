@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-function extend( ns, ns_string ) {
+function namespace( ns, ns_string ) {
     try{
         var parts = ns_string.split('.'),
             parent = ns,
@@ -54,7 +54,6 @@ function clone(o) {
             }
         }
     }
-    c.prototype = clone(o.prototype);
     return c;
 }
 
@@ -62,11 +61,24 @@ function copy(dst) {
   for(var i=1; i<arguments.length; i++) {
     var obj = arguments[i];
     for(var key in obj) {
-		dst[key] = obj[key];
-	}
+        dst[key] = obj[key];
+    }
   }
   return dst;
 }
+
+function inherit(proto) {
+  function F() {}
+  F.prototype = proto;
+  return new F;
+}
+
+function extend(Child, Parent) {
+  Child.prototype = inherit(Parent.prototype);
+  Child.prototype.constructor = Child;
+  Child.parent = Parent.prototype;
+}
+
 
 function CLASS(obj) {
 	var constructor = obj.init;	

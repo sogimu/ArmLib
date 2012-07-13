@@ -6,23 +6,23 @@
  * To change this template use File | Settings | File Templates.
  */
  
-var Arm = Arm || {} // возвращает первое истинное или последнее не истинное
-extend(Arm,'Stage'); 
-extend(Arm,'Object');
-extend(Arm,'Rect');
-extend(Arm,'Circle');
+var Arm = Arm || {} // РІРѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ РёСЃС‚РёРЅРЅРѕРµ РёР»Рё РїРѕСЃР»РµРґРЅРµРµ РЅРµ РёСЃС‚РёРЅРЅРѕРµ
+namespace(Arm,'Stage'); 
+namespace(Arm,'Object');
+namespace(Arm,'Rect');
+namespace(Arm,'Circle');
 
 
 Arm.Stage = (function () { 
 var collection=[], contex={}, intervalId='', fps=60
 	
-	var update = function() { // Метод вызывающий update()	у всех обектов типа Arm.Object, добавленных на обработку
+	var update = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ update()	Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
 		//log(collection)
 		if( collection.length > 0) {
 			for (var i=0; i<collection.length; i++) {
 				
 				collection[i].update();
-				log("Message: Arm.Stage, update()");			}
+				log("Message: Arm.Stage, update()");}
 			return true;
 		} else {
 		
@@ -30,7 +30,7 @@ var collection=[], contex={}, intervalId='', fps=60
 				return false;
 		}
 	}
-	var draw = function() { // Метод вызывающий draw() у всех обектов в обектах типа Arm.Object, добавленныйх на обработку
+	var draw = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ draw() Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ РІ РѕР±РµРєС‚Р°С… С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹Р№С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
 		if( collection.length > 0) {
 			for (var i=0; i<collection.length; i++) {
 	
@@ -50,7 +50,7 @@ var collection=[], contex={}, intervalId='', fps=60
 		draw();
 	}
 	
-	var add = function(O) { // Метод добавляет обект типа Arm.Object на обработку
+	var add = function(O) { // РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
 		if (collection.push( O )) {
 			log("Message: Arm.Stage, add() 'added object!' ");
 			return true;
@@ -60,7 +60,7 @@ var collection=[], contex={}, intervalId='', fps=60
 			return false;
 		}
 	}
-	var remove = function(O) { // Метод удаляет обект типа Arm.Object из обработки
+	var remove = function(O) { // РњРµС‚РѕРґ СѓРґР°Р»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РёР· РѕР±СЂР°Р±РѕС‚РєРё
 		if( collection.length > 0) {
 			var index = 0;
 			
@@ -80,14 +80,14 @@ var collection=[], contex={}, intervalId='', fps=60
 			}
 		}	
 	}	
-	var stop = function() { // Останавливает движок
+	var stop = function() { // РћСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґРІРёР¶РѕРє
 		if ( clearInterval( intervalId ) ) {
 			log("Message: Arm.Stage, stop()");
 		} else {
 			log("Error: Arm.Stage, stop() '?' ");
 		}
 	}
-	var run = function() { // Запускает движок
+	var run = function() { // Р—Р°РїСѓСЃРєР°РµС‚ РґРІРёР¶РѕРє
 		intervalId = setInterval( process, 1000 / fps );
 		if ( intervalId ) {
 			log("Message: Arm.Stage, run()");
@@ -97,7 +97,7 @@ var collection=[], contex={}, intervalId='', fps=60
 		}
 	}
 
-// общедоступные методы -- конструктор 
+// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
 var Constr = function(O) {
 		var container = document.getElementById(O.container)
 		var canvas = document.createElement('canvas');
@@ -108,7 +108,7 @@ var Constr = function(O) {
 		contex = canvas.getContext('2d');
 		return true;
 }; 
-// общедоступные методы -- прототип 
+// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РїСЂРѕС‚РѕС‚РёРї 
 
 Constr.prototype = { 
 	constructor: Arm.Stage, 
@@ -120,13 +120,13 @@ Constr.prototype = {
 	run: run,
 	stop: stop
 }; 
-// вернуть конструктор, 
-// создающий новое пространство имен 
+// РІРµСЂРЅСѓС‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, 
+// СЃРѕР·РґР°СЋС‰РёР№ РЅРѕРІРѕРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјРµРЅ 
 return Constr;
 }()); 
 
 var CShape = (function() {
-    var CShape = function() {
+    var CShape = function CShape() {
         this.x = '0';
         this.y = '0';
         this.stroke = '#sdc';
@@ -134,6 +134,7 @@ var CShape = (function() {
     };
     CShape.prototype = {
         setX: function(O) {
+            if(typeof(O) != 'undefined')
             this.x = O;
         },
         setY: function(O) {
@@ -145,35 +146,26 @@ var CShape = (function() {
         setzIndex: function(O) {
             this.zIndex = O;
         },
-        clone: function() {
-            var obj = {};
-            /*for(var i in this){
-                alert(i)
-                obj[i] = this[i];
-            }*/
-            copy(obj.prototype, this.prototype);
-            for(var i in this.prototype){
-                obj.prototype[i] = this.prototype[i];
-            }
+        clone: function() { 
+            var obj = new this.constructor();
+            LibJS.copy(obj, LibJS.clone(this));
             return obj;
         }
     }
     return CShape;
 }());
 
-
-Arm.Rect = (function() {
-    var CRect = function(O) {
+Arm.CRect = (function() {
+    var CRect = function CRect(O) {
+        if(typeof(O) != 'undefined') {
         this.setX(O.x);
         this.setY(O.y);
         this.setStroke(O.stroke);
         this.setzIndex(O.zIndex);
+        }
     };
-    CRect.prototype = {
-
-    }
-    CRect.prototype = CShape.prototype;
+    LibJS.inherit(CRect,CShape);
     return CRect;
 }()); 
 
-var Rect = Arm.Rect;
+var Rect = Arm.CRect;
