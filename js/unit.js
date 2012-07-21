@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
  
-var Arm = Arm || {} // РІРѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ РёСЃС‚РёРЅРЅРѕРµ РёР»Рё РїРѕСЃР»РµРґРЅРµРµ РЅРµ РёСЃС‚РёРЅРЅРѕРµ
+var Arm = Arm || {}
 namespace(Arm,'Stage'); 
 namespace(Arm,'Object');
 namespace(Arm,'Rect');
@@ -16,7 +16,7 @@ namespace(Arm,'Circle');
 Arm.Stage = (function () { 
 var collection=[], contex={}, intervalId='', fps=60
 	
-	var update = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ update()	Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+	var update = function() {
 		//log(collection)
 		if( collection.length > 0) {
 			for (var i=0; i<collection.length; i++) {
@@ -30,7 +30,7 @@ var collection=[], contex={}, intervalId='', fps=60
 				return false;
 		}
 	}
-	var draw = function() { // РњРµС‚РѕРґ РІС‹Р·С‹РІР°СЋС‰РёР№ draw() Сѓ РІСЃРµС… РѕР±РµРєС‚РѕРІ РІ РѕР±РµРєС‚Р°С… С‚РёРїР° Arm.Object, РґРѕР±Р°РІР»РµРЅРЅС‹Р№С… РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+	var draw = function() {
 		if( collection.length > 0) {
 			for (var i=0; i<collection.length; i++) {
 	
@@ -97,7 +97,6 @@ var collection=[], contex={}, intervalId='', fps=60
 		}
 	}
 
-// РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Рµ РјРµС‚РѕРґС‹ -- РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
 var Constr = function(O) {
 		var container = document.getElementById(O.container)
 		var canvas = document.createElement('canvas');
@@ -190,7 +189,7 @@ Arm.CRect = (function() {
             if(typeof(O.stroke) == 'string') {this.setStroke(O.stroke)} else {this.setStroke('black');}
             if(typeof(O.fill) == 'string') {this.setFill(O.fill)} else {this.setFill('gray');}
             if(typeof(O.zIndex) == 'number') {this.setzIndex(O.zIndex)} else {this.setzIndex(0);}
-            if(typeof(O.context) != 'undefined') {this.setContext(O.context)} else {this.setContext(Arm.Stage.getContext());}
+            if(typeof(O.context) != 'undefined') {this.setContext(O.context);}
         }
     };
     CRect.prototype = {
@@ -226,5 +225,42 @@ Arm.CRect = (function() {
     LibJS.inherit(CRect,CShape);
     return CRect;
 }()); 
+
+var Armi = (function() {
+
+    var Stage = (function(){
+        var Stage = function Stage(O){
+
+        }
+        Stage.prototype = {
+
+        }
+        return Stage;
+
+    }());
+
+    var Rect = (function(){
+        var Rect = function Rect(O){
+
+        }
+        Rect.prototype = {
+        }
+        return Rect;
+
+    }());
+
+
+    var Armi = function Armi(O){
+
+    }
+    Armi.prototype = {
+        Stage: Stage,
+        Rect: Rect
+    }
+    return new Armi;
+}());
+
+var iRect = Armi.Rect;
+var iStage = Armi.Stage;
 
 var Rect = Arm.CRect;
