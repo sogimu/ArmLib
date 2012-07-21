@@ -127,26 +127,49 @@ return Constr;
 
 var CShape = (function() {
     var CShape = function CShape() {
-        this.x = '0';
-        this.y = '0';
-        this.stroke = '#sdc';
+        this.x = 0;
+        this.y = 0;
+        this.stroke = 'black';
+        this.lineWidth = 1;
         this.zIndex = 0;
+        this.context = 'undefined';
     };
     CShape.prototype = {
         setX: function(O) {
-            if(typeof(O) != 'undefined')
-            this.x = O;
+            if(typeof(O) == 'number') this.x = O;
         },
         setY: function(O) {
-            this.y = O;
+            if(typeof(O) == 'number') this.y = O;
         },                    
         setStroke: function(O) {
-            this.stroke = O;
+            if(typeof(O) == 'string') this.stroke = O;
         },
         setzIndex: function(O) {
-            this.zIndex = O;
+            if(typeof(O) == 'number') this.zIndex = O;
         },
-        clone: function() { 
+        setContext: function(O) {
+            if(typeof(O) != 'undefined') this.context = O;
+        },
+        getContext: function() {
+            if(typeof(this.context) == 'undefined') return this.context;
+        },
+        getX: function() {
+            if(typeof(this.x) == 'number') return this.x;
+        },
+        getY: function() {
+            if(typeof(this.y) == 'number') return this.y;
+        },
+        getStroke: function() {
+            if(typeof(this.stroke) == 'string') return this.stroke;
+        },
+        getzIndex: function() {
+            if(typeof(this.zIndex) == 'number') return this.zIndex;
+        },
+        getLineWidth: function() {
+            if(typeof(this.lineWidth) == 'number') return this.lineWidth;
+        },
+
+        clone: function() {
             var obj = new this.constructor();
             LibJS.copy(obj, LibJS.clone(this));
             return obj;
@@ -157,11 +180,47 @@ var CShape = (function() {
 
 Arm.CRect = (function() {
     var CRect = function CRect(O) {
+        this.fill = 'gray';
+
         if(typeof(O) != 'undefined') {
-        this.setX(O.x);
-        this.setY(O.y);
-        this.setStroke(O.stroke);
-        this.setzIndex(O.zIndex);
+            if(typeof(O.x) == 'number') {this.setX(O.x)} else {this.setX(0);}
+            if(typeof(O.y) == 'number') {this.setY(O.y)} else {this.setY(0);}
+            if(typeof(O.width) == 'number') {this.setWidth(O.width)} else {this.setWidth(100);}
+            if(typeof(O.height) == 'number') {this.setHeight(O.height)} else {this.setHeight(100);}
+            if(typeof(O.stroke) == 'string') {this.setStroke(O.stroke)} else {this.setStroke('black');}
+            if(typeof(O.fill) == 'string') {this.setFill(O.fill)} else {this.setFill('gray');}
+            if(typeof(O.zIndex) == 'number') {this.setzIndex(O.zIndex)} else {this.setzIndex(0);}
+            if(typeof(O.context) != 'undefined') {this.setContext(O.context)} else {this.setContext(Arm.Stage.getContext());}
+        }
+    };
+    CRect.prototype = {
+        setWidth: function(O) {
+            if(typeof(O) == 'number') this.width = O;
+        },
+        setHeight: function(O) {
+            if(typeof(O) == 'number') this.height = O;
+        },
+        setFill: function(O) {
+            if(typeof(O) == 'string') this.fill = O;
+        },
+        getWidth: function() {
+            if(typeof(this.width) == 'number') return this.width;
+        },
+        getHeight: function() {
+            if(typeof(this.height) == 'number') return this.height;
+        },
+        getFill: function() {
+            if(typeof(this.fill) == 'number') return this.fill;
+        },
+
+        draw: function() {
+            this.context.beginPath();
+            this.context.rect(this.x, this.y, this.width, this.height);
+            this.context.fillStyle = this.fill;
+            this.context.fill();
+            this.context.lineWidth = this.lineWidth;
+            this.context.strokeStyle = this.stroke;
+            this.context.stroke();
         }
     };
     LibJS.inherit(CRect,CShape);
