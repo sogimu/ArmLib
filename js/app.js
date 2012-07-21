@@ -8,10 +8,10 @@
 
 window.onload = function(){
 
-    //var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
+    var stage = new Stage({container: 'container',width: '500',height: '500'});
     //stage.add(s);
     //stage.remove(s);
-    //stage.run()	
+    //stage.run()
     //var canvas = document.getElementById('myCanvas');
     //var context = canvas.getContext('2d');
 
@@ -20,5 +20,6 @@ window.onload = function(){
     //console.log( rect1 );
     //console.log( rect1.clone() );
     
-    rect1.draw();
+    //rect1.draw();
+    log(rect2);
 };
