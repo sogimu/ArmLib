@@ -11,12 +11,12 @@ var ball = new Arm.Object({
 	run: function() {
 	},
 	stand: function() {
+
+stage.add(  ball1 );
 	}
 });
 var ball1 = ball.clone();
 var ball2 = ball.clone();
-
-stage.add(  ball1 );
 stage.remove( ball1 );
 
 arm.run( stage );

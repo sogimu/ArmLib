@@ -9,169 +9,134 @@
 var Arm = Arm || {}
 
 Arm = (function(){
-    var CShape = (function() {
-        var CShape = function CShape() {
-            this.x = 0;
-            this.y = 0;
-            this.stroke = 'black';
-            this.lineWidth = 1;
+    var CSuperObj = (function() {
+        var CSuperObj = function() {
             this.zIndex = 0;
-            this.context = 'undefined';
+            this.context = null;
+            this.visible = true;
         };
-        CShape.prototype = {
-            setX: function(O) {
-                if(typeof(O) == 'number') this.x = O;
-            },
-            setY: function(O) {
-                if(typeof(O) == 'number') this.y = O;
-            },
-            setStroke: function(O) {
-                if(typeof(O) == 'string') this.stroke = O;
-            },
-            setzIndex: function(O) {
-                if(typeof(O) == 'number') this.zIndex = O;
-            },
+        CSuperObj.prototype = {
             setContext: function(O) {
-                if(typeof(O) != 'undefined') this.context = O;
+                this.context = O;
             },
             getContext: function() {
-                if(typeof(this.context) == 'undefined') return this.context;
+                return this.context;
             },
-            getX: function() {
-                if(typeof(this.x) == 'number') return this.x;
-            },
-            getY: function() {
-                if(typeof(this.y) == 'number') return this.y;
-            },
-            getStroke: function() {
-                if(typeof(this.stroke) == 'string') return this.stroke;
+            setzIndex: function(O) {
+                this.zIndex = O;
             },
             getzIndex: function() {
-                if(typeof(this.zIndex) == 'number') return this.zIndex;
+                return this.zIndex;
             },
-            getLineWidth: function() {
-                if(typeof(this.lineWidth) == 'number') return this.lineWidth;
+            show: function() {
+                this.visible = true;
             },
-
+            hide: function() {
+                this.visible = false;
+            },
             clone: function() {
                 var obj = new this.constructor();
                 LibJS.copy(obj, LibJS.clone(this));
                 return obj;
             }
         }
-        return CShape;
+        return CSuperObj;
     }());
 
-    var CStage = (function(){
-        var collection=[], contex={}, intervalId='', fps=60;
+    var CObject = (function() {
+        var CObject = function(O) {
+            this.collection = [];
+            this.objects = null;
 
-        var update = function() {
-            if( collection.length > 0) {
-                for (var i=0; i<collection.length; i++) {
-
-                    collection[i].update();
-                    log("Message: Arm.Stage, update()");}
-                return true;
-            } else {
-
-                log("Error: Arm.Stage, update() 'collection is empty!' ");
-                return false;
+            if(typeof(O) != 'undefined') {
+                if(typeof(O.x) == 'number') {this.setX(O.x)} else {this.setX(0);}
+                if(typeof(O.y) == 'number') {this.setY(O.y)} else {this.setY(0);}
+                if(typeof(O.zIndex) == 'number') {this.setzIndex(O.zIndex)} else {this.setzIndex(0);}
+                if(typeof(O.collection) == 'object') {this.setCollection(O.collection)} else {this.setCollection(null);}
+                if(typeof(O.update) == 'function') {this.setUpdate(O.update)} else {this.setUpdate(null);}
             }
-        }
-        var draw = function() {
-            if( collection.length > 0) {
-                for (var i=0; i<collection.length; i++) {
 
-                    collection[i].draw();
-                    log("Message: Arm.Stage, draw()");
-
-                }
-                return true;
-            } else {
-
-                log("Error: Arm.Stage, draw() 'collection is empty!' ");
-                return false;
-            }
-        }
-        var process = function() {
-            update();
-            draw();
-        }
-
-        var add = function(O) { // РњРµС‚РѕРґ РґРѕР±Р°РІР»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
-            if (collection.push( O )) {
-                log("Message: Arm.Stage, add() 'added object!' ");
-                return true;
-            } else {
-
-                log("Error: Arm.Stage, add() '?' ");
-                return false;
-            }
-        }
-        var remove = function(O) { // РњРµС‚РѕРґ СѓРґР°Р»СЏРµС‚ РѕР±РµРєС‚ С‚РёРїР° Arm.Object РёР· РѕР±СЂР°Р±РѕС‚РєРё
-            if( collection.length > 0) {
-                var index = 0;
-
-                for (var i in collection){
-                    if (collection[i] === O) {
-
-                        collection.splice(index, 1);
-                        log("Message: Arm.Stage, remove() 'remove object!' ");
-                        return true;
-
-                    } else {
-
-                        log("Error: Arm.Stage, remove() 'collection is empty!' ");
-                        return false;
+        };
+        CObject.prototype = {
+            add: function(O) {
+                this.collection.push( O );
+            },
+            remove: function(O) {
+                for(var i in this.collection){
+                    if(this.collection[i] == O){
+                        delete this.collection[i];
                     }
-                    index++;
+                }
+            },
+            update: function() {
+            },
+            _update: function() {
+                this.update();
+                for(var i in this.collection){
+
+                    this.collection[i]._update();
+                }
+            },
+            setUpdate: function(O) {
+                this.update = O;
+            },
+            setCollection: function(O) {
+                this.collection = O;
+            },
+            _draw: function() {
+                for(var i in this.collection){
+                    this.collection[i]._draw();
                 }
             }
         }
-        var stop = function() { // РћСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґРІРёР¶РѕРє
-            if ( clearInterval( intervalId ) ) {
-                log("Message: Arm.Stage, stop()");
-            } else {
-                log("Error: Arm.Stage, stop() '?' ");
-            }
-        }
-        var run = function() { // Р—Р°РїСѓСЃРєР°РµС‚ РґРІРёР¶РѕРє
-            intervalId = setInterval( process, 1000 / fps );
-            if ( intervalId ) {
-                log("Message: Arm.Stage, run()");
-                return true;
-            } else {
-                log("Error: Arm.Stage, run() '?' ");
-            }
-        }
+        LibJS.inherit(CObject,CSuperObj);
+        return CObject;
+    }());
 
-        var CStage = function(O) {
-            var container = document.getElementById(O.container)
-            var canvas = document.createElement('canvas');
-            canvas.width = O.width
-            canvas.height = O.height
-            canvas.style.id = '2k2nd';
-            container.appendChild( canvas );
-            contex = canvas.getContext('2d');
-            return true;
+    var CShape = (function() {
+        var CShape = function CShape() {
+            this.x = 0;
+            this.y = 0;
+            this.stroke = 'black';
+            this.lineWidth = 1;
+            this.type = 'shape';
+        };
+        CShape.prototype = {
+            setX: function(O) {
+                this.x = O;
+            },
+            setY: function(O) {
+                this.y = O;
+            },
+            setStroke: function(O) {
+                this.stroke = O;
+            },
+            getX: function() {
+                return this.x;
+            },
+            getY: function() {
+                return this.y;
+            },
+            getStroke: function() {
+                return this.stroke;
+            },
+            setLineWidth: function(O) {
+                this.lineWidth = O;
+            },
+            getLineWidth: function() {
+                return this.lineWidth;
+            }
         }
-        CStage.prototype = {
-            constructor: CStage,
-            version: "0.1",
-            add: add,
-            remove: remove,
-            update: update,
-            draw: draw,
-            run: run,
-            stop: stop
-        }
-        return CStage;
+        LibJS.inherit(CShape,CSuperObj);
+        return CShape;
     }());
 
     var CRect = (function(){
 
-        var CRect = function() {
-            this.fill = 'gray';
+        var CRect = function(O) {
+            this.width = 10;
+            this.height = 10;
+            this.fill = '#aaa';
 
             if(typeof(O) != 'undefined') {
                 if(typeof(O.x) == 'number') {this.setX(O.x)} else {this.setX(0);}
@@ -187,25 +152,25 @@ Arm = (function(){
         }
         CRect.prototype = {
             setWidth: function(O) {
-                if(typeof(O) == 'number') this.width = O;
+                this.width = O;
             },
             setHeight: function(O) {
-                if(typeof(O) == 'number') this.height = O;
+                this.height = O;
             },
             setFill: function(O) {
-                if(typeof(O) == 'string') this.fill = O;
+                this.fill = O;
             },
             getWidth: function() {
-                if(typeof(this.width) == 'number') return this.width;
+                return this.width;
             },
             getHeight: function() {
-                if(typeof(this.height) == 'number') return this.height;
+                return this.height;
             },
             getFill: function() {
-                if(typeof(this.fill) == 'number') return this.fill;
+                return this.fill;
             },
 
-            draw: function() {
+            _draw: function() {
                 this.context.beginPath();
                 this.context.rect(this.x, this.y, this.width, this.height);
                 this.context.fillStyle = this.fill;
@@ -213,6 +178,9 @@ Arm = (function(){
                 this.context.lineWidth = this.lineWidth;
                 this.context.strokeStyle = this.stroke;
                 this.context.stroke();
+            },
+            _update: function() {
+
             }
 
         }
@@ -221,12 +189,109 @@ Arm = (function(){
 
     }());
 
+
+    var CStage = (function(){
+        var collection=[], context={}, zIndex=0;
+
+        var _update = function() {
+            for (var i in collection) {
+                collection[i]._update();
+                log(collection[i])
+            }
+            log("Message: Arm.Stage, update()");
+        }
+        var _draw = function() {
+            for (var i in collection) {
+                collection[i]._draw();
+            }
+            log("Message: Arm.Stage, draw()");
+        }
+        var _process = function() {
+            _update();
+            _draw();
+        }
+        var add = function(O) {
+            O.context = context;
+
+            if (collection.push( O )) {
+                log("Message: Arm.Stage, add() 'added object!' ");
+                return true;
+            } else {
+                log("Error: Arm.Stage, add() '?' ");
+                return false;
+            }
+        }
+        var remove = function(O) {
+            for (var i in collection){
+                if (collection[i] === O) {
+
+                    delete collection[i];
+                    log("Message: Arm.Stage, remove() 'remove object!' ");
+                    return true;
+
+                } else {
+
+                    log("Error: Arm.Stage, remove() 'collection is empty!' ");
+                    return false;
+                }
+            }
+        }
+        var stop = function() {
+            if ( clearInterval( intervalId ) ) {
+                log("Message: Arm.Stage, stop()");
+            } else {
+                log("Error: Arm.Stage, stop() '?' ");
+            }
+        }
+        var run = function() {
+            intervalId = setInterval( _process, 1000 / 1 );
+            if ( intervalId ) {
+                log("Message: Arm.Stage, run()");
+                return true;
+            } else {
+                log("Error: Arm.Stage, run() '?' ");
+            }
+        }
+        var setContext = function(O) {
+            this.context = O;
+        }
+        var getContext = function() {
+            return context;
+        }
+        var setzIndex = function(O) {
+            zIndex = O;
+        }
+        var getzIndex = function() {
+            return zIndex;
+        }
+
+
+        var CStage = function(O) {
+            var container = document.getElementById(O.container)
+            var canvas = document.createElement('canvas');
+            canvas.width = O.width
+            canvas.height = O.height
+            canvas.style.id = '2k2nd';
+            container.appendChild( canvas );
+            context = canvas.getContext('2d');
+        }
+        CStage.prototype = {
+            run: run,
+            stop: stop,
+            add: add,
+            remove: remove
+        }
+        return CStage;
+    }());
+
+
     var Arm = function() {
 
     }
     Arm.prototype = {
         CStage: CStage,
-        CRect: CRect
+        CRect: CRect,
+        CObject: CObject
 
     }
     return new Arm;

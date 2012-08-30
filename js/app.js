@@ -15,11 +15,13 @@ window.onload = function(){
     //var canvas = document.getElementById('myCanvas');
     //var context = canvas.getContext('2d');
 
-    //var rect1 = new Rect({x: 12,y: 23, stroke: 1, zIndex: 0/*, context: context*/});
-    var rect2 = new Rect({x: 10,y: 13, stroke: '#adw', zIndex: 1});
-    //console.log( rect1 );
-    //console.log( rect1.clone() );
-    
-    //rect1.draw();
-    log(rect2);
+    var rect1 = new Rect({x: 12,y: 23, stroke: 1, zIndex: 0});
+    var rect2 = new Rect({x: 50,y: 13, stroke: '#adw', zIndex: 1});
+
+    //rect1.setContext( context );
+
+    var obj = new Arm.CObject({x: 10, y: 10, collection: [rect1, rect2],update: function() {}});
+    //log(obj);
+    stage.add( obj );
+    stage.run();
 };
