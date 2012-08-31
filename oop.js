@@ -83,6 +83,14 @@ function Class(params)
         newClass.prototype[m] = methods[m];
     }
 
+    // appending new and overriding instance methods (by sogimu)
+    var vars = params.vars || {};
+    for (var m in vars)
+    {
+        newClass.prototype[m] = vars[m];
+    }
+
+
     // appending new and overriding static methods
     var statics = params.statics || {};
     for (var m in statics)

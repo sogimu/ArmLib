@@ -3,30 +3,37 @@ CObject = Class({
 
     construct: function(O){
         if(typeof(O) != 'undefined') {
-            if(typeof(O.x) == 'number') {this.setX(O.x)} else {this.setX(0);}
-            if(typeof(O.y) == 'number') {this.setY(O.y)} else {this.setY(0);}
-            if(typeof(O.collection) == 'object') {this.setCollection(O.collection)}
-            if(typeof(O.update) == 'function') {this.update = O.update}
 
+            var vars = O.vars || {};
+            for (var m in vars)
+            {
+                this[m] = vars[m];
+            }
+            this._begin = O.begin || function() {};
+            this._update = O.update || function() {};
+
+            if(typeof(O.collection) == 'object') {
+                this.setCollection(O.collection);
+                for(var i in O.collection)
+                {
+                    O.collection[i].parent = this;
+                }
+            }
+            var event = O.event || {};
+            for (var m in event)
+            {
+                this[m] = event[m];
+            }
+
+        } else {
+            throw Error('Is\'t arguments for object!');
         }
     },
-	vars:{
-		collection: [],
-		objects: null
+    vars: {
+        collection: [],
+        type: 'object'
     },
     methods:{
-        setX: function(O) {
-            this.x = O;
-        },
-        setY: function(O) {
-            this.y = O;
-        },
-        getX: function() {
-            return this.x;
-        },
-        getY: function() {
-            return this.y;
-        },
         setCollection: function(O) {
             this.collection = O;
         },
@@ -41,25 +48,38 @@ CObject = Class({
         },
         _draw: function() {
             for(var i in this.collection) {
-                this.collection[i].draw();
-                console.log('Object: draw')
+                this.collection[i]._draw();
             }
         },
-
+        _clean: function() {
+            for(var i in this.collection) {
+                this.collection[i]._clean();
+            }
+        },
         _update: function() {
             if(typeof this.update == 'function'){
-                this.update();
+                this._update();
             }
 
             for(var i in this.collection) {
                 if(typeof this.collection[i]._update == 'function'){
                     this.collection[i]._update();
-                    console.log('Object: _update');
-                } else {
-                    console.log('Object: is\'t _update function.')
+                }
+            }
+
+        },
+        _event: function() {
+            if(typeof(this.intersection) == 'function') {this.intersection()};
+            if(typeof(this.mouse_move) == 'function') {this.mouse_move()};
+
+            for(var i in this.collection) {
+                if(typeof this.collection[i]._event == 'function')
+                {
+                    this.collection[i]._event();
                 }
             }
 
         }
+
     }
 });

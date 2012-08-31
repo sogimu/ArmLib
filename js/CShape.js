@@ -2,25 +2,15 @@ CShape = Class({
     base: CSuperObj,
     construct: function(){
     },
-    vars:{
-        x: 0,
-        y: 0,
-        stroke: '#aaa',
-        lineWidth: 1
+    vars: {
+        shapes: [],
+        parent: 'no',
+        stroke: 'black',
+        lineWidth: 1,
+        type: 'shape'
     },
+
     methods:{
-        setX: function(O) {
-            this.x = O;
-        },
-        setY: function(O) {
-            this.y = O;
-        },
-        getX: function() {
-            return this.x;
-        },
-        getY: function() {
-            return this.y;
-        },
         setStroke: function(O) {
             this.stroke = O;
         },
@@ -32,6 +22,13 @@ CShape = Class({
         },
         getLineWidth: function() {
             return this.lineWidth;
-        }
+        }/*,
+
+        _event: function() {
+            console.log(this)
+            if(typeof(this.intersection) == 'function') {this.intersection()};
+            if(typeof(this.mouse_move) == 'function') {this.mouse_move()};
+        }*/
+
     }
 });

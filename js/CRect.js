@@ -2,20 +2,33 @@ CRect = Class({
     base: CShape,
     construct: function(O){
         if(typeof(O) != 'undefined') {
-            if(typeof(O.x) == 'number') {this.setX(O.x)} else {this.setX(0);}
-            if(typeof(O.y) == 'number') {this.setY(O.y)} else {this.setY(0);}
-            if(typeof(O.width) == 'number') {this.setWidth(O.width)} else {this.setWidth(100);}
-            if(typeof(O.height) == 'number') {this.setHeight(O.height)} else {this.setHeight(100);}
-            if(typeof(O.stroke) == 'string') {this.setStroke(O.stroke)} else {this.setStroke('black');}
-            if(typeof(O.fill) == 'string') {this.setFill(O.fill)} else {this.setFill('gray');}
-            if(typeof(O.context) != 'undefined') {this.setContext(O.context);}
+            this.x = O.x || this.x;
+            this.y = O.y || this.y;
+            this.stroke = O.stroke || this.stroke;
+            this.fill = O.fill || this.fill;
+            this.context = O.context || this.context;
+            if(typeof(O.width) != 'undefined' && O.width > 0) {this.setWidth(O.width)}
+            if(typeof(O.height) != 'undefined' && O.height > 0) {this.setHeight(O.height)}
+            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.setLineWidth(O.lineWidth);}
+
+            var event = O.event || {};
+            for (var m in event)
+            {
+                if(typeof event[m] == 'function')
+                {
+                    this[m] = event[m];
+                }
+            }
+
         }
     },
-    vars:{
-        width: 10,
-        height: 10,
-        fill: '#abc'
+    vars: {
+        width: 100,
+        height: 100,
+        fill: 'gray',
+        event: {}
     },
+
     methods:{
         setWidth: function(O) {
             this.width = O;
@@ -35,7 +48,12 @@ CRect = Class({
         getFill: function() {
             return fill;
         },
-        draw: function() {
+        _clean: function() {
+            var lineWidth = this.lineWidth;
+            this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);
+        },
+        _draw: function() {
+            this._clean()
             this.context.beginPath();
             this.context.rect(this.x, this.y, this.width, this.height);
             this.context.fillStyle = this.fill;
@@ -43,8 +61,6 @@ CRect = Class({
             this.context.lineWidth = this.lineWidth;
             this.context.strokeStyle = this.stroke;
             this.context.stroke();
-        },
-        update: function() {
         }
     }
 });

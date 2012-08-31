@@ -1,71 +1,103 @@
 CStage = Class({
     construct: function(O){
-        this.collection = [];
-        this.context = {};
-        this.fps = 1;
-        this.intervalId = null;
-
-        var container = document.getElementById( O.container )
-        var canvas = document.createElement('canvas');
-        canvas.width = this.width = O.width;
-        canvas.height = this.height = O.height;
-
-        canvas.style.id = '2k2nd';
-        container.appendChild( canvas );
-        this.context = canvas.getContext('2d');
-        if(typeof(O.fps) == 'number') {this.fps = O.fps}
+        if(typeof(O.fps) != 'undefined') {this.fps = O.fps}
+        if(typeof(O.width) != 'undefined') {this.width = O.width}
+        if(typeof(O.height) != 'undefined') {this.height = O.height}
+        if(typeof(O.container) != 'undefined') {
+            var container = document.getElementById( O.container )
+            var canvas = document.createElement('canvas');
+            canvas.width = this.width;
+            canvas.height = this.height;
+            canvas.style.id = '2k2nd';
+            container.appendChild( canvas );
+            this.context = canvas.getContext('2d');
+        } else {
+            throw Error('The container is not found! Choose right name of container, please!');
+        }
 
     },
-	vars:{
-		collection: [],
-		context: {},
-        fps: 1,
+    vars: {
+        collection: [],
+        context: {},
+        fps: 10,
         intervalId: null,
-        width: 100,
-        height: 100
-		},
+        width: 500,
+        height: 500
+    },
+
     methods:{
         add: function(O) {
             O.setContext( this.context );
             this.collection.push(O);
         },
         _draw: function() {
-            this.context.clearRect(0,0,this.width,this.height);
-            for(var i in this.collection) {
+            for(var i in this.collection)
+            {
                 this.collection[i]._draw();
-                console.log('Stage: _draw')
+                //console.log('Stage: _draw')
             }
         },
         _update: function() {
             for(var i in this.collection) {
-                if(typeof this.collection[i]._update == 'function'){
+                if(typeof this.collection[i]._update == 'function')
+                {
                     this.collection[i]._update();
-                    console.log('Stage: _update');
-                } else {
-                    console.log('Stage: is\'t update function.')
+                }
+            }
+
+        },
+        _event: function() {
+            for(var i in this.collection) {
+                if(typeof this.collection[i]._event == 'function')
+                {
+                    this.collection[i]._event();
+                }
+            }
+
+        },
+        _begin: function() {
+            for(var i in this.collection)
+            {
+                if(typeof this.collection[i]._begin == 'function')
+                {
+                    this.collection[i]._begin();
+                }
+            }
+
+        },
+        _clean: function() {
+            for(var i in this.collection)
+            {
+                if(typeof this.collection[i]._clean == 'function')
+                {
+                    this.collection[i]._clean();
                 }
             }
 
         },
         _process: function() {
+            this._clean();
+            this._event();
             this._update();
             this._draw();
         },
 
         run: function() {
+            this._begin();
+
             var self = this;
             this.intervalId = setInterval( function() {self._process.call(self)}, 1000/this.fps );
-            if ( this.intervalId ) {
+            if ( this.intervalId ){
                 console.log("Stage, run()");
             } else {
-                console.log("Error: Stage, run()");
+                throw Error("Stage, can't run!");
             }
         },
         stop: function() {
             if ( clearInterval( this.intervalId ) ) {
                 console.log("Stage, stop()");
             } else {
-                console.log("Error: Stage, stop()");
+                throw Error("Stage, can't stop!");
             }
         }
     }
