@@ -37,11 +37,11 @@ CStage = Class({
                 //console.log('Stage: _draw')
             }
         },
-        _update: function() {
+        _update: function(stage) {
             for(var i in this.collection) {
                 if(typeof this.collection[i]._update == 'function')
                 {
-                    this.collection[i]._update();
+                    this.collection[i]._update.call(this.collection[i],stage);
                 }
             }
 
@@ -78,7 +78,7 @@ CStage = Class({
         _process: function() {
             if(this.collection[0]!='undefined'){
             this._clean();
-            this._update();
+            this._update.call(this,this)
             this._draw();
             this._event();
             }
@@ -91,15 +91,18 @@ CStage = Class({
             this.intervalId = setInterval( function() {self._process.call(self)}, 1000/this.fps );
             if ( this.intervalId ){
                 console.log("Stage, run()");
+                console.log(this.intervalId);
             } else {
                 throw Error("Stage, can't run!");
             }
         },
         stop: function() {
-            if ( clearInterval( this.intervalId ) ) {
+            try {
+                clearInterval( this.intervalId )
                 console.log("Stage, stop()");
-            } else {
-                throw Error("Stage, can't stop!");
+            }
+            catch(e) {
+                console.log(e);
             }
         }
     }

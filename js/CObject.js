@@ -56,9 +56,9 @@ CObject = Class({
                 this.collection[i]._clean();
             }
         },
-        _update: function() {
+        _update: function(stage) {
             if(typeof this.update == 'function'){
-                this._update();
+                this._update.call(this,stage);
             }
 
             for(var i in this.collection) {
