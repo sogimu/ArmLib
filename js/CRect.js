@@ -7,6 +7,7 @@ CRect = Class({
             this.stroke = O.stroke || this.stroke;
             this.fill = O.fill || this.fill;
             this.context = O.context || this.context;
+            this.name = O.name || this.name;
             if(typeof(O.width) != 'undefined' && O.width > 0) {this.setWidth(O.width)}
             if(typeof(O.height) != 'undefined' && O.height > 0) {this.setHeight(O.height)}
             if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.setLineWidth(O.lineWidth);}

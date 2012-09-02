@@ -68,9 +68,37 @@ CObject = Class({
             }
 
         },
+        __intersection: function() {
+            for(var i in this.collection)
+            {
+                var XL1 = this.collection[i].x - this.collection[i].lineWidth;
+                var XR1 = this.collection[i].x + this.collection[i].width + this.collection[i].lineWidth;
+                var YL1 = this.collection[i].y - this.collection[i].lineWidth;
+                var YR1 = this.collection[i].y + this.collection[i].height + this.collection[i].lineWidth;
+                for(var j in this.collection)
+                {
+                    if(this.collection[j] != this.collection[i]){
+                        var XL2 = this.collection[j].x - this.collection[j].lineWidth;
+                        var XR2 = this.collection[j].x + this.collection[j].width + this.collection[j].lineWidth;
+                        var YL2 = this.collection[j].y - this.collection[j].lineWidth;
+                        var YR2 = this.collection[j].y + this.collection[j].height + this.collection[i].lineWidth;
+
+                        if(((XL2 >= XL1) && (XR2 <= XR1))||((XL2 >= XL1) && (XR2 >= XR1) && (XL2 <= XR1))||((XL2 <= XL1) && (XR2 <= XR1) && (XR2 >= XL1))||((XL2 <= XL1) && (XR2 >= XR1))){
+                            if(((YL2 >= YL1) && (YR2 <= YR1))||((YL2 >= YL1) && (YR2 >= YR1) && (YL2 <= YR1))||((YL2 <= YL1) && (YR2 <= YR1) && (YR2 >= YL1))||((YL2 <= YL1) && (YR2 >= YR1))){
+                                var arg = [this.collection[i],this.collection[j]];
+                                if(typeof(this.intersection) == 'function') {this.intersection.call(this,arg[0]||{}, arg[1]||{});}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        __mouse_move: function() {
+
+        },
         _event: function() {
-            if(typeof(this.intersection) == 'function') {this.intersection()};
-            if(typeof(this.mouse_move) == 'function') {this.mouse_move()};
+            this.__intersection();
+            this.__mouse_move();
 
             for(var i in this.collection) {
                 if(typeof this.collection[i]._event == 'function')

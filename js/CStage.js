@@ -76,10 +76,12 @@ CStage = Class({
 
         },
         _process: function() {
+            if(this.collection[0]!='undefined'){
             this._clean();
-            this._event();
             this._update();
             this._draw();
+            this._event();
+            }
         },
 
         run: function() {
