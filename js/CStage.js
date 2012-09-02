@@ -77,7 +77,7 @@ CStage = Class({
         },
         _process: function() {
             if(this.collection[0]!='undefined'){
-            this._clean();
+            //this._clean();
             this._update.call(this,this)
             this._draw();
             this._event();

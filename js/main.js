@@ -7,7 +7,7 @@ window.onload = function(){
     var rect3 = new CRect({x: 50,y: 50,width: 400, height: 200, stroke: '#abc', fill: '#add', lineWidth: 1, name: 'rect3'});
 
     var obj1 = new CObject({
-        collection: [new CRect({x: 50,y: 50,width: 30, height: 30, stroke: '#adw', lineWidth: 1, name: 'rect1', fill: 'green'})/*, new CRect({x: 50,y: 50,width: 30, height: 30, stroke: '#adw', lineWidth: 1, name: 'rect2', fill: 'green'})*/],
+        collection: [new CCircle({x: 50,y: 50,radius: 30, stroke: '#adw', lineWidth: 1, name: 'circle1', fill: 'green'})/*, new CRect({x: 50,y: 50,width: 30, height: 30, stroke: '#adw', lineWidth: 1, name: 'rect2', fill: 'green'})*/],
         vars: {
             x: 10,
             y: 10,
@@ -25,8 +25,8 @@ window.onload = function(){
 
                 if(x <= 0) {this.i=1;}
                 if(y <= 0) {this.j=1;}
-                if(x >= stage.width-this.collection[i].width) {this.i=-1;}
-                if(y >= stage.height-this.collection[i].height) {this.j=-1;}
+                if(x >= stage.width-this.collection[i].radius/2) {this.i=-1;}
+                if(y >= stage.height-this.collection[i].radius/2) {this.j=-1;}
                 this.collection[i].x = x + this.i *(i+1)* 5 * Math.random();
                 this.collection[i].y = y + this.j *(i+1)* 5 * Math.random();
             }
@@ -42,30 +42,8 @@ window.onload = function(){
 
     });
 
-    stage.add( rect3 );
+//    stage.add( rect3 );
 
-//    stage.add( obj1 );
-/*
-    var clone = function(o) {
-        //if(!o || 'object' !== typeof o)  {
-        //    return o;
-        //}
-        //var c = 'function' === typeof o.pop ? [] : {};
-        var p, v;
-        for(p in o) {
-            if(o.hasOwnProperty(p)) {
-                v = o[p];
-                if(v && 'object' === typeof v) {
-                    c[p] = clone(v);
-                }
-                else {
-                    c[p] = v;
-                }
-            }
-        }
-        return c;
-    }
-*/
     var clone = function(arg,deep){
         if(deep == 0){return arg};
 
@@ -101,8 +79,8 @@ window.onload = function(){
         return obj;
     }
 
-    console.log( obj1);
-    console.log( clone(obj1, 10));
+    //console.log( obj1);
+    //console.log( clone(obj1, 10));
     stage.add( clone(obj1, 10));
     stage.add( clone(obj1, 10));
     stage.add( clone(obj1, 10));
