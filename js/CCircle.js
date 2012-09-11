@@ -1,4 +1,4 @@
-CCircle = Class({
+var CCircle = Class({
     base: CShape,
     construct: function(O){
         if(typeof(O) != 'undefined') {
@@ -10,22 +10,13 @@ CCircle = Class({
             this.name = O.name || this.name;
             if(typeof(O.radius) != 'undefined' && O.radius > 0) {this.radius = O.radius}
             if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.setLineWidth(O.lineWidth);}
-
-            var event = O.event || {};
-            for (var m in event)
-            {
-                if(typeof event[m] == 'function')
-                {
-                    this[m] = event[m];
-                }
-            }
-
         }
     },
     vars: {
         radius: 100,
         fill: 'gray',
-        event: {}
+        event: {},
+        shapeType: 'circle'
     },
 
     methods:{
@@ -43,7 +34,7 @@ CCircle = Class({
         },
         _clean: function() {
             var lineWidth = this.lineWidth;
-            this.context.clearRect(this.x-this.radius,this.y-this.radius,this.x+this.radius,this.y+this.radius);
+            this.context.clearRect(this.x-this.radius-this.lineWidth,this.y-this.radius-this.lineWidth,this.x+this.radius+this.lineWidth,this.y+this.radius+this.lineWidth);
         },
         _draw: function() {
             //this._clean()

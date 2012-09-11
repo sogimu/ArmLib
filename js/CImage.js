@@ -1,11 +1,11 @@
-var CRect = Class({
+CImage = Class({
     base: CShape,
     construct: function(O){
         if(typeof(O) != 'undefined') {
             this.x = O.x || this.x;
             this.y = O.y || this.y;
             this.stroke = O.stroke || this.stroke;
-            this.fill = O.fill || this.fill;
+            this.image = O.image || this.image;
             this.context = O.context || this.context;
             this.name = O.name || this.name;
             if(typeof(O.width) != 'undefined' && O.width > 0) {this.setWidth(O.width)}
@@ -34,11 +34,11 @@ var CRect = Class({
         getHeight: function() {
             return this.height;
         },
-        setFill: function(O) {
-            this.fill = O;
+        setImage: function(O) {
+            this.image = O;
         },
-        getFill: function() {
-            return fill;
+        getImage: function() {
+            return this.image;
         },
         _clean: function() {
             var lineWidth = this.lineWidth;
@@ -46,13 +46,14 @@ var CRect = Class({
         },
         _draw: function() {
             this._clean()
-            this.context.beginPath();
-            this.context.rect(this.x, this.y, this.width, this.height);
-            this.context.fillStyle = this.fill;
-            this.context.fill();
-            this.context.lineWidth = this.lineWidth;
-            this.context.strokeStyle = this.stroke;
-            this.context.stroke();
+            //this.context.beginPath();
+            //this.context.rect(this.x, this.y, this.width, this.height);
+            this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
+            //this.context.fillStyle = this.fill;
+            //this.context.fill();
+            //this.context.lineWidth = this.lineWidth;
+            //this.context.strokeStyle = this.stroke;
+            //this.context.stroke();
         }
     }
 });

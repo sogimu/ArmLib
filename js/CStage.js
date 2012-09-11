@@ -1,4 +1,4 @@
-CStage = Class({
+var CStage = Class({
     construct: function(O){
         if(typeof(O.fps) != 'undefined') {this.fps = O.fps}
         if(typeof(O.width) != 'undefined') {this.width = O.width}
@@ -27,71 +27,84 @@ CStage = Class({
 
     methods:{
         add: function(O) {
-            O.setContext( this.context );
-            this.collection.push(O);
+            if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
+                O.setContext( this.context );
+                this.collection.push(O);
+            } else {
+                throw Error('Stage: add() -> Incorrect object!');
+            }
         },
-        _draw: function() {
+        remove: function(O){
+            if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
+                for(var i in this.collection){
+                    if(this.collection[i] == O){
+                        delete this.collection[i];
+                    }
+                }
+            }
+        },
+        _draw: function(stage) {
             for(var i in this.collection)
             {
-                this.collection[i]._draw();
-                //console.log('Stage: _draw')
+                var obj = this.collection[i];
+                if(typeof obj._draw == 'function')
+                {
+                    obj._draw.call(obj,stage);
+                }
             }
+
         },
         _update: function(stage) {
-            for(var i in this.collection) {
-                if(typeof this.collection[i]._update == 'function')
+            for(var i in this.collection)
+            {
+                var obj = this.collection[i];
+                if(typeof obj._update == 'function')
                 {
-                    this.collection[i]._update.call(this.collection[i],stage);
+                    obj._update.call(obj,stage);
                 }
             }
 
         },
-        _event: function() {
-            for(var i in this.collection) {
-                if(typeof this.collection[i]._event == 'function')
+        _event: function(stage) {
+            for(var i in this.collection)
+            {
+                var obj = this.collection[i];
+                if(typeof obj._event == 'function')
                 {
-                    this.collection[i]._event();
+                    obj._event.call(obj, stage);
                 }
             }
 
         },
-        _begin: function() {
+        _begin: function(stage) {
             for(var i in this.collection)
             {
                 if(typeof this.collection[i]._begin == 'function')
                 {
-                    this.collection[i]._begin();
+                    this.collection[i]._begin.call(this.collection[i],stage);
                 }
             }
 
         },
-        _clean: function() {
-            for(var i in this.collection)
-            {
-                if(typeof this.collection[i]._clean == 'function')
-                {
-                    this.collection[i]._clean();
-                }
-            }
+        _clean: function(stage) {
+            this.context.clearRect(0,0,stage.width,stage.height);
+            //obj._clean.call(obj,stage);
 
         },
         _process: function() {
-            if(this.collection[0]!='undefined'){
-            //this._clean();
-            this._update.call(this,this)
-            this._draw();
-            this._event();
-            }
+            this._clean.call(this,this);
+            this._update.call(this,this);
+            this._draw.call(this,this);
+            this._event.call(this,this);
         },
 
         run: function() {
-            this._begin();
+            this._begin.call(this,this);
 
             var self = this;
             this.intervalId = setInterval( function() {self._process.call(self)}, 1000/this.fps );
             if ( this.intervalId ){
                 console.log("Stage, run()");
-                console.log(this.intervalId);
             } else {
                 throw Error("Stage, can't run!");
             }

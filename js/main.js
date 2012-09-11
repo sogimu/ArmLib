@@ -1,113 +1,70 @@
 window.onload = function(){
 
-    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 50});
+    var stage = new CStage({container: 'container',width: '900',height: '300',fps: 50});
 
-    var rect1 = new CRect({x: 50,y: 50, width: 40, height: 40, stroke: '#bbb', fill: 'green', lineWidth: 0, name: 'rect1'});
-    var rect2 = new CRect({x: 50,y: 75,width: 30, height: 30, stroke: '#adw', lineWidth: 2, name: 'rect2'});
-    var rect3 = new CRect({x: 50,y: 50,width: 400, height: 200, stroke: '#abc', fill: '#add', lineWidth: 1, name: 'rect3'});
+    var rect1 = new CRect({x: 50,y: 50, width: 40, height: 40, stroke: '#bbb', fill: 'green', lineWidth: 0, name: '0'});
+    var rect2 = new CRect({x: 50,y: 50,width: 30, height: 30, stroke: '#adw', fill: 'red', lineWidth: 2, name: '1'});
+    var rect3 = new CRect({x: 50,y: 50,width: 50, height: 50, stroke: '#abc', fill: '#add', lineWidth: 1, name: '2'});
 
     var obj1 = new CObject({
-        collection: [new CCircle({x: 50,y: 50,radius: 30, stroke: '#adw', lineWidth: 1, name: 'circle1', fill: 'green'})/*, new CRect({x: 50,y: 50,width: 30, height: 30, stroke: '#adw', lineWidth: 1, name: 'rect2', fill: 'green'})*/],
+
+        collection: [ rect1, rect2, rect3],
         vars: {
             x: 10,
             y: 10,
-            i: -1,
-            j: 1
+            ind: [{i: -1,j: -1},{i: -1,j: -1},{i: -1,j: -1}]
         },
-        begin: function() {
+        begin: function(stage) {
             if(1*Math.random()>0.5){this.i = 1;} else {this.i = -1;}
             if(1*Math.random()>0.5){this.j = 1;} else {this.j = -1;}
+            for(var i in this.collection)
+            this.collection[i].x = stage.width * Math.random();
+            this.collection[i].y = stage.height * Math.random();
+            //this.collection[0].fill = 'rgb('+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+')';
+            //rect1.name = 0;
+            //var rect2 = rect1.clone();
+            //rect2.name = 1;
+            //var rect3 = rect1.clone();
+            //rect3.name = 2;
+
         },
         update: function(stage) {
+
             for(var i in this.collection) {
                 var x = this.collection[i].x;
                 var y = this.collection[i].y;
-
-                if(x <= 0) {this.i=1;}
-                if(y <= 0) {this.j=1;}
-                if(x >= stage.width-this.collection[i].radius/2) {this.i=-1;}
-                if(y >= stage.height-this.collection[i].radius/2) {this.j=-1;}
-                this.collection[i].x = x + this.i *(i+1)* 5 * Math.random();
-                this.collection[i].y = y + this.j *(i+1)* 5 * Math.random();
+                //console.log(this.i)
+                //console.log(this.j)
+                if(x <= 0) {this.ind[i].i=1;}
+                if(y <= 0) {this.ind[i].j=1;}
+                if(x >= stage.width-this.collection[i].width) {this.ind[i].i=-1;}
+                if(y >= stage.height-this.collection[i].height) {this.ind[i].j=-1;}
+                this.collection[i].x = x + this.ind[i].i * 2 * Math.random();
+                this.collection[i].y = y + this.ind[i].j * 2 * Math.random();
             }
 
         },
         event: {
             intersection: function(shape1, shape2) {
-                console.log(shape1.name+' x '+shape2.name);
+                console.log(shape1.name);
+                shape1.parent.ind[shape2.name].i*=-1;
+                shape1.parent.ind[shape2.name].j*=1;
+     //           shape1.x+=10*shape1.parent.ind[shape1.name].i;
+     //           shape1.y+=10*shape1.parent.ind[shape1.name].j;
+                shape2.parent.ind[shape1.name].i*=1;
+                shape2.parent.ind[shape1.name].j*=-1;
+     //           shape2.x+=5*shape2.parent.ind[shape2.name].i;
+     //           shape2.y+=5*shape2.parent.ind[shape2.name].j;
+
+                //shape1.fill = 'rgb('+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+')';
+                //shape2.fill = 'rgb('+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+','+Math.floor(250*Math.random())+')';
+                //console.log(shape1.name+' x '+shape2.name);
             },
-            mouse_move: function() {
-            }
         }
 
     });
 
-//    stage.add( rect3 );
-
-    var clone = function(arg,deep){
-        if(deep == 0){return arg};
-
-        var tmp = deep;
-        var o = function(){};
-
-        for(var i in arg)
-        {
-            if(!arg.hasOwnProperty(i))
-            {
-                if(typeof arg[i] != 'object'){
-                    o.prototype[i] = arg[i];
-                } else {
-                    o.prototype[i] = clone(arg[i], tmp--);
-                }
-            }
-        }
-        tmp = deep;
-        var obj = new o();
-
-        for(var i in arg)
-        {
-            if(arg.hasOwnProperty(i))
-            {
-                if(typeof arg[i] != 'object'){
-                    obj[i] = arg[i];
-                } else {
-                    obj[i] = clone(arg[i], tmp--);
-                }
-
-            }
-        }
-        return obj;
-    }
-
-    //console.log( obj1);
-    //console.log( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
-    stage.add( clone(obj1, 10));
+    stage.add( obj1 );
     stage.run();
-    //stage.stop();
-
-    //console.log(o)
 
     }
