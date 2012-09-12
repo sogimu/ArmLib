@@ -45,7 +45,7 @@ var CRect = Class({
             this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);
         },
         _draw: function() {
-            this._clean()
+            //this._clean()
             this.context.beginPath();
             this.context.rect(this.x, this.y, this.width, this.height);
             this.context.fillStyle = this.fill;

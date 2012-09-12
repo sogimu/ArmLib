@@ -97,9 +97,23 @@ var CStage = Class({
             this._draw.call(this,this);
             this._event.call(this,this);
         },
+        _onkeydown: function(e) {
+            console.log(this)
+            for(var i in this.collection)
+            {
+                var obj = this.collection[i];
+                //if(typeof obj._onkeydown == 'function')
+                {
+                    console.log('erf');
+                    obj._onkeydown.call(obj, stage, e);
+                }
+            }
+        },
 
         run: function() {
             this._begin.call(this,this);
+
+            //document.onkeydown = function(e) {};
 
             var self = this;
             this.intervalId = setInterval( function() {self._process.call(self)}, 1000/this.fps );

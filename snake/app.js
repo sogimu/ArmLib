@@ -1,21 +1,29 @@
 window.onload = function(){
 
-    var stage = new CStage({container: 'container',width: '1000',height: '500',fps: 5});
+    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 5});
 
     var game = new CObject({
-        collection: [ apple, snake/*, monitor*/ ],
+        collection: [ apple, snake, monitor ],
         vars: {
             name: 'game'
         },
         events: {
             intersection: function(shape1, shape2, stage) {
-                console.log('game! intersect');
-                apple.newPoint(stage);
-                snake.addSegment(stage);
+                if((shape1.name == 'snake' && shape2.name == 'apple') || (shape2.name == 'snake' && shape1.name == 'apple')) {
+                    apple.newPoint(stage);
+                    snake.addSegment(stage);
+                }
+                //console.log(shape1.name);
+                //console.log(shape2.name);
             }
         }
     });
 
+    var image = new Image();
+    image.src = 'image/gras.jpg';
+    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, stroke: '#aaa', image: image});
+
+    stage.add( gras );
     stage.add( game );
 
     stage.run();

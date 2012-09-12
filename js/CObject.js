@@ -28,7 +28,7 @@ var CObject = Class({
                 for (var i in O.events)
                 {
                     if(typeof O.events[i] == 'function') {
-                        this[m] = O.events[m];
+                        this[i] = O.events[i];
                     }
                 }
             };
@@ -215,6 +215,21 @@ var CObject = Class({
                 if(typeof this.collection[i]._event == 'function')
                 {
                     this.collection[i]._event.call(this.collection[i], stage);
+                }
+            }
+
+        },
+        _onkeydown: function(stage, e) {
+            if(typeof this.onkeydown == 'function'){
+                this.onkeydown.call(obj, stage, e);
+            }
+
+            for(var i in this.collection)
+            {
+                var obj = this.collection[i];
+                if(typeof obj._onkeydown == 'function')
+                {
+                    obj._onkeydown.call(obj, stage, e);
                 }
             }
 
