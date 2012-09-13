@@ -1,9 +1,9 @@
 window.onload = function(){
 
-    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 5});
+    var stage = new CStage({container: 'container',width: '1000',height: '500',fps: 15});
 
     var game = new CObject({
-        collection: [ apple, snake, monitor ],
+        collection: [ apple, snake ],
         vars: {
             name: 'game'
         },
@@ -13,8 +13,6 @@ window.onload = function(){
                     apple.newPoint(stage);
                     snake.addSegment(stage);
                 }
-                //console.log(shape1.name);
-                //console.log(shape2.name);
             }
         }
     });

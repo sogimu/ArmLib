@@ -8,9 +8,9 @@ var snake = new CObject({
     vars: {
         x: 15,
         y: 25,
-        angel: 1,
-        angInc: 7,
-        movInc: 20,
+        angel: 0,
+        angInc: 10,
+        movInc: 15,
         spX: 10,
         spY: 0,
         queue: [],
