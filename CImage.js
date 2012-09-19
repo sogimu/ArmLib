@@ -46,12 +46,11 @@ CImage = Class({
         },
         _draw: function() {
             this.context.save();
-            this.context.translate(this.x + this.image.width / 2, this.y + this.image.height / 2);
+            this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
             this.context.rotate(this.angle);
-            this.context.translate(-(this.x + this.image.width / 2), -(this.y + this.image.height / 2));
+            this.context.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
             this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
             this.context.restore();
-            //this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
 });
