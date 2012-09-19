@@ -1,0 +1,1 @@
+java -jar compiler.jar --js oop.js --js CSuperObj.js --js CObject.js --js CShape.js --js CRect.js --js CCircle.js --js CImage.js --js CStage.js --js_output_file arm-0.4.0.js
