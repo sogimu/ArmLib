@@ -2,43 +2,42 @@ var CCircle = Class({
     base: CShape,
     construct: function(O){
         if(typeof(O) != 'undefined') {
-            this.x = O.x || this.x;
-            this.y = O.y || this.y;
-            this.stroke = O.stroke || this.stroke;
-            this.fill = O.fill || this.fill;
-            this.context = O.context || this.context;
-            this.name = O.name || this.name;
+            if(typeof O.x == 'number') {this.x = O.x;}
+            if(typeof O.y == 'number') {this.y = O.y;}
+            if(typeof O.stroke == 'number') {this.x = O.stroke;}
+            if(typeof O.fill == 'number') {this.fill = O.fill;}
+            if(typeof O.name != 'undefined') {this.name = O.name;}
+            if(typeof O.context != 'undefined') {this.x = O.stroke;}
             if(typeof(O.radius) != 'undefined' && O.radius > 0) {this.radius = O.radius}
-            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.setLineWidth(O.lineWidth);}
+            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.lineWidth = O.lineWidth;}
         }
     },
     vars: {
         radius: 100,
         fill: 'gray',
-        event: {},
         shapeType: 'circle'
     },
 
     methods:{
-        setRidius: function(O) {
-            this.radius = O;
+        set radius(O) {
+            this._radius = O;
         },
-        getRidius: function() {
-            return this.radius;
+        get radius() {
+            return this._radius;
         },
-        setFill: function(O) {
-            this.fill = O;
+        set fill(O) {
+            this._fill = O;
         },
-        getFill: function() {
-            return fill;
+        get fill() {
+            return this._fill;
         },
-        _clean: function() {
+
+        _clean: function(stage) {
             var lineWidth = this.lineWidth;
             this.context.clearRect(this.x-this.radius-this.lineWidth,this.y-this.radius-this.lineWidth,this.x+this.radius+this.lineWidth,this.y+this.radius+this.lineWidth);
         },
-        _draw: function() {
-            //this._clean()
 
+        _draw: function(stage) {
             this.context.beginPath();
             this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
             this.context.closePath();

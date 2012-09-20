@@ -4,55 +4,63 @@ var CRect = Class({
         if(typeof(O) != 'undefined') {
             this.x = O.x || this.x;
             this.y = O.y || this.y;
+            this.angel = O.angel || this.angel;
             this.stroke = O.stroke || this.stroke;
             this.fill = O.fill || this.fill;
             this.context = O.context || this.context;
             this.name = O.name || this.name;
-            if(typeof(O.width) != 'undefined' && O.width > 0) {this.setWidth(O.width)}
-            if(typeof(O.height) != 'undefined' && O.height > 0) {this.setHeight(O.height)}
-            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.setLineWidth(O.lineWidth);}
+            if(typeof(O.width) != 'undefined' && O.width > 0) {this.width = O.width;}
+            if(typeof(O.height) != 'undefined' && O.height > 0) {this.height = O.height;}
+            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.lineWidth = O.lineWidth;}
         }
     },
     vars: {
         width: 100,
         height: 100,
         fill: 'gray',
-        event: {},
         shapeType: 'rect'
     },
 
     methods:{
-        setWidth: function(O) {
-            this.width = O;
+        set width(O) {
+            this._width = O;
         },
-        setHeight: function(O) {
-            this.height = O;
+        get width() {
+            return this._width;
         },
-        getWidth: function() {
-            return this.width;
+        set height(O) {
+            this._height = O;
         },
-        getHeight: function() {
-            return this.height;
+        get height() {
+            return this._height;
         },
-        setFill: function(O) {
-            this.fill = O;
+        set fill(O) {
+            this._fill = O;
         },
-        getFill: function() {
-            return fill;
+        get fill() {
+            return this._fill;
         },
-        _clean: function() {
-            var lineWidth = this.lineWidth;
-            this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);
+        _clean: function(stage) {
+            //var lineWidth = this.lineWidth;
+            //this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);
         },
-        _draw: function() {
-            //this._clean()
+        _draw: function(stage) {
+            this.context.save();
+            this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+            this.context.rotate( this.angel*Math.PI/180 );
+            this.context.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
+
             this.context.beginPath();
             this.context.rect(this.x, this.y, this.width, this.height);
+            this.context.closePath();
             this.context.fillStyle = this.fill;
-            this.context.fill();
             this.context.lineWidth = this.lineWidth;
             this.context.strokeStyle = this.stroke;
+
+            this.context.fill();
             this.context.stroke();
+            this.context.restore();
+
         }
     }
 });

@@ -1,30 +1,36 @@
 window.onload = function(){
 
-    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 9});
+    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 15});
 
-    var game = new CObject({
-        collection: [ apple, snake ],
+    var image = new Image();
+    image.src = 'image/apple.png';
+    var apple = new CImage({x: 0,y: 0, width: 50, height: 60, angel: 0, image: image});
+    var rect = new CRect({x: 100,y: 0, width: 100, height: 100, angel: 0});
+    var circle = new CCircle({x: 100,y: 100, radius: 50});
+
+    var obj1 = new CObject({
+        collection: [ apple, rect ],
         vars: {
-            name: 'game'
+            name: 'obj1',
+            x: 10,
+            y: 10
         },
-        events: {
-            intersection: function(shape1, shape2, stage) {
-                if((shape1.name == 'snake' && shape2.name == 'apple') || (shape2.name == 'snake' && shape1.name == 'apple')) {
-                    apple.newPoint(stage);
-                    snake.addSegment(stage);
-                 }
-            }
+        update: function(stage) {
+            this.collection[0].x = this.x+=2;
+            this.collection[0].y = this.y+=1;
+            this.collection[1].x+=1;
+            this.collection[1].y+=2;
+            this.collection[1].angel+=2;
+            this.collection[0].angel+=2;
         }
     });
 
-    var image = new Image();
-    image.src = 'image/gras.jpg';
-    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, stroke: '#aaa', image: image});
-
-    stage.add( gras );
-    stage.add( game );
+    stage.add( obj1 );
 
     stage.run();
+
+
+    console.log()
 
 
     document.onkeydown = function(e) {
@@ -50,7 +56,8 @@ window.onload = function(){
                 snake.spY = snake.movInc * Math.sin(snake.angel/57.17);
                 break};
         }
-
     }
+
+
 
 }

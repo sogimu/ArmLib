@@ -1,4 +1,4 @@
-CSuperObj = Class({
+var CSuperObj = Class({
 
     construct: function(){
     },
@@ -8,23 +8,23 @@ CSuperObj = Class({
         y: 0
     },
     methods:{
-        setX: function(O) {
-            this.x = O;
+        set x(O) {
+            this._x = O;
         },
-        setY: function(O) {
-            this.y = O;
+        get x() {
+            return this._x;
         },
-        getX: function() {
-            return this.x;
+        set y(O) {
+            this._y = O;
         },
-        getY: function() {
-            return this.y;
+        get y() {
+            return this._y;
         },
-		setContext: function(O) {
-			this.context = O;
+		set context(O) {
+			this._context = O;
 		},
-		getContext: function() {
-			return this.context;
+		get context() {
+			return this._context;
 		},
         clone: function(){
 
@@ -37,12 +37,8 @@ CSuperObj = Class({
                     var flag = false;
                     for(var i in history){
                         if(history[i] == obj) {
-                            flag = true;
-                            break;
+                            return obj;
                         }
-                    }
-                    if(flag) {
-                        return obj;
                     }
                     history.push(obj);
 
@@ -54,12 +50,20 @@ CSuperObj = Class({
                                 if(key == 'context') {
                                     temp[key] = obj[key];
                                 } else {
-                                    temp[key] = clone(obj[key]);
+                                    var getter = obj.__lookupGetter__(key),
+                                        setter = obj.__lookupSetter__(key);
+
+                                    if ( getter || setter ) {
+                                        if ( getter ) temp.prototype.__defineGetter__(key, getter);
+                                        if ( setter ) temp.prototype.__defineSetter__(key, setter);
+                                    } else {
+                                        temp[key] = clone(obj[key]);
+                                    }
                                 }
                             }
                         }
                     } else {
-                        var temp = obj;
+                        return obj;
                     }
 
                     return temp;

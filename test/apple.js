@@ -28,3 +28,5 @@ var apple = new CObject({
         this.collection[1].y = this.y;
     }
 });
+
+

@@ -28,10 +28,10 @@ var CStage = Class({
     methods:{
         add: function(O) {
             if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
-                O.setContext( this.context );
+                O.context = this.context;
                 this.collection.push(O);
             } else {
-                throw Error('Stage: add() -> Incorrect object!');
+                throw Error('Stage: add(O) -> O is not shape or object!');
             }
         },
         remove: function(O){
@@ -41,9 +41,12 @@ var CStage = Class({
                         delete this.collection[i];
                     }
                 }
+            } else {
+                throw Error('Stage: remove(O) -> O is not shape or object!');
             }
         },
         _draw: function(stage) {
+
             for(var i in this.collection)
             {
                 var obj = this.collection[i];
@@ -97,23 +100,9 @@ var CStage = Class({
             this._draw.call(this,this);
             this._event.call(this,this);
         },
-        _onkeydown: function(e) {
-            console.log(this)
-            for(var i in this.collection)
-            {
-                var obj = this.collection[i];
-                //if(typeof obj._onkeydown == 'function')
-                {
-                    console.log('erf');
-                    obj._onkeydown.call(obj, stage, e);
-                }
-            }
-        },
 
         run: function() {
             this._begin.call(this,this);
-
-            //document.onkeydown = function(e) {};
 
             var self = this;
             this.intervalId = setInterval( function() {self._process.call(self)}, 1000/this.fps );
@@ -131,6 +120,12 @@ var CStage = Class({
             catch(e) {
                 console.log(e);
             }
+        },
+        set collection(O) {
+            this._collection = O;
+        },
+        get collection() {
+            return this._collection;
         }
     }
 });

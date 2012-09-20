@@ -42,52 +42,69 @@ var CObject = Class({
     methods:{
         add: function(O) {
             if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
-                O.setContext( this.context );
+                O.context = this.context;
                 this.collection.push(O);
             } else {
                 throw Error('Object: add() -> Incorrect object!');
             }
         },
         remove: function(O) {
-            if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
-                for(var i in this.collection){
-                    if(this.collection[i] == O){
-                        delete this.collection[i];
+            try{
+                if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
+                    for(var i in this.collection){
+                        if(this.collection[i] == O){
+                            delete this.collection[i];
+                        }
                     }
+                } else {
+                    throw Error('Object: remove(O) -> O is not shape or object!');
                 }
             }
+            catch(e){
+                console.log(e);
+            }
         },
-        removeLast: function() {
-            return this.collection.pop();
-        },
-        setCollection: function(O) {
-            //try{
+
+        set collection(O) {
+            try{
                 if(typeof O == 'object') {
+                    this._collection = O;
                     for(var i in O){
                         if(O[i].type == 'shape' || O[i].type == 'object') {
                             this.add( O[i] );
-                        }/* else {
-                            throw Error('Object: setCollection() -> unligal object!')
-                        }*/
+                        } else {
+                            throw Error('Object: set collection(O) -> O is not shape or object!')
+                        }
                     }
-                }/* else {
-                    throw Error('Object: setCollection() -> unligal object!');
-                }*/
-            /*}
+                } else {
+                    throw Error('Object: set collection(O) -> is not js\'object!');
+                }
+            }
             catch(e){
-                //console.log(e);
-            }*/
-            //this.collection = O;
-        },
-        getCollection: function() {
-            return this.collection;
-        },
-        setContext: function(O) {
-            this.context = O;
-            for(var i in this.collection) {
-                this.collection[i].setContext(O);
+                console.log(e);
             }
         },
+        get collection() {
+            return this._collection;
+        },
+
+        set context(O) {
+            this._context = O;
+            for(var i in this.collection) {
+                this.collection[i].context = O;
+            }
+        },
+        get context() {
+            return this._context;
+        },
+
+        set type(O) {
+            this._type = O;
+        },
+        get type() {
+            return this._type;
+        },
+
 
         _draw: function(stage) {
             for(var i in this.collection) {
@@ -118,7 +135,7 @@ var CObject = Class({
 
             for(var i in this.collection)
             {
-                if(typeof this.collection[i]._begin == 'function') {
+                if(typeof this.collection[i]._begin == 'function' && this.collection[i] != this ) {
                     this.collection[i]._begin.call(this.collection[i],stage);
                 }
             }
@@ -237,3 +254,6 @@ var CObject = Class({
 
     }
 });
+
+
+

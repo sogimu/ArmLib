@@ -21,8 +21,15 @@ function Class(params)
         {
             if (m == 'prototype')
                 continue;
+            var getter = superClass.__lookupGetter__(m),
+                setter = superClass.__lookupSetter__(m);
 
-            newClass[m] = superClass[m];
+            if ( getter || setter ) {
+                if ( getter ) newClass.__defineGetter__(m, getter);
+                if ( setter ) newClass.__defineSetter__(m, setter);
+            } else {
+                newClass[m] = superClass[m];
+            }
         }
 
         // base class accessor
@@ -80,14 +87,22 @@ function Class(params)
     var methods = params.methods || {};
     for (var m in methods)
     {
-        newClass.prototype[m] = methods[m];
+        var getter = methods.__lookupGetter__(m),
+            setter = methods.__lookupSetter__(m);
+
+        if ( getter || setter ) {
+            if ( getter ) newClass.prototype.__defineGetter__(m, getter);
+            if ( setter ) newClass.prototype.__defineSetter__(m, setter);
+        } else {
+            newClass.prototype[m] = methods[m];
+        }
     }
 
     // appending new and overriding instance methods (by sogimu)
     var vars = params.vars || {};
     for (var m in vars)
     {
-        newClass.prototype[m] = vars[m];
+        newClass.prototype['_'+m] = vars[m];
     }
 
 

@@ -6,21 +6,42 @@ CShape = Class({
         parent: 'no',
         stroke: 'black',
         lineWidth: 1,
+        angel: 0,
         type: 'shape'
     },
 
     methods:{
-        setStroke: function(O) {
-            this.stroke = O;
+        set stroke(O) {
+            this._stroke = O;
         },
-        getStroke: function() {
-            return this.stroke;
+        get stroke() {
+            return this._stroke;
         },
-        setLineWidth: function(O) {
-            this.lineWidth = O;
+        set lineWidth(O) {
+            this._lineWidth = O;
         },
-        getLineWidth: function() {
-            return this.lineWidth;
+        get lineWidth() {
+            return this._lineWidth;
+        },
+        set parent(O) {
+            this._parent = O;
+        },
+        get parent() {
+            return this._parent;
+        },
+        set type(O) {
+            this._type = O;
+        },
+        get type() {
+            return this._type;
+        },
+        set angel(O) {
+            var radians = O*Math.PI/180;
+            this._angel = radians;
+        },
+        get angel() {
+            var degree = this._angel*180/Math.PI;
+            return degree;
         }
     }
 });
