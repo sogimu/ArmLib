@@ -14,11 +14,12 @@ var CStage = Class({
         } else {
             throw Error('The container is not found! Choose right name of container, please!');
         }
-
+        this._init();
     },
     vars: {
         collection: [],
         context: {},
+        events: {},
         fps: 10,
         intervalId: null,
         width: 500,
@@ -26,6 +27,7 @@ var CStage = Class({
     },
 
     methods:{
+
         add: function(O) {
             if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
                 O.context = this.context;
@@ -79,6 +81,7 @@ var CStage = Class({
             }
 
         },
+
         _begin: function(stage) {
             for(var i in this.collection)
             {
@@ -112,6 +115,7 @@ var CStage = Class({
                 throw Error("Stage, can't run!");
             }
         },
+
         stop: function() {
             try {
                 clearInterval( this.intervalId )
@@ -121,6 +125,26 @@ var CStage = Class({
                 console.log(e);
             }
         },
+
+        _init: function() {
+            var self = this;
+            document.onkeydown = function(e) {
+                self._onkeydown(e);
+            }
+        },
+
+        _onkeydown: function(e) {
+            for(var i in this.collection)
+            {
+                var obj = this.collection[i];
+                if(typeof obj._onkeydown == 'function')
+                {
+                    obj._onkeydown.call(obj, e, this);
+                }
+            }
+
+        },
+
         set collection(O) {
             this._collection = O;
         },

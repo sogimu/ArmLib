@@ -84,8 +84,32 @@ var snake = new CObject({
                 alert('Проигрыш! Вы себя покусали :)')
             }
         },
-        onkeydown: function(stage, e) {
-            console.log(e);
+        onkeydown: function(e, stage) {
+            console.log(e.keyCode);
+            var code = e.keyCode;
+            console.log(this)
+            switch( code ){
+                case 40: {
+                    if(this.angel + 15 <= 360){
+                        this.angel+=this.angInc;
+                    } else {
+                        this.angel = 0;
+                    }
+                    this.spX = this.movInc * Math.cos(this.angel/57.17);
+                    this.spY = this.movInc * Math.sin(this.angel/57.17);
+                    break};
+
+                case 38: {
+                    if(this.angel - 15 >= 0){
+                        this.angel-=this.angInc;
+                    } else {
+                        this.angel = 360;
+                    }
+                    this.spX = this.movInc * Math.cos(this.angel/57.17);
+                    this.spY = this.movInc * Math.sin(this.angel/57.17);
+                    break};
+            }
+
         }
 
     }

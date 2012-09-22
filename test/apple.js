@@ -2,7 +2,7 @@ var image = new Image();
 image.src = 'image/apple.png';
 
 var apple = new CObject({
-    collection: [ new CCircle({x: 25,y: 25, radius: 15}), new CImage({x: 25,y: 25, width: 40, height: 48, angle: 1, image: image}) ],
+    collection: [ new CCircle({x: 25,y: 25, radius: 15}), new CImage({x: 25,y: 25, width: 40, height: 48, angel: 15, image: image}) ],
     vars: {
         x: 25,
         y: 25,

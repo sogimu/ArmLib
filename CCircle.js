@@ -4,8 +4,8 @@ var CCircle = Class({
         if(typeof(O) != 'undefined') {
             if(typeof O.x == 'number') {this.x = O.x;}
             if(typeof O.y == 'number') {this.y = O.y;}
-            if(typeof O.stroke == 'number') {this.x = O.stroke;}
-            if(typeof O.fill == 'number') {this.fill = O.fill;}
+            if(typeof O.stroke == 'string') {this.x = O.stroke;}
+            if(typeof O.fill == 'string') {this.fill = O.fill;}
             if(typeof O.name != 'undefined') {this.name = O.name;}
             if(typeof O.context != 'undefined') {this.x = O.stroke;}
             if(typeof(O.radius) != 'undefined' && O.radius > 0) {this.radius = O.radius}

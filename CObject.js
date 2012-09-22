@@ -236,9 +236,9 @@ var CObject = Class({
             }
 
         },
-        _onkeydown: function(stage, e) {
+        _onkeydown: function(e, stage) {
             if(typeof this.onkeydown == 'function'){
-                this.onkeydown.call(obj, stage, e);
+                this.onkeydown.call(this, e, stage);
             }
 
             for(var i in this.collection)
@@ -246,7 +246,7 @@ var CObject = Class({
                 var obj = this.collection[i];
                 if(typeof obj._onkeydown == 'function')
                 {
-                    obj._onkeydown.call(obj, stage, e);
+                    obj._onkeydown.call(obj, e, stage);
                 }
             }
 

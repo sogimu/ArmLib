@@ -47,7 +47,7 @@ var CSuperObj = Class({
                         for(var key in obj)
                         {
                             if(obj.hasOwnProperty(key)) {
-                                if(key == 'context') {
+                                if(key == '_context') {
                                     temp[key] = obj[key];
                                 } else {
                                     var getter = obj.__lookupGetter__(key),
