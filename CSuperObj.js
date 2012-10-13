@@ -9,16 +9,16 @@ var CSuperObj = Class({
     },
     methods:{
         set x(O) {
-            this._x = O;
+            this._x = TNumber(O);
         },
         get x() {
-            return this._x;
+            return TNumber(this._x);
         },
         set y(O) {
-            this._y = O;
+            this._y = TNumber(O);
         },
         get y() {
-            return this._y;
+            return TNumber(this._y);
         },
 		set context(O) {
 			this._context = O;
@@ -66,6 +66,7 @@ var CSuperObj = Class({
                         return obj;
                     }
 
+                    delete temp.name;
                     return temp;
                 }
             }

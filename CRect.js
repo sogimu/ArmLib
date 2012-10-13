@@ -22,24 +22,6 @@ var CRect = Class({
     },
 
     methods:{
-        set width(O) {
-            this._width = O;
-        },
-        get width() {
-            return this._width;
-        },
-        set height(O) {
-            this._height = O;
-        },
-        get height() {
-            return this._height;
-        },
-        set fill(O) {
-            this._fill = O;
-        },
-        get fill() {
-            return this._fill;
-        },
         _clean: function(stage) {
             //var lineWidth = this.lineWidth;
             //this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);

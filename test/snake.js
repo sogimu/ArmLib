@@ -85,9 +85,7 @@ var snake = new CObject({
             }
         },
         onkeydown: function(e, stage) {
-            console.log(e.keyCode);
             var code = e.keyCode;
-            console.log(this)
             switch( code ){
                 case 40: {
                     if(this.angel + 15 <= 360){

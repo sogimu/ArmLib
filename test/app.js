@@ -1,49 +1,90 @@
-window.onload = function(){
+window.onload = function(O){
 
-    var stage = new CStage({container: 'container',width: '500',height: '500',fps: 5});
+    stage = new CStage({container: 'container',width: 500,height: 500, fps: 60});
 
     var image1 = new Image();
-    image1.src = 'image/apple.png';
+    image1.src = 'image/timber.png';
+
+	var timber = new CObject({
+        collection: [ new CImage({x: 0, y: 0, width: 400, height: 50, angel: 0, image: image1, name: 'timber'}) ],
+        skeleton: { segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
+                      center: {x:75, y:15} },
+        vars: {
+            x: 23,
+            y: 50,
+			width: 150,
+            height: 30,
+            angel: 0,
+            inc: 0.1
+        },
+        begin: function(stage) {
+            this.x = 23;
+            this.y = 23;
+			this.timber.x = this.x;
+            this.timber.y = this.y;
+            this.timber.width = this.width;
+            this.timber.height = this.height;
+            this.timber.angel = this.angel;
+
+        },
+        update: function(stage) {
+            this.timber.x = this.x;
+            if( this.skeleton._center.x > stage.width) {
+                this.inc *= -1;
+            }
+            if( this.skeleton._center.x < 0 ) {
+                this.inc *= -1;
+            }
+
+
+            this.skeleton._center.x+= this.inc;
+            this.timber.center = this.skeleton.center;
+            this.timber.angel = this.angel+=10;
+            if( this.timber.y < (stage.height-this.timber.height)/2 ) {
+                this.timber.y = this.y++;
+            }
+
+        },
+		events: {
+			onkeydown: function(e, stage) {
+				var code = e.keyCode;
+				switch( code ){
+					case 39: {
+                        if( this.x < (stage.width - this.width)) {
+                            this.x += 5;
+                        }
+						break};
+
+					case 37: {
+                        if( this.x > 0) {
+						    this.x -= 5;
+                        }
+						break};
+				}
+			}
+		}
+
+		
+    });
 
     var image2 = new Image();
     image2.src = 'image/gras.jpg';
 
-    //var apple = new CImage({x: 0,y: 0, width: 50, height: 60, angel: 0, image: image1});
-    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, angel: 0, image: image2});
-    var rect = new CRect({x: 100,y: 0, width: 100, height: 100, angel: 0});
-    var circle = new CCircle({x: 100,y: 100, radius: 50});
+    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, angel: 0, center: {x:50,y:50}, image: image2});
 
-    var game = new CObject({
-        collection: [ gras, apple, snake ],
-        vars: {
-            name: 'game'
-        },
-        events: {
-            intersection: function(shape1, shape2, stage) {
-                console.log(shape1);
-                if((shape1.name == 'snake' && shape2.name == 'apple') || (shape2.name == 'snake' && shape1.name == 'apple')) {
-                    apple.newPoint(stage);
-                    snake.addSegment(stage);
-                }
-            }
-        }
-    });
-
-
-
-
-
-
-
-    var head = new CCircle({x: 25,y: 25, radius: 15, fill: 'green'});
-    var head1 = head.clone();
-    head1.x = 232;
-
-
-    stage.add( head );
-    stage.add( head1 );
-    stage.add( game )
+    stage.add( gras );
+    stage.add( new CLine({x0: 24,y0: 34, x1:54,y1:56}) );
+    stage.add( timber );
 
     stage.run();
+    stage.info();
 
+    var wrega = new CSkeleton({ segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
+        center: {x:75, y:15} });
+    //console.log(wrega);
 }
+
+
+
+
+

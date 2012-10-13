@@ -19,19 +19,6 @@ var CCircle = Class({
     },
 
     methods:{
-        set radius(O) {
-            this._radius = O;
-        },
-        get radius() {
-            return this._radius;
-        },
-        set fill(O) {
-            this._fill = O;
-        },
-        get fill() {
-            return this._fill;
-        },
-
         _clean: function(stage) {
             var lineWidth = this.lineWidth;
             this.context.clearRect(this.x-this.radius-this.lineWidth,this.y-this.radius-this.lineWidth,this.x+this.radius+this.lineWidth,this.y+this.radius+this.lineWidth);
