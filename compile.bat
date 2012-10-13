@@ -1,1 +1,1 @@
-java -jar compiler.jar --js description.js --js gizmoJs.js --js CSuperObj.js --js CObject.js --js CShape.js --js CRect.js --js CCircle.js --js CImage.js --js CStage.js --language_in ECMASCRIPT5 --js_output_file arm-0.4.2.js
+java -jar C:\XAMPP\htdocs\compiler.jar --js description.js --js CSkeleton.js --js CSuperObj.js --js CObject.js --js CShape.js --js CRect.js --js CCircle.js --js CImage.js --js CLine.js --js CStage.js --language_in ECMASCRIPT5 --js_output_file arm-0.5.0.js
