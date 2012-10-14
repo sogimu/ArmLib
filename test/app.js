@@ -1,14 +1,22 @@
 window.onload = function(O){
 
-    stage = new CStage({container: 'container',width: 500,height: 500, fps: 60});
+	 stats = new Stats();
+		stats.setMode( 0 );
+		document.body.appendChild( stats.domElement );
+    stage = new CStage({container: 'container',width: 500,height: 500, fps: 1000});
 
     var image1 = new Image();
     image1.src = 'image/timber.png';
 
 	var timber = new CObject({
+        /*backbone: new CBackbone({
+            view: [ new CImage({x: 0, y: 0, width: 400, height: 50, angel: 0, image: image1, name: 'timber'}) ],
+            bones: { segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
+                center: {x:75, y:15} }
+        }),*/
         collection: [ new CImage({x: 0, y: 0, width: 400, height: 50, angel: 0, image: image1, name: 'timber'}) ],
-        skeleton: { segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
-                      center: {x:75, y:15} },
+        skeleton: new CSkeleton({ segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
+                      center: {x:75, y:15} }),
         vars: {
             x: 23,
             y: 50,
@@ -37,7 +45,7 @@ window.onload = function(O){
             }
 
 
-            this.skeleton._center.x+= this.inc;
+            this.skeleton.nativeCenter.x+= this.inc;
             this.timber.center = this.skeleton.center;
             this.timber.angel = this.angel+=10;
             if( this.timber.y < (stage.height-this.timber.height)/2 ) {
@@ -78,10 +86,12 @@ window.onload = function(O){
 
     stage.run();
     stage.info();
+	
+
 
     var wrega = new CSkeleton({ segments: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0}],
         center: {x:75, y:15} });
-    //console.log(wrega);
+    console.log(wrega);
 }
 
 

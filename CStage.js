@@ -151,12 +151,14 @@ var CStage = Class({
         },
 
         _process: function() {
+			stats.begin();
             this._clean.call(this,this);
             this._updateSkeleton.call(this,this);
             this._update.call(this,this);
             this._draw.call(this,this);
             this._info.call(this,this);
             this._event.call(this,this);
+			stats.end();
         },
 
         run: function() {

@@ -204,7 +204,7 @@ var gizmoJs = gizmoJs || {};
         {
             newClass.prototype['_'+m] = vars[m];
 
-            getter = function(O) {
+            var getter = function(O) {
                 var key = '_'+m;
                 var value = vars[m];
                 switch( type( value ) ) {
@@ -242,7 +242,7 @@ var gizmoJs = gizmoJs || {};
                 }
             }(m);
 
-            setter = function(O) {
+            var setter = function(O) {
                 var key = '_'+m;
                 var value = vars[m];
                 switch( type( value ) ) {
