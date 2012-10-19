@@ -4,15 +4,15 @@ window.onload = function(O){
 		stats.setMode( 0 );
 		document.body.appendChild( stats.domElement );
 
-    stage = new CStage({container: 'container',width: 500,height: 500, fps: 10});
+    stage = new CStage({container: 'container',width: 500,height: 500, fps: 1000});
 
 	var timber = new CObject({
-        collection: [ new CImage({x: 35,y: 43,width: 400, height: 50, angel: 0 , src: 'image/thing.png'}),
-                      new CImage({width: 120, height: 30, angel: 0, src: 'image/thing.png'})
+        collection: [ new CImage({x: 23,width: 200, height: 50, angel: 45, src: 'image/thing.png'}),
+                      new CImage({y: 214,width: 120, height: 30, angel: 34, src: 'image/timber.png'})
         ],
         skeleton: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0} ],
-        center: {x: 10, y: 10},
-        rotateCenter: {x: 50, y: 50},
+        center: {x: 200, y: 200},
+        rotateCenter: {x: 50, y: 25},
         angel: 0,
 
         vars: {
@@ -24,9 +24,7 @@ window.onload = function(O){
 
         },
         update: function(stage) {
-            this.angel+=Math.random() * 100;
-            this.x = Math.random() * stage.width;
-            this.y = Math.random() * stage.height;
+            this.angel+=1;
         },
 		events: {
 			onkeydown: function(e, stage) {

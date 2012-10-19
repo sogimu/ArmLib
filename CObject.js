@@ -7,8 +7,8 @@ var CObject = Class({
             if( isTPoint(O.center) ) {
                 this.x = O.center.x;
                 this.y = O.center.y;
-                this.globalCenter = O.center;
-                this.localCenter = O.center;
+                this.globalCenter = { x: O.center.x, y: O.center.y };
+                this.localCenter = { x: O.center.x, y: O.center.y };
 
             }
 
@@ -229,6 +229,7 @@ var CObject = Class({
                 this.globalCenter = {x: this.x, y: this.y};
 
                 this.globalAngel = this.angel;
+
                 this.rotateCenter = { x: this.localRotateCenter.x + this.x, y: this.localRotateCenter.y + this.y};
 
                 obj.x = this.x + obj.localCenter.x;

@@ -18,9 +18,10 @@ var CSkeleton = Class({
     vars: {
         segments: [],
         nativeSegments: [],
+        functions: [],
         center: {x:0,y:0},
         rotateCenter: {x:0,y:0},
-        functions: []
+
     },
 
     methods:{
@@ -79,11 +80,6 @@ var CSkeleton = Class({
         },
         _rotate: function(O) {
 
-        },
-        _update: function() {
-            this._rotate(this.angel);
-            this._translateTo({x: this.x, y: this.y});
-            this._setFunction();
         }
     }
 });

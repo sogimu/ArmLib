@@ -9,6 +9,7 @@ var CSuperObj = Class({
         y: 0,
         globalCenter: { x:0,y:0 },
         localCenter: { x:0,y:0 },
+        center: { x:0,y:0 },
 
         angel: 0,
         globalAngel: 0,
