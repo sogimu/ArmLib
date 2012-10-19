@@ -4,20 +4,37 @@ CImage = Class({
         if(typeof(O) != 'undefined') {
             this.x = O.x || this.x;
             this.y = O.y || this.y;
-            this.angel = O.angel || this.angel;
-            this.center = O.center || this.center;
-            this.stroke = O.stroke || this.stroke;
+            this.localCenter = {x: this.x, y: this.y};
+            this.globalCenter = {x: this.x, y: this.y};
+
+            this.localAngel = O.angel || this.localAngel;
+            this.globalAngel = this.localAngel;
+
+            this.rotateCenter = O.rotateCenter || this.rotateCenter;
             this.image = O.image || this.image;
+            if( isSet(O.src) && isTString(O.src) ) {
+            (function(O,src) {
+                var self = O;
+                var image = new Image();
+                image.src = src;
+                image.onload = function() {
+                    self.image = image;
+                    self.onload = true;
+                }
+            })(this, O.src);
+
+            }
             this.context = O.context || this.context;
             this.name = O.name || this.name;
-            if(typeof(O.width) != 'undefined' && O.width > 0) {this.width = O.width;}
-            if(typeof(O.height) != 'undefined' && O.height > 0) {this.height = O.height;}
-            if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.lineWidth = O.lineWidth;}
+            this.width = O.width;
+            this.height = O.height;
         }
     },
     vars: {
         width: 100,
         height: 100,
+        image: new Image(),
+        onload: false,
         shapeType: 'image'
     },
 
@@ -28,12 +45,14 @@ CImage = Class({
         },
 
         _draw: function(stage) {
-            this.context.save();
-            this.context.translate(this.center.x, this.center.y);
-            this.context.rotate(this.angel*Math.PI/180);
-            this.context.translate(-(this.center.x), -(this.center.y));
-            this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
-            this.context.restore();
+            if(this.onload == true) {
+                this.context.save();
+                this.context.translate(this.rotateCenter.x, this.rotateCenter.y);
+                this.context.rotate(this.globalAngel*Math.PI/180);
+                this.context.translate(-(this.rotateCenter.x), -(this.rotateCenter.y));
+                this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
+                this.context.restore();
+            }
         }
     }
 });

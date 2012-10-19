@@ -4,28 +4,20 @@ var CSuperObj = Class({
     },
 	vars:{
 		context: null,
+
         x: 0,
-        y: 0
+        y: 0,
+        globalCenter: { x:0,y:0 },
+        localCenter: { x:0,y:0 },
+
+        angel: 0,
+        globalAngel: 0,
+        localAngel: 0,
+        rotateCenter: { x:0,y:0 },
+        localRotateCenter: { x:0,y:0 }
+
     },
     methods:{
-        set x(O) {
-            this._x = TNumber(O);
-        },
-        get x() {
-            return TNumber(this._x);
-        },
-        set y(O) {
-            this._y = TNumber(O);
-        },
-        get y() {
-            return TNumber(this._y);
-        },
-		set context(O) {
-			this._context = O;
-		},
-		get context() {
-			return this._context;
-		},
         clone: function(){
 
             var history = [];

@@ -15,90 +15,97 @@ var gizmoJs = gizmoJs || {};
         var clas = {}.toString.call(obj).slice(8, -1);
         return clas;
     },
-        Type.isSet = function(obj) {
-            if( obj != undefined && obj != null ) {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        Type.TNumberPos = function(O) {
-            if( this.isSet(O) && this.TNumber(O) >= 0 ) {
-                return O;
-            } else {
-                throw TypeError( O + " < 0 or is undefined"  );
-            }
-        },
-        Type.TString = function(O){
-            if( this.isSet(O) && this.is("String",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != String" );
-            }
-        },
-        Type.TNumber = function(O){
-            if( this.isSet(O) && this.is("Number",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Number" );
-            }
-        },
-        Type.TBool = function(O){
-            if( this.isSet(O) && this.is("Boolean",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Boolean" );
-            }
-        },
-        Type.TArray = function(O){
-            if( this.isSet(O) && this.is("Array",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Array" );
-            }
-        },
-        Type.TFunc = function(O){
-            if( this.isSet(O) && this.is("Function",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Function" );
-            }
-        },
-        Type.TDate = function(O){
-            if( this.isSet(O) && this.is("Date",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Date" );
-            }
-        },
-        Type.TRegExp = function(O){
-            if( this.isSet(O) && this.is("RegExp",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != RegExp" );
-            }
-        },
-        Type.TObject = function(O){
-            if( this.isSet(O) && this.is("Object",O) === true ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != Object"  );
-            }
-        },
-        Type.TArmObject = function(O){
-            if( this.isSet(O) && this.is("Object",O) === true && O.type == "object" ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != ArmObject"  );
-            }
-        },
-        Type.TArmShape = function(O){
-            if( this.isSet(O) && this.is("Object",O) === true && O.type == "shape" ) {
-                return O;
-            } else {
-                throw TypeError( this.type(O) + " != ArmShape"  );
-            }
+    Type.isSet = function(obj) {
+        if( obj != undefined && obj != null ) {
+            return true;
+        } else {
+            return false;
         }
+    },
+    Type.TNumberPos = function(O) {
+        if( this.isSet(O) && this.TNumber(O) >= 0 ) {
+            return O;
+        } else {
+            throw TypeError( O + " < 0 or is undefined"  );
+        }
+    },
+    Type.TString = function(O){
+        if( this.isSet(O) && this.is("String",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != String" );
+        }
+    },
+    Type.TNumber = function(O){
+        if( this.isSet(O) && this.is("Number",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Number" );
+        }
+    },
+    Type.TBool = function(O){
+        if( this.isSet(O) && this.is("Boolean",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Boolean" );
+        }
+    },
+    Type.TArray = function(O){
+        if( this.isSet(O) && this.is("Array",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Array" );
+        }
+    },
+    Type.TFunc = function(O){
+        if( this.isSet(O) && this.is("Function",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Function" );
+        }
+    },
+    Type.TDate = function(O){
+        if( this.isSet(O) && this.is("Date",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Date" );
+        }
+    },
+    Type.TRegExp = function(O){
+        if( this.isSet(O) && this.is("RegExp",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != RegExp" );
+        }
+    },
+    Type.TObject = function(O){
+        if( this.isSet(O) && this.is("Object",O) === true ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != Object"  );
+        }
+    },
+    Type.TArmObject = function(O){
+        if( this.isSet(O) && this.is("Object",O) === true && O.type == "object" ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != ArmObject"  );
+        }
+    },
+    Type.TArmShape = function(O){
+        if( this.isSet(O) && this.is("Object",O) === true && O.type == "shape" ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != ArmShape"  );
+        }
+    }
+    Type.TPoint = function(O) {
+        if( this.isSet(O) && this.is("Object",O) === true && isTNumber(O.x) && isTNumber(O.y) ) {
+            return O;
+        } else {
+            throw TypeError( this.type(O) + " != TPoint"  );
+        }
+    }
 
     var Class = function(params)	{
         // provide default constructor
@@ -295,7 +302,6 @@ var gizmoJs = gizmoJs || {};
         return newClass;
     }
 
-
     gizmoJs.Type = Type;
     gizmoJs.Class = Class;
     return function() {
@@ -315,9 +321,10 @@ var gizmoJs = gizmoJs || {};
         window.TObject = window.Type.TObject;
         window.TArmObject = window.Type.TArmObject;
         window.TArmShape = window.Type.TArmShape;
-        window.isTString = function(O) { return Type.is("String",O) == "String"?true:false; };
-        window.isTNumber = function(O) { return Type.is("Number",O) == "Number"?true:false; };
-        window.isTNumberPos = function(O) { (Type.is("Number",O) && O>=0)?true:false; };
+        window.TPoint = window.Type.TPoint;
+        window.isTString = function(O) { return Type.is("String",O)?true:false; };
+        window.isTNumber = function(O) { return Type.is("Number",O)?true:false; };
+        window.isTNumberPos = function(O) { return (Type.is("Number",O) && O>=0)?true:false; };
         window.isTBool = function(O) { return Type.is("Boolean",O); };
         window.isTArray = function(O) { return Type.is("Array",O); };
         window.isTFunc = function(O) { return Type.is("Function",O); };
@@ -333,6 +340,13 @@ var gizmoJs = gizmoJs || {};
         };
         window.isTArmShape = function(O) {
             if( Type.isSet(O) && Type.is("Object",O) && Type.isSet(O.type) && O.type == "shape" ) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        window.isTPoint = function(O) {
+            if( this.isSet(O) && this.is("Object",O) === true && isTNumber(O.x) && isTNumber(O.y) ) {
                 return true;
             } else {
                 return false;

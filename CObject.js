@@ -4,6 +4,45 @@ var CObject = Class({
     construct: function(O){
         if( isSet(O) ) {
 
+            if( isTPoint(O.center) ) {
+                this.x = O.center.x;
+                this.y = O.center.y;
+                this.globalCenter = O.center;
+                this.localCenter = O.center;
+
+            }
+
+            if( isTNumber(O.x) ) {
+                this.x = O.x;
+            }
+
+            if( isTNumber(O.y) ) {
+                this.y = O.y;
+            }
+
+            if( isTPoint(O.rotateCenter) ) {
+                this.rotateCenter = {x: O.rotateCenter.x, y: O.rotateCenter.y};
+                this.localRotateCenter = {x: O.rotateCenter.x, y: O.rotateCenter.y};
+
+            }
+            if( isTNumberPos(O.angel) ) {
+                this.globalAngel = O.angel;
+                this.localAngel = O.angel;
+                this.angel = O.angel;
+            }
+
+            if( isTArray(O.collection) ) {
+                for (var i in O.collection)
+                {
+                    if( isTArmShape(O.collection[i]) || isTArmObject(O.collection[i]) ) {
+                        this.add( O.collection[i] );
+                    }
+                }
+            }
+
+            if( isTArray(O.skeleton) ) {
+                //this.skeleton = new CSkeleton({segments: O.skeleton, center: this.center, rotateCenter: this.rotateCenter, angel: this.angel});
+            }
             if( isTObject(O.vars)) {
                 for (var m in O.vars)
                 {
@@ -94,20 +133,6 @@ var CObject = Class({
             if( isTFunc(O.begin) ) {this.begin = O.begin};
             if( isTFunc(O.update) ) {this.update = O.update};
 
-            this.collection = {};
-            if( isTArray(O.collection) && (O.collection.length >= 1) ) {
-                for (var i in O.collection)
-                {
-                    if(O.collection[i].type == 'shape' || O.collection[i].type == 'object') {
-                        this.add( O.collection[i] );
-                    }
-                }
-            }
-
-            if( isTObject(O.skeleton) ) {
-                this.skeleton = O.skeleton;
-            }
-
             if( isTObject(O.events) ) {
                 for (var i in O.events)
                 {
@@ -120,23 +145,28 @@ var CObject = Class({
         }
     },
     vars: {
-        collection: {},
+        collection: [],
         skeleton: {},
-
-        type: 'object',
-        count: -1
+        type: 'object'
     },
     methods:{
         add: function(O) {
             if( isTArmObject(O) || isTArmShape(O) ){
                 O.context = this.context;
+                O.x += this.x;
+                O.Y += this.y;
+                O.globalCenter.x = O.localCenter.x + this.globalCenter.x;
+                O.globalCenter.y = O.localCenter.y + this.globalCenter.y;
+
+                O.rotateCenter = {x: this.rotateCenter.x, y: this.rotateCenter.y};
+                O.localRotateCenter = {x: this.rotateCenter.x, y: this.rotateCenter.y};
+
+                O.globalAngel = O.localAngel + this.globalAngel;
+                O.angel = O.globalAngel;
+
+                this.collection.push(O);
                 if( isSet(O.name) ) {
-                    this.count++;
-                    this.collection[ this.count ] = O;
                     this[ O.name ] = O;
-                } else {
-                    this.count++;
-                    this.collection[ this.count ] = O;
                 }
             } else {
                 throw Error('Object: add() -> Incorrect object!');
@@ -157,24 +187,6 @@ var CObject = Class({
             catch(e){
                 console.log(e);
             }
-        },
-
-        set collection(O) {
-            if( isTObject(O) ) {
-                this._collection = O;
-                for(var i in O){
-                    if(O[i].type == 'shape' || O[i].type == 'object') {
-                        this.add( O[i] );
-                    } else {
-                        throw Error('Object: set collection(O) -> O is not shape or object!')
-                    }
-                }
-            } else {
-                throw Error('Object: set collection(O) -> is not js\'object!');
-            }
-        },
-        get collection() {
-            return isTObject(this._collection);
         },
 
         set context(O) {
@@ -203,29 +215,41 @@ var CObject = Class({
         },
 
         _clean: function(stage) {
-            var obj = this.collection[i];
+
             for(var i in this.collection) {
+                var obj = this.collection[i];
                 obj._clean.call(obj,stage);
             }
         },
 
         _updateSkeleton: function(stage) {
-            this.skeleton._update({x: this.x, y: this.y}, stage);
-
-            for(var i in this.collection)
-            {
+            for(var i in this.collection) {
                 var obj = this.collection[i];
-                if(obj._updateSkeleton) {
-                    obj._updateSkeleton.call(obj,stage);
-                }
+
+                this.globalCenter = {x: this.x, y: this.y};
+
+                this.globalAngel = this.angel;
+                this.rotateCenter = { x: this.localRotateCenter.x + this.x, y: this.localRotateCenter.y + this.y};
+
+                obj.x = this.x + obj.localCenter.x;
+                obj.y = this.y + obj.localCenter.y;
+                obj.globalCenter = {x: obj.x, y: obj.y};
+
+                obj.rotateCenter = this.rotateCenter;
+
+                obj.globalAngel = this.angel + obj.localAngel;
+                obj.angel = obj.globalAngel;
             }
 
         },
 
         _update: function(stage) {
+
             if( isTFunc(this.update) ) {
                 this.update.call(this,stage);
             }
+
+            this._updateSkeleton.call(this,stage);
 
             for(var i in this.collection)
             {
@@ -248,20 +272,30 @@ var CObject = Class({
         _info: function(stage) {
 
             var skeleton = this.skeleton;
-            stage.context.beginPath();
+            /*stage.context.beginPath();
             for(var i in skeleton.segments) {
-                stage.context.moveTo(skeleton.segments[i].x0, skeleton.segments[i].y0);
-                stage.context.lineTo(skeleton.segments[i].x1, skeleton.segments[i].y1)
+                stage.context.moveTo(skeleton.segments[i].p0[0], skeleton.segments[i].p0[1]);
+                stage.context.lineTo(skeleton.segments[i].p1[0], skeleton.segments[i].p1[1])
                 stage.context.lineWidth = 1;
                 stage.context.strokeStyle = "#0f0";
             }
             stage.context.closePath();
-            stage.context.moveTo(skeleton.center.x, skeleton.center.y);
-            stage.context.arc(skeleton.center.x, skeleton.center.y, 2, Math.PI * 2, false);
-
+            */
+            stage.context.beginPath();
+            stage.context.moveTo(this.rotateCenter.x, this.rotateCenter.y);
+            stage.context.arc(this.rotateCenter.x, this.rotateCenter.y, 2, Math.PI * 2, false);
             this.context.stroke();
             this.context.fillStyle = "#a00";
             this.context.fill();
+            stage.context.closePath();
+
+            stage.context.beginPath();
+            stage.context.moveTo(this.globalCenter.x, this.globalCenter.y);
+            stage.context.arc(this.globalCenter.x, this.globalCenter.y, 2, Math.PI * 2, false);
+            this.context.stroke();
+            this.context.fillStyle = "#abc";
+            this.context.fill();
+            stage.context.closePath();
 
             for(var i in this.collection)
             {
@@ -275,7 +309,7 @@ var CObject = Class({
         },
 
         _event: function(stage) {
-            this.__intersection.call(this,stage);
+            //this.__intersection.call(this,stage);
 
             for(var i in this.collection)
             {
@@ -285,89 +319,6 @@ var CObject = Class({
                 }
             }
 
-        },
-
-        __intersection: function(stage) {
-            var rect_intersection = function(shape1, shape2){
-                var XL1 = shape1.x - shape1.lineWidth;
-                var XR1 = shape1.x + shape1.width + shape1.lineWidth;
-                var YL1 = shape1.y - shape1.lineWidth;
-                var YR1 = shape1.y + shape1.height + shape1.lineWidth;
-
-                var XL2 = shape2.x - shape2.lineWidth;
-                var XR2 = shape2.x + shape2.width + shape2.lineWidth;
-                var YL2 = shape2.y - shape2.lineWidth;
-                var YR2 = shape2.y + shape2.height + shape2.lineWidth;
-
-                if(((XL2 >= XL1) && (XR2 <= XR1))||((XL2 >= XL1) && (XR2 >= XR1) && (XL2 <= XR1))||((XL2 <= XL1) && (XR2 <= XR1) && (XR2 >= XL1))||((XL2 <= XL1) && (XR2 >= XR1))){
-                    if(((YL2 >= YL1) && (YR2 <= YR1))||((YL2 >= YL1) && (YR2 >= YR1) && (YL2 <= YR1))||((YL2 <= YL1) && (YR2 <= YR1) && (YR2 >= YL1))||((YL2 <= YL1) && (YR2 >= YR1))){
-                        return true;
-                    }
-                }
-                return false;
-            }
-            var circle_intersection = function(shape1, shape2){
-                var X1 = shape1.x;
-                var Y1 = shape1.y;
-                var radius1 = shape1.radius;
-
-                var X2 = shape2.x;
-                var Y2 = shape2.y;
-                var radius2 = shape2.radius;
-
-                var distance = Math.sqrt(Math.pow(X1-X2,2)+Math.pow(Y1-Y2,2));
-                if(distance <= radius1+radius2){
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            var object_intersection = function(obj1, obj2){
-                for(var i in obj1.collection) {
-                    var shape1 = obj1.collection[i];
-                    for(var j in obj2.collection) {
-                        var shape2 = obj2.collection[j];
-                        if(shape1 != shape2) {
-                            if(shape1.shapeType == 'rect' && shape2.shapeType == 'rect' && FLAG == false){
-                                return rect_intersection(shape1,shape2) || false;
-                            }
-                            if(shape1.shapeType == 'circle' && shape2.shapeType == 'circle' && FLAG == false){
-                                return circle_intersection(shape1,shape2) || false;
-                            }
-                            if(shape1.type == 'object' && shape2.type == 'object' && FLAG == false){
-                                return object_intersection(shape1,shape2) || false;
-                            }
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            for(var i in this.collection)
-            {
-                var shape1 = this.collection[i];
-                for(var j in this.collection)
-                {
-                    var shape2 = this.collection[j];
-                    if(shape2 != shape1){
-
-                        var FLAG = false;
-                        if(shape1.shapeType == 'rect' && shape2.shapeType == 'rect' && FLAG == false){
-                            FLAG = rect_intersection(shape1,shape2) || false;
-                        }
-                        if(shape1.shapeType == 'circle' && shape2.shapeType == 'circle' && FLAG == false){
-                            FLAG = circle_intersection(shape1,shape2) || false;
-                        }
-                        if(shape1.type == 'object' && shape2.type == 'object' && FLAG == false){
-                            FLAG = object_intersection(shape1,shape2) || false;
-                        }
-
-                        if(FLAG && typeof(this.intersection) == 'function'){
-                            this.intersection.call(this,shape1, shape2, stage);
-                        }
-                    }
-                }
-            }
         },
 
         _onkeydown: function(e, stage) {
