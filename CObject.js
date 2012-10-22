@@ -4,7 +4,7 @@ var CObject = Class({
     construct: function(O){
         if( isSet(O) ) {
 
-            if( isTPoint(O.center) ) {
+            if( isTPoint(O.center) ) { // Установить center, globalCenter, localCenter
                 this.x = O.center.x;
                 this.y = O.center.y;
                 this.globalCenter = { x: O.center.x, y: O.center.y };
@@ -20,12 +20,12 @@ var CObject = Class({
                 this.y = O.y;
             }
 
-            if( isTPoint(O.rotateCenter) ) {
+            if( isTPoint(O.rotateCenter) ) { // Установить rotateCenter, localRotateCenter
                 this.rotateCenter = {x: O.rotateCenter.x, y: O.rotateCenter.y};
                 this.localRotateCenter = {x: O.rotateCenter.x, y: O.rotateCenter.y};
 
             }
-            if( isTNumberPos(O.angel) ) {
+            if( isTNumberPos(O.angel) ) { // Установить angel, localAngel, globalAngel
                 this.globalAngel = O.angel;
                 this.localAngel = O.angel;
                 this.angel = O.angel;
@@ -41,6 +41,58 @@ var CObject = Class({
             }
 
             if( isTArray(O.skeleton) ) {
+                // _init
+                var tmpSegments = [];
+                var obj = O.skeleton;
+                for(var i in obj) {
+                    var x0 = obj[i].x0;
+                    var y0 = obj[i].y0;
+                    var x1 = obj[i].x1;
+                    var y1 = obj[i].y1;
+                    tmpSegments.push( {p0: [x0,y0,1], p1: [x1,y1,1]} );
+                }
+                this.nativeSegments = tmpSegments;
+                this.segments = tmpSegments;
+
+                // _setFunction
+                this.functions = []; // что бы вынести function из prototype
+
+                for(var i in this.nativeSegments) {
+                    var obj = this.nativeSegments;
+                    if( isTNumberPos(obj[i]['p0'][0]) && isTNumberPos(obj[i]['p0'][1]) && isTNumberPos(obj[i]['p1'][0]) && isTNumberPos(obj[i]['p1'][1]) ) {
+                        var x0 = obj[i]['p0'][0];
+                        var y0 = obj[i]['p0'][1];
+                        var x1 = obj[i]['p1'][0];
+                        var y1 = obj[i]['p1'][1];
+                        var k = ((x1-x0) != 0) ? (y1-y0)/(x1-x0) : (y1-y0)/0.001;
+                        var b = y0 - k*x0;
+
+                        var segment = {};
+                        segment.k = k;
+                        segment.b = b;
+
+                        segment.x0 = x0;
+                        segment.x1 = x1;
+                        this.functions.push( segment );
+                    }
+                }
+
+                // _translateTo
+
+                var newPoint = this.globalCenter;
+
+                var tmpSegments = [];
+                for(var i in this.nativeSegments) {
+                    var obj = this.nativeSegments[i];
+                    var x0 = obj['p0'][0] + newPoint.x;
+                    var y0 = obj['p0'][1] + newPoint.y;
+                    var x1 = obj['p1'][0] + newPoint.x;
+                    var y1 = obj['p1'][1] + newPoint.y;
+                    tmpSegments.push( {p0: [x0,y0,1], p1: [x1,y1,1]} );
+                }
+                this.segments = tmpSegments;
+
+                //this.center = { x: newPoint.x, y: newPoint.y };
                 //this.skeleton = new CSkeleton({segments: O.skeleton, center: this.center, rotateCenter: this.rotateCenter, angel: this.angel});
             }
             if( isTObject(O.vars)) {
@@ -125,8 +177,6 @@ var CObject = Class({
 
                     setter(vars[m]);
                     getter(vars[m]);
-                    //newClass.prototype.__defineGetter__(m, getter);
-                    //newClass.prototype.__defineSetter__(m, setter);
                 }
             };
 
@@ -147,6 +197,11 @@ var CObject = Class({
     vars: {
         collection: [],
         skeleton: {},
+
+        segments: [],
+        nativeSegments: [],
+        functions: [],
+
         type: 'object'
     },
     methods:{
@@ -242,6 +297,44 @@ var CObject = Class({
                 obj.angel = obj.globalAngel;
             }
 
+            // _setFunction
+            this.functions = []; // что бы вынести function из prototype
+
+            for(var i in this.nativeSegments) {
+                var obj = this.nativeSegments;
+                if( isTNumberPos(obj[i]['p0'][0]) && isTNumberPos(obj[i]['p0'][1]) && isTNumberPos(obj[i]['p1'][0]) && isTNumberPos(obj[i]['p1'][1]) ) {
+                    var x0 = obj[i]['p0'][0];
+                    var y0 = obj[i]['p0'][1];
+                    var x1 = obj[i]['p1'][0];
+                    var y1 = obj[i]['p1'][1];
+                    var k = ((x1-x0) != 0) ? (y1-y0)/(x1-x0) : (y1-y0)/0.001;
+                    var b = y0 - k*x0;
+
+                    var segment = {};
+                    segment.k = k;
+                    segment.b = b;
+
+                    segment.x0 = x0;
+                    segment.x1 = x1;
+                    this.functions.push( segment );
+                }
+            }
+
+            // _translateTo
+
+            var newPoint = this.globalCenter;
+
+            var tmpSegments = [];
+            for(var i in this.nativeSegments) {
+                var obj = this.nativeSegments[i];
+                var x0 = obj['p0'][0] + newPoint.x;
+                var y0 = obj['p0'][1] + newPoint.y;
+                var x1 = obj['p1'][0] + newPoint.x;
+                var y1 = obj['p1'][1] + newPoint.y;
+                tmpSegments.push( {p0: [x0,y0,1], p1: [x1,y1,1]} );
+            }
+            this.segments = tmpSegments;
+
         },
 
         _update: function(stage) {
@@ -272,17 +365,17 @@ var CObject = Class({
 
         _info: function(stage) {
 
-            var skeleton = this.skeleton;
-            /*stage.context.beginPath();
+            var skeleton = this;
+            stage.context.beginPath();
             for(var i in skeleton.segments) {
                 stage.context.moveTo(skeleton.segments[i].p0[0], skeleton.segments[i].p0[1]);
                 stage.context.lineTo(skeleton.segments[i].p1[0], skeleton.segments[i].p1[1])
                 stage.context.lineWidth = 1;
                 stage.context.strokeStyle = "#0f0";
             }
-            stage.context.closePath();
-            */
-            stage.context.beginPath();
+            //stage.context.closePath();
+
+            //stage.context.beginPath();
             stage.context.moveTo(this.rotateCenter.x, this.rotateCenter.y);
             stage.context.arc(this.rotateCenter.x, this.rotateCenter.y, 2, Math.PI * 2, false);
             this.context.stroke();

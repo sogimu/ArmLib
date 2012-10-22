@@ -7,12 +7,12 @@ window.onload = function(O){
     stage = new CStage({container: 'container',width: 500,height: 500, fps: 1000});
 
 	var timber = new CObject({
-        collection: [ new CImage({x: 23,width: 200, height: 50, angel: 45, src: 'image/thing.png'}),
-                      new CImage({y: 214,width: 120, height: 30, angel: 34, src: 'image/timber.png'})
+        collection: [ new CImage({x: 0, y: 0, width: 200, height: 50, angel: 0, src: 'image/thing.png'}),
+                      new CImage({x: 0, y: 0,width: 120, height: 30, angel: 0, src: 'image/timber.png'})
         ],
-        skeleton: [ {x0:0,y0:0,x1:150,y1:0},{x0:150,y0:0,x1:150,y1:30},{x0:150,y0:30,x1:0,y1:30},{x0:0,y0:30,x1:0,y1:0} ],
+        skeleton: [ {x0:0,y0:0,x1:180,y1:100},{x0:180,y0:100,x1:130,y1:130},{x0:130,y0:130,x1:0,y1:130},{x0:0,y0:130,x1:0,y1:0} ],
         center: {x: 200, y: 200},
-        rotateCenter: {x: 50, y: 25},
+        rotateCenter: {x: 100, y: 0},
         angel: 0,
 
         vars: {
@@ -24,7 +24,7 @@ window.onload = function(O){
 
         },
         update: function(stage) {
-            this.angel+=1;
+            //this.angel+=1;
         },
 		events: {
 			onkeydown: function(e, stage) {
@@ -33,17 +33,25 @@ window.onload = function(O){
 					case 39: {
                         if( this.x < (stage.width - this.width)) {
                             this.x += 5;
-                            //this.rotateCenter.x+=5;
-
                         }
 						break};
 
 					case 37: {
                         if( this.x > 0) {
 						    this.x -= 5;
-                            //this.rotateCenter.x-=5;
-
                         }
+						break};
+
+                    case 38: {
+                        if( this.y > 0) {
+						    this.y -= 5;
+                       }
+						break};
+
+                    case 40: {
+                        if( this.y < (stage.height - this.height)) {
+						    this.y += 5;
+                       }
 						break};
 				}
 			}
@@ -60,6 +68,8 @@ window.onload = function(O){
 
     stage.run();
     stage.info();
+
+    console.log( timber )
 
 
 

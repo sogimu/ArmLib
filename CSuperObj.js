@@ -14,6 +14,7 @@ var CSuperObj = Class({
         angel: 0,
         globalAngel: 0,
         localAngel: 0,
+
         rotateCenter: { x:0,y:0 },
         localRotateCenter: { x:0,y:0 }
 
