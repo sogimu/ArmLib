@@ -4,7 +4,6 @@ var CSuperObj = Class({
     },
 	vars:{
 		context: null,
-
         x: 0,
         y: 0,
         globalCenter: { x:0,y:0 },

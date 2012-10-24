@@ -20,6 +20,7 @@ var CStage = Class({
     },
     vars: {
         collection: [],
+        collectionObjects: [],
         context: {},
         events: {},
         fps: 10,
@@ -35,6 +36,9 @@ var CStage = Class({
             if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
                 O.context = this.context;
                 this.collection.push(O);
+                // Добавить все объекты в collectionObjects
+                this.addObjCollection(O);
+
             } else {
                 throw Error('Stage: add(O) -> O is not shape or object!');
             }
@@ -48,6 +52,17 @@ var CStage = Class({
                 }
             } else {
                 throw Error('Stage: remove(O) -> O is not shape or object!');
+            }
+        },
+
+        addObjCollection: function(O) {
+            if( isTArmObject(O) ) {
+                for(var i in O.collection) {
+                    if( isTArmObject(O.collection) ) {
+                        this.addObjCollection(O.collection);
+                    }
+                }
+                this.collectionObjects.push(O);
             }
         },
 

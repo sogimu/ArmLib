@@ -32,6 +32,7 @@ var CObject = Class({
             }
 
             if( isTArray(O.collection) ) {
+                this.collection = [];
                 for (var i in O.collection)
                 {
                     if( isTArmShape(O.collection[i]) || isTArmObject(O.collection[i]) ) {
@@ -203,6 +204,7 @@ var CObject = Class({
         functions: [],
 
         type: 'object'
+
     },
     methods:{
         add: function(O) {
@@ -219,6 +221,7 @@ var CObject = Class({
                 O.globalAngel = O.localAngel + this.globalAngel;
                 O.angel = O.globalAngel;
 
+                console.log( this.collecton );
                 this.collection.push(O);
                 if( isSet(O.name) ) {
                     this[ O.name ] = O;
