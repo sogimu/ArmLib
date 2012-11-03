@@ -99,6 +99,7 @@ window.onload = function(O){
                 }
                 stage.context.closePath();
                 this.x = Math.random()*500;
+                this.y = Math.random()*500;
 
             },
 			onkeydown: function(e, stage) {
@@ -134,17 +135,126 @@ window.onload = function(O){
 
     });
 
-
-    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, angel: 0, center: {x:50,y:50}, src: 'image/gras.jpg'});
+    var gras = new CImage({x: 0,y: 0, width: stage.width, height: stage.height, angel: 0, center: {x:50,y:50}, src: 'image/BACKGROUNDS_MAIN_1.png'});
 
     stage.add( gras );
-    stage.add( timber );
-    stage.add( timber2 )
+
+    for(var i=0; i<6; i++) {
+        var item = new CObject({
+            name: 'timber'+i,
+            collection: [ new CImage({x: 0, y: 0,width: 63, height: 35, angel: 0, src: 'image/item.png'})],
+            skeleton: [ {x0:3,y0:0,x1:51,y1:2},{x0:51,y0:2,x1:49,y1:25},{x0:49,y0:25,x1:1,y1:23},{x0:1,y0:23,x1:3,y1:0} ],
+            center: {x: (i*70)+10, y: 20},
+            rotateCenter: {x: 0, y: 0},
+            angel: 0,
+
+            vars: {
+                width: 0,
+                height: 0,
+            },
+            begin: function(stage) {
+                this.width = this.collection[0].width;
+                this.height = this.collection[0].height;
+            },
+            update: function(stage) {
+            },
+            events: {
+                collision: function(obj, e, stage) {
+                    this.x = Math.random()*(500-this.width);
+                    this.y = Math.random()*(500-this.height);
+
+                }
+            }
+        });
+        stage.add( item );
+    }
+
+    var ball = new CObject({
+        name: 'ball',
+        collection: [ new CImage({x: -5, y: -5,width: 59, height: 53, angel: 0, src: 'image/ball.png'})],
+        skeleton: [ {x0:3,y0:1,x1:51,y1:2},{x0:51,y0:2,x1:49,y1:40},{x0:49,y0:40,x1:1,y1:43},{x0:1,y0:43,x1:3,y1:1} ],
+        center: {x: 250, y: 350},
+        rotateCenter: {x: 0, y: 0},
+        angel: 0,
+
+        vars: {
+
+        },
+        begin: function(stage) {
+
+        },
+        update: function(stage) {
+        },
+        events: {
+            collision: function(obj, e, stage) {
+
+            },
+            onkeydown: function(e, stage) {
+                var code = e.keyCode;
+                //alert(code)
+
+                switch( code ){
+                    case 39: {
+                        //if( this.x < (stage.width - this.width)) {
+                            this.x += 15;
+                        //}
+                        break};
+
+                    case 37: {
+                        if( this.x > 0) {
+                            this.x -= 15;
+                        }
+                        break};
+
+                    case 38: {
+                        if( this.y > 0) {
+                            this.y -= 15;
+                        }
+                        break};
+
+                    case 40: {
+                        //if( this.y < (stage.height - this.height)) {
+                            this.y += 15;
+                        //}
+                        break};
+                }
+            }
+        }
+    });
+
+    var item = new CObject({
+        name: 'timber'+i,
+        collection: [ new CImage({x: 0, y: 0,width: 63, height: 35, angel: 0, src: 'image/item.png'})],
+        skeleton: [ {x0:3,y0:0,x1:51,y1:2},{x0:51,y0:2,x1:49,y1:25},{x0:49,y0:25,x1:1,y1:23},{x0:1,y0:23,x1:3,y1:0} ],
+        center: {x: (i*70)+10, y: 20},
+        rotateCenter: {x: 0, y: 0},
+        angel: 0,
+
+        vars: {
+            width: 0,
+            height: 0,
+        },
+        begin: function(stage) {
+            this.width = this.collection[0].width;
+            this.height = this.collection[0].height;
+        },
+        update: function(stage) {
+        },
+        events: {
+            collision: function(obj, e, stage) {
+                this.x = Math.random()*(500-this.width);
+                this.y = Math.random()*(500-this.height);
+
+            }
+        }
+    });
+
+    stage.add( ball );
 
     stage.run();
     stage.info();
 
-    console.log( stage.collectionObjects )
+    //console.log( stage.collectionObjects )
 /*
     var segments = [ {x0:100,y0:50,x1:100,y1:105},{x0:50,y0:75,x1:150,y1:70} ];
 

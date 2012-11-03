@@ -35,7 +35,7 @@ var CSuperObj = Class({
                     }
                     history.push(obj);
 
-                    if(typeof obj.constructor == 'function') {
+                    if( isTFunc(obj.constructor) && type(obj) != "HTMLCollection" ) {
                         var temp = new obj.constructor();
                         for(var key in obj)
                         {
