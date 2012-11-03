@@ -142,22 +142,81 @@ var CStage = Class({
         },
 
         _event: function(stage) {
-            for(var i in this.collection)
+            //console.log( this.collectionObjects[0].functions[0].B )
+
+            for(var i in this.collectionObjects)
             {
-                var obj = this.collection[i];
-                if(typeof obj._event == 'function')
-                {
-                    obj._event.call(obj, stage);
+                var objI = this.collectionObjects[i];
+                if( isSet(objI.events) && isTFunc(objI.events.collision) ) {
+                    for(var j in this.collectionObjects)
+                    {
+                        var objJ = this.collectionObjects[j];
+                        if( objI != objJ ) {
+                            // здесь фиксируются события
+                            var res = this.__collision(objI,objJ);
+                            if( res.flag == true ) {
+                                objI.events.collision.call(objI, objJ, res.points , stage);
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+        },
+        __collision: function(a,b) {
+            function det (a,b,c,d) {
+                return a * d - b * c;
+            }
+
+            function own (x, x0, x1) {
+                if( ( (x0 < x1) && (x >= x0 && x <= x1) ) || ( (x0 > x1) && (x >= x1 && x <= x0) )/* || ( (x0 == x1) && (Math.round(x) == x0) )*/ ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            function collision(a,b) {
+                if( (b.x0 >= a.x0 && b.x0 <= a.x1) || (b.x1 >= a.x0 && b.x1 <= a.x1) || (a.x0 >= b.x0 && a.x0 <= b.x1) || (a.x1 >= b.x0 && a.x1 <= b.x1) ){
+                    var EPS = 10E-9;
+                    var zn = det (a.A, a.B, b.A, b.B);
+                    if (Math.abs(zn) < EPS)
+                        return {flag: false};
+                    var x = - det (a.C, a.B, b.C, b.B) / zn;
+                    if( own(x, a.x0, a.x1) && own(x, b.x0, b.x1) ) {
+                        var y = - det (a.A, a.C, b.A, b.C) / zn;
+                        var obj = {x: x, y:y, flag: true};
+                        return obj;
+                    } else {
+                        return {flag: false};
+                    }
+                } else {
+                    return {flag: false};
+                }
+            }
+            var points = [];
+            for(var i in a.functions) {
+                for(var j in b.functions) {
+                    var res = collision( a.functions[i],b.functions[j] );
+                    if( res.flag ) {
+                        points.push( {x: res.x, y: res.y} );
+                    }
                 }
             }
 
+            if( points.length > 0 ) {
+                return {flag: true, points: points};
+            } else {
+                return {flag: false};
+            }
         },
 
         _onkeydown: function(e) {
             for(var i in this.collection)
             {
                 var obj = this.collection[i];
-                if(typeof obj._onkeydown == 'function')
+                if( isTFunc(obj._onkeydown) )
                 {
                     obj._onkeydown.call(obj, e, this);
                 }

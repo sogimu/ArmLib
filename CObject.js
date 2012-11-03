@@ -3,6 +3,7 @@ var CObject = Class({
 
     construct: function(O){
         if( isSet(O) ) {
+            this.name = O.name || this.name;
 
             if( isTPoint(O.center) ) { // Установить center, globalCenter, localCenter
                 this.x = O.center.x;
@@ -54,7 +55,7 @@ var CObject = Class({
                 }
                 this.nativeSegments = tmpSegments;
                 this.segments = tmpSegments;
-
+                /*
                 // _setFunction
                 this.functions = []; // что бы вынести function из prototype
 
@@ -77,7 +78,19 @@ var CObject = Class({
                         this.functions.push( segment );
                     }
                 }
+                */
 
+                this.functions = []; // что бы вынести function из prototype
+
+                var obj = this.nativeSegments;
+                for(var i in obj) {
+                    var A = obj[i].p0[1] - obj[i].p1[1];
+                    var B = (obj[i].p1[0] - obj[i].p0[0])+0.00001;
+                    var C = obj[i].p0[0]*obj[i].p1[1] - obj[i].p1[0]*obj[i].p0[1];
+                    var x0 = obj[i].p0[0];
+                    var x1 = obj[i].p1[0];
+                    this.functions.push( {A:A, B:B, C:C, x0:x0, x1:x1} );
+                }
                 // _translateTo
 
                 var newPoint = this.globalCenter;
@@ -187,8 +200,9 @@ var CObject = Class({
             if( isTObject(O.events) ) {
                 for (var i in O.events)
                 {
-                    if(typeof O.events[i] == 'function') {
-                        this[i] = O.events[i];
+                    if( isTFunc(O.events[i]) ) {
+                        this.events = this.events || {};
+                        this.events[i] = O.events[i];
                     }
                 }
             };
@@ -203,6 +217,7 @@ var CObject = Class({
         nativeSegments: [],
         functions: [],
 
+        name: 'undefined',
         type: 'object'
 
     },
@@ -221,7 +236,6 @@ var CObject = Class({
                 O.globalAngel = O.localAngel + this.globalAngel;
                 O.angel = O.globalAngel;
 
-                console.log( this.collecton );
                 this.collection.push(O);
                 if( isSet(O.name) ) {
                     this[ O.name ] = O;
@@ -299,7 +313,7 @@ var CObject = Class({
                 obj.globalAngel = this.angel + obj.localAngel;
                 obj.angel = obj.globalAngel;
             }
-
+            /*
             // _setFunction
             this.functions = []; // что бы вынести function из prototype
 
@@ -321,6 +335,17 @@ var CObject = Class({
                     segment.x1 = x1;
                     this.functions.push( segment );
                 }
+            }*/
+            this.functions = []; // что бы вынести function из prototype
+
+            var obj = this.segments;
+            for(var i in obj) {
+                var A = obj[i].p0[1] - obj[i].p1[1];
+                var B = (obj[i].p1[0] - obj[i].p0[0])+0.00001;
+                var C = obj[i].p0[0]*obj[i].p1[1] - obj[i].p1[0]*obj[i].p0[1];
+                var x0 = obj[i].p0[0];
+                var x1 = obj[i].p1[0];
+                this.functions.push( {A:A, B:B, C:C, x0:x0, x1:x1} );
             }
 
             // _translateTo
@@ -389,6 +414,11 @@ var CObject = Class({
             stage.context.beginPath();
             stage.context.moveTo(this.globalCenter.x, this.globalCenter.y);
             stage.context.arc(this.globalCenter.x, this.globalCenter.y, 2, Math.PI * 2, false);
+
+            this.context.fillStyle = "#abc";
+            stage.context.font = "bold 14px 'sans-serif'";
+            stage.context.fillText(this.name, this.globalCenter.x + 10, this.globalCenter.y);
+
             this.context.stroke();
             this.context.fillStyle = "#abc";
             this.context.fill();
@@ -419,8 +449,8 @@ var CObject = Class({
         },
 
         _onkeydown: function(e, stage) {
-            if(typeof this.onkeydown == 'function'){
-                this.onkeydown.call(this, e, stage);
+            if( isTFunc(this.events.onkeydown) ){
+                this.events.onkeydown.call(this, e, stage);
             }
 
             for(var i in this.collection)
