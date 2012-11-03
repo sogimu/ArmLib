@@ -449,7 +449,7 @@ var CObject = Class({
         },
 
         _onkeydown: function(e, stage) {
-            if( isTFunc(this.events.onkeydown) ){
+            if( isSet(this.events) && isTFunc(this.events.onkeydown) ){
                 this.events.onkeydown.call(this, e, stage);
             }
 

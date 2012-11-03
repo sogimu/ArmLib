@@ -2,21 +2,51 @@
 
 var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
 
-var ball = new Arm.Object({
-	update: function() {
+//создание объекта. Объект содержит в себе и управляет объектами и фигурами, которые позиционируются относительно него.
+var ball = new CObject({
+	name: 'ball', // название объекта, можно не указывать
+	collection: [ new CImage({x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'})], // список дочерних объектов и фигур
+	skeleton: [ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ], // очертания объекта
+	center: {x: 250, y: 350}, // положение объекта на экране
+	rotateCenter: {x: 0, y: 0}, // центр поворота, можно не указывать
+	angel: 0, // угол поворота, можно не указывать
+
+	vars: { // список переменных (за переменной закрепляется тип данных которым она была инициализирована, при попытке положить данные другого типа, выбрасывается исключение)
+		width: 0,
+		height: 0,
+		inc: 5,
+		factorX: 1,
+		factorY: -1
+
 	},
-	shape: [ Rect({x: x,y: y}), Rect({x: x + 10,y: y + 10})],
-	x: 0,
-	y: 0,
-	run: function() {
+	begin: function(stage) { // функция инициализации объекта
+		this.width = this.collection[0].width;
+		this.height = this.collection[0].height;
+
 	},
-	stand: function() {
+	update: function(stage) { // функция обновления объекта
+		this.x += 5;
+		this.y += 5;
+	},
+	events: { // список обрабатывемых событий
+		collision: function(obj, e, stage) {
+			// событие пересечения с другими объектами
+		},
+		onkeydown: function(e, stage) {
+			// событие клавиатуры, onkeydown
+		}
 	}
 });
-var ball1 = ball.clone();
-var ball2 = ball.clone();
 
-stage.add(  ball1 );
-stage.remove( ball1 );
+// создание фигуры, прямоугольник
+var rect = new CRect({x: 15, y: 15,width: 100, height: 30, angel: 0});
+// создание фигуры, изображение
+var image = new CImage({x: 15, y: 50, width: 100, height: 100, src: 'image/label.png'});
 
-arm.run( stage );
+
+stage.add(ball); // добавление объекта 
+stage.add(rect); // добавление фигуры
+stage.add(image);
+
+stage.run(); // Запуск прорисовки
+stage.info(); // Включение режима вывода дополнительной информации, режим дебага
