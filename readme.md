@@ -12,7 +12,7 @@ Supported browsers:
 
 Example
 =======
-<code>
+<pre><code>
 var stage = new Arm\.Stage\(\{container: 'container',width: '500',height: '500'\}\)\;
 
 var ball = new CObject\(\{
@@ -61,4 +61,4 @@ stage.add(image);
 
 stage.run(); 
 stage.info();
-</code>
+</code></pre>
