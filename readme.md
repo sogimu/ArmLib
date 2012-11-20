@@ -10,8 +10,8 @@ Supported browsers:
 * Opera 10+
 
 
-Example
-=======
+**Example**
+
 <pre><code>
 var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
 
