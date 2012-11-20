@@ -1,40 +1,29 @@
-Atom
-====
+ArmLib
+======
 
-Atom is compact JavaScript framework oriented on modern browsers, which allows
-to support quite broad list of features without keeping a lot of cruft necessary
-to implement them in old browsers.
+ArmLib is compact JavaScript engine for work into browser with Canvas HTML5 technology.
 
 Supported browsers:
 
 * Firefox 3.5+
 * Google Chrome
-* Safari 4+
 * Opera 10+
-* Internet Explorer 9+
-* Mobile Safari
-* Android Browser
-* Opera Mobile
-
-Distributed under terms of MIT or LGPL.
-
-Documentation: see [Docs folder](/theshock/atomjs/tree/master/Docs) for description of Atom core and bundled plugins.
 
 
-// Пример предпологаемого использования
+Example
+=======
 
 var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
 
-//создание объекта. Объект содержит в себе и управляет объектами и фигурами, которые позиционируются относительно него.
 var ball = new CObject({
-	name: 'ball', // название объекта, можно не указывать
-	collection: [ new CImage({x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'})], // список дочерних объектов и фигур
-	skeleton: [ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ], // очертания объекта
-	center: {x: 250, y: 350}, // положение объекта на экране
-	rotateCenter: {x: 0, y: 0}, // центр поворота, можно не указывать
-	angel: 0, // угол поворота, можно не указывать
-
-	vars: { // список переменных (за переменной закрепляется тип данных которым она была инициализирована, при попытке положить данные другого типа, выбрасывается исключение)
+	name: 'ball', 
+	collection: [ new CImage({x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'})],
+	skeleton: [ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ],
+	center: {x: 250, y: 350},
+	rotateCenter: {x: 0, y: 0},
+	angel: 0,
+	
+	vars: {
 		width: 0,
 		height: 0,
 		inc: 5,
@@ -42,34 +31,33 @@ var ball = new CObject({
 		factorY: -1
 
 	},
-	begin: function(stage) { // функция инициализации объекта
+	begin: function(stage) {
 		this.width = this.collection[0].width;
 		this.height = this.collection[0].height;
 
 	},
-	update: function(stage) { // функция обновления объекта
+	update: function(stage) {
 		this.x += 5;
 		this.y += 5;
 	},
-	events: { // список обрабатывемых событий
+	events: { 
 		collision: function(obj, e, stage) {
-			// событие пересечения с другими объектами
+
 		},
 		onkeydown: function(e, stage) {
-			// событие клавиатуры, onkeydown
+
 		}
 	}
 });
 
-// создание фигуры, прямоугольник
 var rect = new CRect({x: 15, y: 15,width: 100, height: 30, angel: 0});
-// создание фигуры, изображение
+
 var image = new CImage({x: 15, y: 50, width: 100, height: 100, src: 'image/label.png'});
 
 
-stage.add(ball); // добавление объекта 
-stage.add(rect); // добавление фигуры
+stage.add(ball);  
+stage.add(rect);
 stage.add(image);
 
-stage.run(); // Запуск прорисовки
-stage.info(); // Включение режима вывода дополнительной информации, режим дебага
+stage.run(); 
+stage.info();
