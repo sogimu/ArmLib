@@ -12,7 +12,7 @@ Supported browsers:
 
 Example
 =======
-vars:
+<code>
 var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
 
 var ball = new CObject({
@@ -23,7 +23,7 @@ var ball = new CObject({
 	rotateCenter: {x: 0, y: 0},
 	angel: 0,
 	
-	/vars: {
+	vars: {
 		width: 0,
 		height: 0,
 		inc: 5,
@@ -61,3 +61,4 @@ stage.add(image);
 
 stage.run(); 
 stage.info();
+</code>
