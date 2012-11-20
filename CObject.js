@@ -110,11 +110,12 @@ var CObject = Class({
                 //this.skeleton = new CSkeleton({segments: O.skeleton, center: this.center, rotateCenter: this.rotateCenter, angel: this.angel});
             }
             if( isTObject(O.vars)) {
-                for (var m in O.vars)
+                
+				for (var m in O.vars)
                 {
                     var vars = O.vars;
                     this[m] = vars[m];
-                    var getter = function(O) {
+                    /*var getter = function(O) {
                         var key = m;
                         var value = vars[m];
                         switch( type( value ) ) {
@@ -150,8 +151,8 @@ var CObject = Class({
                             }
 
                         }
-                    }(m);
-
+                    }(m);*/
+					/*
                     var setter = function(O) {
                         var key = m;
                         var value = vars[m];
@@ -187,10 +188,10 @@ var CObject = Class({
                                 }
                             }
                         }
-                    }(m);
+                    }(m);*/
 
-                    setter(vars[m]);
-                    getter(vars[m]);
+                    //setter(vars[m]);
+                    //getter(vars[m]);
                 }
             };
 
@@ -365,10 +366,10 @@ var CObject = Class({
 
         },
 
-        _update: function(stage) {
+        _update: function(stage,interpolation) {
 
             if( isTFunc(this.update) ) {
-                this.update.call(this,stage);
+                this.update.call(this,stage,interpolation);
             }
 
             this._updateSkeleton.call(this,stage);

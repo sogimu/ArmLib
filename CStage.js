@@ -27,7 +27,11 @@ var CStage = Class({
         intervalId: null,
         finfo: false,
         width: 500,
-        height: 500
+        height: 500,
+		TICKS_PER_SECOND: 30,
+		SKIP_TICKS: 33,
+		MAX_FRAMESKIP: 5,
+		next_game_tick: (new Date()*1)
     },
 
     methods:{
@@ -100,14 +104,14 @@ var CStage = Class({
                 }
             }
         },
-        _update: function(stage) {
+        _update: function(stage,interpolation) {
             for(var i in this.collection)
             {
 
                 var obj = this.collection[i];
                 if(typeof obj._update == 'function')
                 {
-                    obj._update.call(obj,stage);
+                    obj._update.call(obj,stage,interpolation);
                 }
             }
 
@@ -226,14 +230,33 @@ var CStage = Class({
 
         _process: function() {
 			stats.begin();
+			this._clean.call(this,this);
+			
+			var interpolation = ((new Date()*1) + this.SKIP_TICKS - this.next_game_tick ) / this.SKIP_TICKS;
 
+			
+			var loops = 0;
+			while( (new Date()*1) > this.next_game_tick && loops < this.MAX_FRAMESKIP) {
+				this._update.call(this,this, interpolation);
+            
+				this.next_game_tick += this.SKIP_TICKS;	
+				loops++;
+			}
+			
+			this._draw.call(this,this);
+            
+			for(var i=0;i<loops;i++) {
+				this._info.call(this,this);
+				this._event.call(this,this);
+
+			}
+			/*	
             this._clean.call(this,this);
-            //this._updateSkeleton.call(this,this);
             this._update.call(this,this);
             this._draw.call(this,this);
             this._info.call(this,this);
             this._event.call(this,this);
-
+			*/
             stats.end();
         },
 

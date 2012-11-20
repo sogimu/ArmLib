@@ -8,26 +8,29 @@
 
 var ball = new CObject({
     name: 'ball',
-    collection: [ new CImage({x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'})],
-    skeleton: [ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ],
-    center: {x: 250, y: 350},
+    collection: [ new CImage({x: -20, y: -17,width: 39, height: 35, angel: 0, src: 'image/ball.png'})],
+    skeleton: [ {x0:-12,y0:0,x1:-9,y1:-9},{x0:-9,y0:-9,x1:0,y1:-12},{x0:0,y0:-12,x1:9,y1:-9},{x0:9,y0:-9,x1:12,y1:0},{x0:12,y0:0,x1:9,y1:9},{x0:9,y0:9,x1:0,y1:12},{x0:0,y0:12,x1:-9,y1:9},{x0:-9,y0:9,x1:-12,y1:0} ],
+    center: {x: 0, y: 0},
     rotateCenter: {x: 0, y: 0},
     angel: 0,
 
     vars: {
         width: 0,
         height: 0,
-        inc: 5,
+        inc: 2.5,
         factorX: 1,
         factorY: -1
 
     },
     begin: function(stage) {
+		this.x = stage.width/2-80;
+		this.y = 4*(stage.height)/5;
+		
         this.width = this.collection[0].width;
         this.height = this.collection[0].height;
 
     },
-    update: function(stage) {
+    update: function(stage, interpolation) {
         if( this.x > (stage.width-this.width/2) ) {
             this.factorX = -1;
         }
@@ -39,13 +42,26 @@ var ball = new CObject({
             this.y = 350;
             this.factorX = 1;
             this.factorY = -1;
+            
+			for(var i in stage.collection){
+                if(stage.collection[i].name == 'standings') {
+                    if(stage.collection[i].live > 1) {
+                        stage.collection[i].live-=1;
+                    } else {
+                        stage.stop();
+                        stage.collection[i].live-=1;
+						stage.add(new CText({x: stage.width*1/5,y: stage.height/2, size: 100, fill: '#f00', text: "Вы проиграли!", name: "end"}))
+                
+                    }
+                }
+            }
         }
         if( this.y < this.height/2 ) {
             this.factorY = 1;
         }
-
-        this.x+= (this.inc * this.factorX);
-        this.y+= (this.inc * this.factorY);
+				
+        this.x+= (this.inc * this.factorX * interpolation);
+        this.y+= (this.inc * this.factorY * interpolation);
     },
     events: {
         collision: function(obj, e, stage) {
@@ -67,10 +83,16 @@ var ball = new CObject({
 
                     this.factorY = 1;
                 }
-                obj.x = 500//+Math.random()*(500-obj.width);
-                obj.y = 500//+Math.random()*(500-obj.height);
-            }
-
+                obj.x = 900;
+                obj.y = 900;
+			
+				for(var i in stage.collection){
+					if(stage.collection[i].name == 'standings') {
+						this.inc+=0.05;
+						stage.collection[i].speed+=1;
+					}
+				}
+			}
         }
     }
 });
