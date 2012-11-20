@@ -13,12 +13,13 @@ Supported browsers:
 Example
 =======
 <pre><code>
-var stage = new Arm\.Stage\(\{container: 'container',width: '500',height: '500'\}\)\;
+var stage = new Arm.Stage({container: 'container',width: '500',height: '500'});
 
-var ball = new CObject\(\{
+var ball = new CObject({
 	name: 'ball', 
-	collection: \[ new CImage\(\{x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'\}\)\],
-	skeleton: \[ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ],
+	collection: [ new CImage({x: -17, y: -15,width: 34, height: 30, angel: 0, src: 'image/ball.png'})],
+	skeleton: [ {x0:-15,y0:-14,x1:17,y1:-15},{x0:17,y0:-17,x1:19,y1:17},
+				{x0:19,y0:17,x1:-17,y1:15},{x0:-17,y0:15,x1:-15,y1:-14} ],
 	center: {x: 250, y: 350},
 	rotateCenter: {x: 0, y: 0},
 	angel: 0,
