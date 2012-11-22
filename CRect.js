@@ -1,6 +1,6 @@
-var CRect = Class({
-    base: CShape,
-    construct: function(O){
+ArmLib.Shapes.$Rect = new Class({
+    Extends: CShape,
+    initialize: function(O){
         if(typeof(O) != 'undefined') {
             this.x = O.x || this.x;
             this.y = O.y || this.y;
@@ -14,14 +14,11 @@ var CRect = Class({
             if(typeof(O.lineWidth) != 'undefined' && O.lineWidth > 0) {this.lineWidth = O.lineWidth;}
         }
     },
-    vars: {
-        width: 100,
-        height: 100,
-        fill: 'gray',
-        shapeType: 'rect'
-    },
+	width: 100,
+	height: 100,
+	fill: 'gray',
+	shapeType: 'rect',
 
-    methods:{
         _clean: function(stage) {
             //var lineWidth = this.lineWidth;
             //this.context.clearRect(this.x-(0.5*lineWidth)-1,this.y-(0.5*lineWidth)-1,this.width+(1*lineWidth)+2,this.height+(1*lineWidth)+2);
@@ -44,5 +41,4 @@ var CRect = Class({
             this.context.restore();
 
         }
-    }
 });

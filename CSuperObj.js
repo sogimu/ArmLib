@@ -1,8 +1,6 @@
-var CSuperObj = Class({
-
-    construct: function(){
+var CSuperObj = new Class({
+    initialize: function(){
     },
-	vars:{
 		context: null,
         x: 0,
         y: 0,
@@ -15,10 +13,8 @@ var CSuperObj = Class({
         localAngel: 0,
 
         rotateCenter: { x:0,y:0 },
-        localRotateCenter: { x:0,y:0 }
+        localRotateCenter: { x:0,y:0 },
 
-    },
-    methods:{
         clone: function(){
 
             var history = [];
@@ -66,6 +62,5 @@ var CSuperObj = Class({
 
 
             return clone(this);
-        }
 }
 });

@@ -1,11 +1,7 @@
 /*
- name: "LibCanvas"
+ name: "ArmLib"
 
- description: " Arm - free javascript library. "
-
- license:
- - "[GNU Lesser General Public License](http://opensource.org/licenses/lgpl-license.php)"
- - "[MIT License](http://opensource.org/licenses/mit-license.php)"
+ description: " ArmLib - free javascript library. "
 
  authors:
  - Lisin Aleksander aka Sogimu <sogimu@nxt.ru>

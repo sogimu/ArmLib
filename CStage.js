@@ -1,9 +1,9 @@
-var CStage = Class({
-    construct: function(O){
+ArmLib.$Stage = new Class({
+    initialize: function(O){
 
-        this.fps = O.fps || this.fps;
-        this.width = O.width || this.width;
-        this.height = O.height || this.height;
+        // this.fps = O.fps || this.fps;
+        // this.width = O.width || this.width;
+        // this.height = O.height || this.height;
 
         if( O.container ) {
             var container = document.getElementById( O.container )
@@ -18,23 +18,21 @@ var CStage = Class({
         }
         this._init();
     },
-    vars: {
-        collection: [],
-        collectionObjects: [],
-        context: {},
-        events: {},
-        fps: 10,
-        intervalId: null,
-        finfo: false,
-        width: 500,
-        height: 500,
-		TICKS_PER_SECOND: 30,
-		SKIP_TICKS: 33,
-		MAX_FRAMESKIP: 5,
-		next_game_tick: (new Date()*1)
-    },
+	collection: [],
+	collectionObjects: [],
+	context: {},
+	events: {},
+	fps: 10,
+	intervalId: null,
+	finfo: false,
+	width: 500,
+	height: 500,
+	TICKS_PER_SECOND: 60,
+	SKIP_TICKS: 17,
+	MAX_FRAMESKIP: 5,
+	next_game_tick: (new Date()*1),
 
-    methods:{
+    //methods:{
 
         add: function(O) {
             if(typeof O == 'object' && (O.type == 'shape' || O.type == 'object')){
@@ -229,7 +227,6 @@ var CStage = Class({
         },
 
         _process: function() {
-			stats.begin();
 			this._clean.call(this,this);
 			
 			var interpolation = ((new Date()*1) + this.SKIP_TICKS - this.next_game_tick ) / this.SKIP_TICKS;
@@ -257,7 +254,6 @@ var CStage = Class({
             this._info.call(this,this);
             this._event.call(this,this);
 			*/
-            stats.end();
         },
 
         run: function() {
@@ -290,5 +286,5 @@ var CStage = Class({
             console.log('Stage, info()');
             return null;
         }
-    }
+    //}
 });

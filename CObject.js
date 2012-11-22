@@ -1,7 +1,7 @@
 var CObject = Class({
-    base: CSuperObj,
+    Extends: CSuperObj,
 
-    construct: function(O){
+    initialize: function(O){
         if( isSet(O) ) {
             this.name = O.name || this.name;
 
@@ -210,7 +210,6 @@ var CObject = Class({
 
         }
     },
-    vars: {
         collection: [],
         skeleton: {},
 
@@ -219,10 +218,8 @@ var CObject = Class({
         functions: [],
 
         name: 'undefined',
-        type: 'object'
-
-    },
-    methods:{
+        type: 'object',
+  
         add: function(O) {
             if( isTArmObject(O) || isTArmShape(O) ){
                 O.context = this.context;
@@ -466,7 +463,6 @@ var CObject = Class({
 
         }
 
-    }
 });
 
 
