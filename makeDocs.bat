@@ -1,0 +1,1 @@
+jsdoc3/jsdoc -d docs source/Stage.js
