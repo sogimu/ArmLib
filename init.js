@@ -1,1 +1,0 @@
-ArmLib.Globalization(true);
