@@ -1,6 +1,0 @@
-[submodule "jsdoc3"]
-	path = jsdoc3
-	url = https://github.com/jsdoc3/jsdoc.git
-[submodule "atomjs"]
-	path = atomjs
-	url = https://github.com/theshock/atomjs.git
