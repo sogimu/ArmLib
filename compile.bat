@@ -1,1 +1,1 @@
-java -jar C:\XAMPP\htdocs\compiler.jar --js description.js --js CArmLib.js --js CSuperObj.js --js CShape.js --js CRect.js --js CStage.js --js init.js --language_in ECMASCRIPT5 --js_output_file armlib-0.0.1.js
+java -jar ..\compiler.jar --js description.js --js CArmLib.js --js CSuperObj.js --js CShape.js --js CRect.js --js CStage.js --js init.js --language_in ECMASCRIPT5 --js_output_file armlib-0.0.1.js
