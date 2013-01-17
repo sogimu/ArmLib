@@ -203,12 +203,11 @@
 window.framework = window.gizmo;
 (function ArmLib(lib) {
   var ArmLib = lib.Class({initialize:function(O) {
-  }, Static:{"class":{}}, Methods:{}});
-  window.armlib = new ArmLib({})
-})(framework);
-(function ArmLibObject(armlib, lib) {
-  var ArmLibObject = lib.Class({Initialize:function(O, layer, armlib) {
-  }, Static:{name:1E3 * Math.random(), context:null, loadType:"synch", loadedFlag:false, owner:null, zindex:0, depend:false, _list:{}, drawList:{}, low:0, hight:0}, Methods:{draw:function() {
+    this.loadType = O.loadType;
+    this.list = O.list
+  }, Static:{loadType:"synch", loadedFlag:false, _list:{}, drawList:{}, low:0, hight:0, "class":{}}, Methods:{run:function() {
+  }, stop:function() {
+  }, draw:function() {
   }, begin:function(O, layer, armlib) {
   }, update:function(layer, armlib) {
   }, onLoad:function(layer, armlib, lib) {
@@ -219,8 +218,6 @@ window.framework = window.gizmo;
   }, onMouseMove:function(e) {
   }, onMouseDown:function(e) {
   }, onMouseUp:function(e) {
-  }, onShow:function(layer, armlib) {
-  }, onHide:function(layer, armlib) {
   }, sortByZindex:function() {
     var i = this.low;
     var j = this.high;
@@ -248,13 +245,75 @@ window.framework = window.gizmo;
       qSort(A, i, high)
     }
     this.drawList = A
-  }, addChild:function(O) {
+  }, addLayer:function(O) {
     O.context = this.context;
     this.list[O.name] = O;
     this.drawList[O.name] = O;
     this.low = O.zindex < this.low ? O.zindex : this.low;
     this.hight = O.zindex > this.hight ? O.zindex : this.hight;
     this.sortByZindex()
+  }, removeLayer:function(O) {
+  }, set list(O) {
+    this._list = O;
+    this.drawList = O;
+    this.sortByZindex()
+  }, get list() {
+    return this._list
+  }}});
+  window.armlib = new ArmLib({loadType:"synch"})
+})(framework);
+(function Object(armlib, lib) {
+  var Object = lib.Class({Initialize:function(O, layer, armlib) {
+  }, Static:{name:1E3 * Math.random(), context:null, loadType:"synch", loaded:false, owner:null, zindex:0, depend:false, _list:{}, drawList:[]}, Methods:{draw:function() {
+    for(var i in this.drawList) {
+      this.drawList[i].draw()
+    }
+  }, begin:function(O, layer, armlib) {
+  }, update:function(layer, armlib) {
+    for(var i in this.drawList) {
+      this.drawList[i].update()
+    }
+  }, onLoad:function(layer, armlib, lib) {
+  }, onKeyPress:function(e) {
+  }, onKeyDown:function(e) {
+  }, onKeyUp:function(e) {
+  }, onMouseClick:function(e) {
+  }, onMouseMove:function(e) {
+  }, onMouseDown:function(e) {
+  }, onMouseUp:function(e) {
+  }, onShow:function(layer, armlib) {
+  }, onHide:function(layer, armlib) {
+  }, sortByZindex:function(A, low, high) {
+    var i = low;
+    var j = high;
+    var x = A[Math.round((low + high) / 2)].zindex;
+    do {
+      while(A[i].zindex < x) {
+        ++i
+      }
+      while(A[j].zindex > x) {
+        --j
+      }
+      if(i <= j) {
+        var temp = A[i];
+        A[i] = A[j];
+        A[j] = temp;
+        i++;
+        j--
+      }
+    }while(i < j);
+    if(low < j) {
+      this.sortByZindex(A, low, j)
+    }
+    if(i < high) {
+      this.sortByZindex(A, i, high)
+    }
+    this.drawList = A
+  }, addChild:function(O) {
+    O.context = this.context;
+    this.list[O.name] = O;
+    this.drawList.push(O);
+    this.sortByZindex(this.drawList, 0, this.drawList.length - 1)
   }, removeChild:function(O) {
   }, set list(O) {
     this._list = O;
@@ -263,15 +322,15 @@ window.framework = window.gizmo;
   }, get list() {
     return this._list
   }}});
-  armlib.class.Object = ArmLibObject
+  armlib.class.Object = Object
 })(armlib, gizmo);
 (function Layer(armlib, lib) {
   var Layer = lib.Class({Extends:armlib.class.Object, Initialize:function(O) {
     if(O.container) {
       var container = document.getElementById(O.container);
       var canvas = document.createElement("canvas");
-      canvas.width = O.width || this.width;
-      canvas.height = O.width || this.height;
+      canvas.width = O.width;
+      canvas.height = O.height;
       canvas.style.id = O.name;
       container.appendChild(canvas);
       this.context = canvas.getContext("2d")
