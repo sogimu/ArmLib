@@ -1,4 +1,4 @@
-(function Object(armlib,lib){
+(function object(armlib,lib){
     /**
      * Описывает класс минимального объекта.
      *
@@ -7,85 +7,57 @@
      * @version 0.1
      */
 
-    var Object = lib.Class({
-        Initialize: function(O, layer, armlib) {},
-        Static: {
-            name: 1000*Math.random(),
-            context: null,
-            loadType: 'synch', // synch or asynch
-            loaded: false, // Flag which show load-state of object
-            owner: null,
-            zindex: 0,
-            depend: false, // Flag display dependence of same data (image, music and etc)
-            _list: {}, // List of child-objects
-            drawList: [], // List of sorted child-objects,
+    var object = lib.Class({
+        Extend: armlib._class.superObj,
+        Initialize: function(O, layer, armlib) {
+            this.name = O.name;
+            this.zindex = O.zindex || this.zindex;
+            this.synch = this.synch;
+            this.x = O.x || this.x;
+            this.y = O.y || this.y;
+            this.centralPoint = O.centralPoint || this.centralPoint;
+            this.angle = O.angle || this.angle;
+            this.scale = O.scale || this.scale;
+            this.begin = O.begin || this.begin;
+            this.update = O.update || this.update;
+            this.draw = O.draw || this.draw;
+            this.onLoad = O.onLoad || this.onLoad;
+        },
+        Statics: {
+            type: 'Object',
+            name: 1000*Math.random()
         },
         Methods: { // Call-back functions of ArmLib object
-            draw: function() {
-                for(var i in this.drawList) {
-                    this.drawList[i].draw();
-                }
-            }, // Function which update view of object
-            begin: function(O, layer, armlib) {}, // Constructor for object
-            update: function(layer, armlib) {
-                for(var i in this.drawList) {
-                    this.drawList[i].update();
-                }
-            }, // Functions which update object
-            onLoad: function(layer, armlib, lib) {},
-            onKeyPress: function(e) {}, // Function for event of keyboard
-            onKeyDown: function(e) {},
-            onKeyUp: function(e) {},
-            onMouseClick: function(e) {}, // Functions for event of mouse
-            onMouseMove: function(e) {},
-            onMouseDown: function(e) {},
-            onMouseUp: function(e) {},
-            onShow: function(layer, armlib) {}, // Function for showing and hiding event
-            onHide: function(layer, armlib) {},
-            sortByZindex: function(A,low,high) { // sort: Quicksort
-                var i = low;
-                var j = high;
-                var x = A[Math.round((low+high)/2)].zindex;  // x - опорный элемент посредине между low и high
-                do {
-                    while(A[i].zindex < x) ++i;  // поиск элемента для переноса в старшую часть
-                    while(A[j].zindex > x) --j;  // поиск элемента для переноса в младшую часть
-                    if(i <= j){
-                        // обмен элементов местами:
-                        var temp = A[i];
-                        A[i] = A[j];
-                        A[j] = temp;
-                        // переход к следующим элементам:
-                        i++; j--;
-                    }
-                } while(i < j);
-                if(low < j) this.sortByZindex(A, low, j);
-                if(i < high) this.sortByZindex(A, i, high);
-                this.drawList = A;
-            },
-            addChild: function(O) { // add new child-object and let sort drawList by z-index
-                O.context = this.context;
-                this.list[O.name] = O;
-                this.drawList.push(O);
-                this.sortByZindex(this.drawList,0,this.drawList.length-1);
-            },
-            removeChild: function(O) {
+			_draw: function() {
+				if(this._connected) {
+					this._draw = function() {
+						this.context.save();
+							this.context.beginPath();
+								this.context.translate(this.x, this.y);
+								this.context.translate(this.centralPoint.x, this.centralPoint.y);
+								this.context.rotate(this.angle);
+								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
+								this.context.scale(this.scale.x, this.scale.y);								
+									for(var i in this._processList) {
+										this._processList[i]._draw.call(this._processList[i]);
+									}
+									if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+								//this.context.fillStyle = this.fill;
+								//this.context.strokeStyle = this.stroke;
+							this.context.closePath();
+							//this.context.fill();
+							//this.context.stroke();
+						this.context.restore();						
+					}
+					this._draw();
+				} else {
+					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+				}
 
-            },
-
-
-            // Setters/Getters
-            set list(O) {
-                this._list = O;
-                this.drawList = O;
-                this.sortByZindex();
-            },
-            get list() {
-                return this._list;
             }
-
         }
     });
 
-    armlib.class.Object = Object;
+    armlib.class.Object = object;
 
 }(armlib,gizmo));

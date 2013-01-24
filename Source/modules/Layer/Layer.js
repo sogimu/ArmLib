@@ -15,7 +15,7 @@
 	 */
 
 	var Layer = lib.Class({
-        Extends: armlib.class.Object,
+        Extend: armlib._class.superObj,
         Initialize: function(O) {
             if( O.container ) {
                 var container = document.getElementById(O.container);
@@ -24,12 +24,20 @@
                 canvas.height = O.height;
                 canvas.style.id = O.name;
                 container.appendChild( canvas );
-                this.context = canvas.getContext('2d');
+                this._context = canvas.getContext('2d');
+				this.name = O.name;
+                this._layer = this;
+                this.owner = armlib;
             } else {
                 throw Error('The container is not found! Choose right id of container, please!');
             }
+			this.synch = this.synch;
+			this.onLoad = O.onLoad || this.onLoad;
+			armlib.addLayer(this);
+
         },
-        Static: {
+        Statics: {
+            type: 'Layer',
             width: 500,
             height: 500
         },
