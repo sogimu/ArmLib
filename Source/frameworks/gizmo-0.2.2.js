@@ -13,9 +13,9 @@
     }
   };
   var itIs = function(type, obj) {
-    if(this.isSet(obj)) {
+    if(gizmo.isSet(obj)) {
       var clas = Object.prototype.toString.call(obj).slice(8, -1);
-      return obj !== undefined && obj !== null && clas === type
+      return obj !== null && clas == type
     }else {
       return false
     }
@@ -24,30 +24,52 @@
     var clas = {}.toString.call(obj).slice(8, -1);
     return clas
   };
+  var clone = function clone(obj) {
+    if(gizmo.typeIs(obj) !== "Array" && gizmo.typeIs(obj) !== "Object") {
+      return obj
+    }
+    var newObj = new obj.constructor;
+    for(i in obj) {
+      if(obj[i] && obj.hasOwnProperty(i)) {
+        if(gizmo.itIs("Object", obj[i])) {
+          newObj[i] = clone(obj[i])
+        }else {
+          if(obj[i] && gizmo.itIs("Array", obj[i])) {
+            newObj[i] = [].concat(obj[i])
+          }else {
+            newObj[i] = obj[i]
+          }
+        }
+      }
+    }
+    return newObj
+  };
   gizmo.isSet = isSet;
   gizmo.itIs = itIs;
   gizmo.typeIs = typeIs;
-  gizmo.Modules["baseVariableFunction"] = {name:"Type", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f \u0432\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043e\u043a \u043f\u0435\u0440\u0435\u043c\u0435\u043d\u044b\u0445 \u043d\u0430 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043e\u0432\u0430\u043d\u0438\u0435, \u0443\u0442\u0438\u043d\u043d\u043e\u0439 \u0442\u0438\u043f\u0438\u0437\u0430\u0446\u0438\u0438 \u0438 \u0442.\u0434. "}
+  gizmo.clone = clone;
+  gizmo.Modules["baseVariableFunction"] = {name:"Type", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043b\u044f \u0432\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043e\u043a \u043f\u0435\u0440\u0435\u043c\u0435\u043d\u044b\u0445 \u043d\u0430 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043e\u0432\u0430\u043d\u0438\u0435, \u0443\u0442\u0438\u043d\u043d\u043e\u0439 \u0442\u0438\u043f\u0438\u0437\u0430\u0446\u0438\u0438 \u0438 \u0442.\u0434. "}
 })(gizmo);
 (function(gizmo) {
-  Filter = function(O, type) {
-    if(gizmo.isSet(O) && gizmo.itIs("String", O) === true && this.isType(O)) {
+  var Filter = function(O, type) {
+    if(gizmo.isSet(O) && gizmo.itIs(type, O) === true && isType(type)) {
       return O
     }else {
-      throw TypeError(this.type(O) + " != String");
+      throw TypeError(gizmo.typeIs(O) + " != " + type);
     }
   };
-  isType = function(O) {
-    if(this.is("String", O) === true) {
+  var isType = function(O) {
+    if(gizmo.itIs("String", O) === true) {
       var flag = true;
       for(var i in gizmo._types) {
         if(O === gizmo._types[i]) {
-          flag = true
+          flag = false;
+          break
         }
       }
-      return flag ? true : false
+      return flag
     }else {
-      throw TypeError(this.type(O) + " <- it's not name of type");
+      throw TypeError(gizmo.typeIs(O) + " <- it's not name of type");
     }
   };
   gizmo.Filter = Filter;
@@ -81,12 +103,27 @@
   gizmo.Modules["Checks"] = {name:"Checks", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043b\u044f \u0432\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043c\u0435\u0442\u043e\u0434\u043e\u0432 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0442\u0438\u043f\u0430, \u0434\u043b\u044f \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0442\u0438\u043f\u0430"}
 })(gizmo);
 (function(gizmo) {
-  var Class = function(O) {
-    var initialize = O.Initialize || function() {
+  var Class = function(params, property) {
+    var construct = params.Initialize || function() {
     };
-    var newClass = initialize;
-    if(O.Extends) {
-      var superClass = O.Extends;
+    var newClass = construct;
+    if(params.Extend) {
+      var superClass = params.Extend;
+      var newClass = function(O) {
+        (function(O, self) {
+          for(var i in O) {
+            switch(gizmo.typeIs(O[i])) {
+              case "Array":
+                self[i] = [].concat(O[i]);
+                break;
+              case "Object":
+                self[i] = gizmo.clone(O[i]);
+                break
+            }
+          }
+        })(superClass.prototype, this);
+        construct.call(this, O)
+      };
       var f = function() {
       };
       f.prototype = superClass.prototype;
@@ -108,39 +145,8 @@
           newClass[m] = superClass[m]
         }
       }
-      var Extends = function() {
-        var t = this;
-        if(arguments.length > 1) {
-          throw Error("$Extends requires 0-1 parameters.");
-        }
-        var result;
-        var tmpExtends = t.$Extends;
-        t.$Extends = superClass.__$Extends;
-        if(arguments.length === 1) {
-          var methodName = arguments[0];
-          result = function() {
-            if(superClass.prototype[methodName]) {
-              var res = superClass.prototype[methodName].apply(t, arguments);
-              t.$Extends = tmpExtends;
-              return res
-            }else {
-              throw Error("Method '" + methodName + "' not found.");
-            }
-          }
-        }else {
-          if(arguments.length === 0) {
-            result = function() {
-              superClass.apply(t, arguments);
-              t.$Extends = tmpExtends
-            }
-          }
-        }
-        return result
-      };
-      newClass.__$Extends = Extends;
-      newClass.prototype.$Extends = Extends
     }
-    var methods = O.Methods || {};
+    var methods = params.Methods || {};
     for(var m in methods) {
       var getter = methods.__lookupGetter__(m), setter = methods.__lookupSetter__(m);
       if(getter || setter) {
@@ -154,9 +160,45 @@
         newClass.prototype[m] = methods[m]
       }
     }
-    var static = O.Static || {};
-    for(var m in static) {
-      newClass.prototype[m] = static[m]
+    var vars = params.Statics || {};
+    if(gizmo.isSet(property) && gizmo.isSet(property.checkingMode)) {
+      var mode = property.checkingMode
+    }else {
+      var mode = false
+    }
+    if(!mode) {
+      for(var m in vars) {
+        switch(gizmo.typeIs(vars[m])) {
+          case "Array":
+            newClass.prototype[m] = [].concat(vars[m]);
+            break;
+          case "Object":
+            newClass.prototype[m] = gizmo.clone(vars[m]);
+            break;
+          default:
+            newClass.prototype[m] = vars[m]
+        }
+      }
+    }else {
+      for(var m in vars) {
+        newClass.prototype["_" + m] = vars[m];
+        getter = function(O) {
+          var key = "_" + m;
+          var value = vars[m];
+          return function() {
+            return gizmo.Filter(this[key], gizmo.typeIs(value))
+          }
+        }(m);
+        setter = function(O) {
+          var key = "_" + m;
+          var value = vars[m];
+          return function(O) {
+            this[key] = gizmo.Filter(O, gizmo.typeIs(value))
+          }
+        }(m);
+        newClass.prototype.__defineGetter__(m, getter);
+        newClass.prototype.__defineSetter__(m, setter)
+      }
     }
     return newClass
   };

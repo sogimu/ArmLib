@@ -13,27 +13,63 @@ window.framework = window.gizmo;
 
     var ArmLib = lib.Class({
         initialize: function(O){
-            this.loadType = O.loadType;
-            this.list = O.list;
+            this.synch = O.synch;
         },
-        Static: {
-            loadType: 'synch', // synch or asynch
-            loadedFlag: false, // Flag which show load-state of object
-            _list: {}, // List of child-objects
-            drawList: {}, // List of sorted child-objects,
+        Statics: {
+            name: 'ARMLIB',
+			type: 'ARMLIB',
+            owner: null,
+            synch: true, // synch or asynch
+            loaded: false, // Flag which show load-state of object
+            _synchObjectsList: {}, // List with loading objects
+            _numberSynchObjects: 0,
 
-            low: 0,
-            hight: 0,
+            _list: {}, // List with Layer-objects
+            _processList: [], // List with sorted layer-objects
 
-            class: {}
+            _armlib: this,
+            _lib: lib,
+
+            class: {},
+            _class: {}
         },
         Methods: {
-            run: function() {},
-            stop: function() {},
-            draw: function() {}, // Function which update view of object
-            begin: function(O, layer, armlib) {}, // Constructor for object
-            update: function(layer, armlib) {}, // Functions which update object
-            onLoad: function(layer, armlib, lib) {},
+			_draw: function() {
+                if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+
+                for(var i in this._processList) {
+                    this._processList[i]._draw();
+                }
+            },
+            draw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
+
+            _begin: function() {
+                if(lib.isSet(this.begin)) {this.begin.call(this, this._layer,armlib,lib)};
+
+                for(var i in this._processList) {
+                    this._processList[i]._begin();
+                }
+            },
+            begin: function(layer, armlib, lib) {}, // Constructor for object
+
+            _update: function() {
+                if(lib.isSet(this.update)) {this.update.call(this, this._layer,armlib,lib)};
+
+                for(var i in this._processList) {
+                    this._processList[i]._update();
+                }
+            },
+            update: function(layer, armlib, lib) {}, // Function which update object
+
+            _onLoad: function() {
+				this.loaded = true;
+				if(lib.isSet(this.onLoad)) {
+					this.onLoad.call(this, armlib,lib)
+				}
+				
+            },
+            onLoad: function(armlib, lib) {}, // Function for event load ending
+
             onKeyPress: function(e) {}, // Function for event of keyboard
             onKeyDown: function(e) {},
             onKeyUp: function(e) {},
@@ -41,14 +77,15 @@ window.framework = window.gizmo;
             onMouseMove: function(e) {},
             onMouseDown: function(e) {},
             onMouseUp: function(e) {},
-            sortByZindex: function() { // sort: Quicksort
-                var i = this.low;
-                var j = this.high;
-                var A = this.drawList;
-                var x = A[Math.round((low+high)/2)];  // x - опорный элемент посредине между low и high
+            onShow: function(layer, armlib) {}, // Function for showing and hiding event
+            onHide: function(layer, armlib) {},
+            _sortByZindex: function(A,low,high) { // sort: Quicksort
+                var i = low;
+                var j = high;
+                var x = A[Math.round((low+high)/2)].zindex;  // x - опорный элемент посредине между low и high
                 do {
-                    while(A[i] < x) ++i;  // поиск элемента для переноса в старшую часть
-                    while(A[j] > x) --j;  // поиск элемента для переноса в младшую часть
+                    while(A[i].zindex < x) ++i;  // поиск элемента для переноса в старшую часть
+                    while(A[j].zindex > x) --j;  // поиск элемента для переноса в младшую часть
                     if(i <= j){
                         // обмен элементов местами:
                         var temp = A[i];
@@ -58,17 +95,39 @@ window.framework = window.gizmo;
                         i++; j--;
                     }
                 } while(i < j);
-                if(low < j) qSort(A, low, j);
-                if(i < high) qSort(A, i, high);
-                this.drawList = A;
+                if(low < j) this._sortByZindex(A, low, j);
+                if(i < high) this._sortByZindex(A, i, high);
+                this._processList = A;
             },
-            addLayer: function(O) { // add new child-object and let sort drawList by z-index
-                O.context = this.context;
-                this.list[O.name] = O;
-                this.drawList[O.name] = O;
-                this.low = (O.zindex < this.low)?O.zindex:this.low;
-                this.hight = (O.zindex > this.hight)?O.zindex:this.hight;
-                this.sortByZindex();
+			setFunc: function(name,func) {
+				if(lib.isSet(name)) {
+					this[name] = func;
+				}
+			},
+			getFunc: function(O) {
+			},
+			
+			addToProcessList: function(O) {
+				this._processList.push(O);
+                this._sortByZindex(this._processList,0,this._processList.length-1);
+			},
+			removeFromProcessList: function() {
+				
+			},
+			
+            addLayer: function(O) { // add new layer-object and let sort drawList by z-index
+                O.owner = this;
+                this._list[O.name] = O;
+				
+                if(O.loaded && O.synch == false) {
+					this.addToProcessList(O);
+                } else if(O.loaded && O.synch) {
+					this._synchObjectsList[this.name] = O;
+				} else {
+					this._numberSynchObjects++;
+                }
+				O._connected = true;	
+
             },
             removeLayer: function(O) {
 
@@ -76,19 +135,11 @@ window.framework = window.gizmo;
 
 
             // Setters/Getters
-            set list(O) {
-                this._list = O;
-                this.drawList = O;
-                this.sortByZindex();
-            },
-            get list() {
-                return this._list;
-            }
 
         }
     });
 
     window.armlib = new ArmLib({
-        loadType: 'synch'
+        synch: true
     });
 }(framework));

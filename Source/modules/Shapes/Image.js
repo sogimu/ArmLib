@@ -14,68 +14,68 @@
      * @version 0.1
      */
 
-    var CImage = lib.Class({
-        Extends: armlib.class.Object,
+    var image = lib.Class({
+        Extend: armlib._class.Shape,
         Initialize: function(O) {
             this.name = O.name;
             this.zindex = O.zindex;
+            this.synch = O.synch;
             this.x = O.x;
             this.y = O.y;
             this.width = O.width;
             this.height = O.height;
             this.centralPoint = O.centralPoint,
-                this.angle = O.angle,
-                this.scale = O.scale,
-                this.fill = O.fill;
+            this.angle = O.angle,
+            this.scale = O.scale,
+            this.fill = O.fill;
             this.stroke = O.stroke;
             this.src = O.src;
             this.onLoad = O.onLoad;
             this.init();
         },
-        Static: {
-            x: null,
-            y: null,
+        Statics: {
+            type: 'Image',
+			loaded: false,
             width: null,
             height: null,
-            centralPoint: null,
-            angle: null,
-            scale: null,
-            fill: null,
-            stroke: null,
             src: null,
-            image: null
+            image: new Image()
         },
         Methods: {
             init: function() {
-                this.depend = true;
-
                 (function(self) {
-                    var image = new Image();
+                    var image = self.image;
                     image.src = self.src;
                     image.onload = function() {
-                        self.image = image;
-                        self.loaded = true;
-                        self.onLoad();
-                        self.draw();
-                    }
+						self._onLoad();
+					};
                 })(this);
             },
-            draw: function() {
-                this.context.save();
-                    this.context.beginPath();
-                        this.context.fillStyle = this.fill;
-                        this.context.strokeStyle = this.stroke;
-                        this.context.scale(this.scale.x, this.scale.y);
-                        this.context.translate(this.centralPoint.x, this.centralPoint.y);
-                        this.context.rotate(this.angle);
-                        this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
-                        this.context.drawImage(this.image, this.x,this.y,this.width,this.height);
-                    this.context.closePath();
-                    this.context.fill();
-                    this.context.stroke();
-                this.context.restore();
-            }
+            _draw: function() {
+				if(this._connected) {
+					this._draw = function() {
+						this.context.save();
+							this.context.beginPath();
+								this.context.translate(this.centralPoint.x, this.centralPoint.y);
+								this.context.rotate(this.angle);
+								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
+								this.context.scale(this.scale.x, this.scale.y);
+								this.context.drawImage(this.image, this.x,this.y,this.width,this.height);
+								this.context.fillStyle = this.fill;
+								this.context.strokeStyle = this.stroke;
+							this.context.closePath();
+							this.context.fill();
+							this.context.stroke();
+						this.context.restore();
+						if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+
+					}
+					this._draw();
+				} else {
+					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+				}
+                            }
         }
     });
-    armlib.class.Image = CImage;
+    armlib.class.Image = image;
 })(armlib,gizmo);
