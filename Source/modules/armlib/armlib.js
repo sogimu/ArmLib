@@ -14,6 +14,7 @@ window.framework = window.gizmo;
     var ArmLib = lib.Class({
         initialize: function(O){
             this.synch = O.synch;
+			return this;
         },
         Statics: {
             name: 'ARMLIB',
@@ -103,6 +104,7 @@ window.framework = window.gizmo;
 				if(lib.isSet(name)) {
 					this[name] = func;
 				}
+				return this;
 			},
 			getFunc: function(O) {
 			},
@@ -127,7 +129,7 @@ window.framework = window.gizmo;
 					this._numberSynchObjects++;
                 }
 				O._connected = true;	
-
+				return this;
             },
             removeLayer: function(O) {
 

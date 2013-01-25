@@ -44,7 +44,7 @@
 					}
 					this._draw();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
@@ -60,7 +60,7 @@
 					}
 					this._begin();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
@@ -76,7 +76,7 @@
 					}
 					this._update();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
@@ -105,7 +105,7 @@
 					}
 					this._onLoad();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
             },
             onLoad: function(armlib, lib) {}, // Function for event load ending
@@ -149,20 +149,28 @@
 			},
 			
             addChild: function(O) { // add new child-object and let sort drawList by z-index
-                O.context = this._context;
-                O.layer = this._layer;
-                O.owner = this;
-				this._list[O.name] = O;
-				
-                if(O.loaded && O.synch == false) {
-					this.addToProcessList(O);
-                } else if(O.loaded && O.synch) {
-					this._synchObjectsList[O.name] = O;
+                if(this._connected) {
+					this.addChild = function(O) {
+						O.context = this._context;
+						O.layer = this._layer;
+						O.owner = this;
+						this._list[O.name] = O;
+						
+						if(O.loaded && O.synch == false) {
+							this.addToProcessList(O);
+						} else if(O.loaded && O.synch) {
+							this._synchObjectsList[O.name] = O;
+						} else {
+							this._numberSynchObjects++;
+						}
+						O._connected = true;
+						return this;
+					}
+					this.addChild(O);
+					return this;
 				} else {
-					this._numberSynchObjects++;
-                }
-				O._connected = true;
-
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
+				}
             },
             removeChild: function(O) {
 
@@ -171,6 +179,7 @@
 				if(lib.isSet(name)) {
 					this[name] = func;
 				}
+				return this;
 			},
 			getFunc: function(O) {
 			},
