@@ -34,7 +34,7 @@
 			this.synch = this.synch;
 			this.onLoad = O.onLoad || this.onLoad;
 			armlib.addLayer(this);
-
+			return this;
         },
         Statics: {
             type: 'Layer',

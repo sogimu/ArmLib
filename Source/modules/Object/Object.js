@@ -10,9 +10,9 @@
     var object = lib.Class({
         Extend: armlib._class.superObj,
         Initialize: function(O, layer, armlib) {
-            this.name = O.name;
+            this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
-            this.synch = this.synch;
+            this.synch = O.synch || this.synch;
             this.x = O.x || this.x;
             this.y = O.y || this.y;
             this.centralPoint = O.centralPoint || this.centralPoint;
@@ -22,6 +22,7 @@
             this.update = O.update || this.update;
             this.draw = O.draw || this.draw;
             this.onLoad = O.onLoad || this.onLoad;
+			return this;
         },
         Statics: {
             type: 'Object',

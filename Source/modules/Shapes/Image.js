@@ -1,15 +1,22 @@
 (function image(armlib,lib){
     /**
-     * Описывает класс Layer. Данный класс описывает работу с отдельным обектом canvas как работу со "слоем" на
-     * котором могут находиться объекты.
-     *
+     * Описывает класс Image. Данный класс описывает объект "изображение".
+	 *
      * @constructor
      * @param {object} O
-     * @param {string} O.name      Имя слоя.
-     * @param {string} O.container id DOM-элемента, являющегося хранилищем для слоя.
-     * @param {number} O.width     Ширина слоя.
-     * @param {number} O.height    Высота слоя.
-     * @this {armlib.class.Layer}
+     * @param {string} O.name          Имя объекта
+     * @param {number} O.zindex        z-индекс объекта относительно объекта родителя
+     * @param {bool}   O.synch         Тип обекта, бывает синхронным и асинхронным, true или false, соответственно
+     * @param {number} O.x             X
+     * @param {number} O.y		       Y
+     * @param {number} O.width         Ширина изображения
+     * @param {number} O.height        Высота изображения
+     * @param {object} O.centralPoint  Точка вокруг которой происходит поворот
+     * @param {number} O.angle         Угол поворота
+     * @param {object} O.scale         Масштабирование по x и y. Например: {x: 2, y: 3}
+     * @param {string} O.fill          Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
+     * @param {string} O.stroke        Цвет линии, может быть как цветом ("#FFaa00"), так и градиентом
+     * @this {armlib.class.Image}
      * @author <a href="mailto:sogimu@nxt.ru">Alexander Lizin aka Sogimu</a>
      * @version 0.1
      */
@@ -17,21 +24,23 @@
     var image = lib.Class({
         Extend: armlib._class.Shape,
         Initialize: function(O) {
-            this.name = O.name;
-            this.zindex = O.zindex;
-            this.synch = O.synch;
-            this.x = O.x;
-            this.y = O.y;
-            this.width = O.width;
-            this.height = O.height;
-            this.centralPoint = O.centralPoint,
-            this.angle = O.angle,
-            this.scale = O.scale,
-            this.fill = O.fill;
-            this.stroke = O.stroke;
-            this.src = O.src;
-            this.onLoad = O.onLoad;
+			this.name = O.name || this.name;
+            this.src = O.src || this.src;
+			this.zindex = O.zindex || this.zindex;
+            this.synch = O.synch || this.synch;
+            this.x = O.x || this.x;
+            this.y = O.y || this.y;
+            this.centralPoint = O.centralPoint || this.centralPoint;
+            this.width = O.width || this.width;
+            this.height = O.height || this.height
+            this.angle = O.angle || this.angle;
+            this.scale = O.scale || this.scale;
+            this.fill = O.fill || this.fill;
+            this.stroke = O.stroke || this.stroke;
+			this.draw = O.draw || this.draw;
+			this.onLoad = O.onLoad || this.onLoad;
             this.init();
+			return this;
         },
         Statics: {
             type: 'Image',
@@ -72,7 +81,7 @@
 					}
 					this._draw();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
                             }
         }
