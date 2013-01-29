@@ -64,9 +64,7 @@ window.framework = window.gizmo;
 
             _onLoad: function() {
 				this.loaded = true;
-				if(lib.isSet(this.onLoad)) {
-					this.onLoad.call(this, armlib,lib)
-				}
+				if(lib.isSet(this.onLoad)) {this.onLoad.call(this, armlib,lib);}
 				
             },
             onLoad: function(armlib, lib) {}, // Function for event load ending
@@ -123,10 +121,11 @@ window.framework = window.gizmo;
 				
                 if(O.loaded && O.synch == false) {
 					this.addToProcessList(O);
-                } else if(O.loaded && O.synch) {
-					this._synchObjectsList[this.name] = O;
-				} else {
+                } else if(O.synch && O.loaded == false) {
+					this._synchObjectsList[O.name] = O;
 					this._numberSynchObjects++;
+				} else if(O.loaded == true && O.synch) {
+					this._synchObjectsList[O.name] = O;
                 }
 				O._connected = true;	
 				return this;

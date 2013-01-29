@@ -17,20 +17,22 @@
 	var Layer = lib.Class({
         Extend: armlib._class.superObj,
         Initialize: function(O) {
-            if( O.container ) {
+			this.name = O.name || this.name;
+			if( O.container ) {
                 var container = document.getElementById(O.container);
                 var canvas = document.createElement('canvas');
-                canvas.width = O.width;
-                canvas.height = O.height;
-                canvas.style.id = O.name;
+                canvas.width = O.width || this.width;
+                canvas.height = O.height || this.height;
+                canvas.id = O.name || this.name;
+                canvas.style['z-index'] = O.zindex || this.zindex;
+                canvas.style.position = 'absolute';
                 container.appendChild( canvas );
                 this._context = canvas.getContext('2d');
-				this.name = O.name;
-                this._layer = this;
-                this.owner = armlib;
             } else {
                 throw Error('The container is not found! Choose right id of container, please!');
             }
+			this._layer = this;
+			this.owner = armlib;
 			this.synch = this.synch;
 			this.onLoad = O.onLoad || this.onLoad;
 			armlib.addLayer(this);

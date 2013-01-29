@@ -83,29 +83,28 @@
             update: function(layer, armlib, lib) {}, // Function which update object
 
             _onLoad: function() {
-				if(this._connected) {
-					this._onLoad = function() {
-						if(this.owner._numberSynchObjects > 0) {
-							this.owner._numberSynchObjects--;
-							this.loaded = true;
-							this.owner._synchObjectsList[this.name] = this;
-							if(lib.isSet(this.onLoad)) {
-								this.onLoad.call(this, armlib,lib)
+				if(lib.isSet(this.owner)) {
+					this.loaded = true;
+					if(lib.isSet(this.onLoad)) { this.onLoad.call(this, armlib,lib);}
+
+					if(this.synch == true) {
+						this.owner._numberSynchObjects--;
+						if(this.owner._numberSynchObjects == 0) {
+							for(var i in this.owner._synchObjectsList) {
+								this.owner._synchObjectsList[i]._begin();
 							}
-							if(this.owner._numberSynchObjects == 0) {
-								for(var i in this.owner._synchObjectsList) {
-									this.owner._synchObjectsList[i]._begin();
-								}
-								for(var i in this.owner._synchObjectsList) {
-									this.owner.addToProcessList(this.owner._synchObjectsList[i]);
-								}
-								this.owner._onLoad();
+							for(var i in this.owner._synchObjectsList) {
+								this.owner.addToProcessList(this.owner._synchObjectsList[i]);
 							}
+							this.owner.synchObjectsList = {};
+							this.owner._onLoad();
+								
 						}
+					} else {
+						this.owner.addToProcessList(this);
 					}
-					this._onLoad();
 				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
+					this.loaded = true;
 				}
             },
             onLoad: function(armlib, lib) {}, // Function for event load ending
@@ -156,12 +155,13 @@
 						O.owner = this;
 						this._list[O.name] = O;
 						
-						if(O.loaded && O.synch == false) {
+						if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
 							this.addToProcessList(O);
-						} else if(O.loaded && O.synch) {
+						} else if(O.synch && O.loaded == false) { // если загруженный, синхронный объект, то
 							this._synchObjectsList[O.name] = O;
-						} else {
 							this._numberSynchObjects++;
+						} else if(O.loaded == true && O.synch){
+							this._synchObjectsList[O.name] = O;
 						}
 						O._connected = true;
 						return this;
