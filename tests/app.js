@@ -8,7 +8,9 @@ window.onload = function() {
 			y: 50,
             fill: '#FF0000',
             stroke: '#aa0000'
-        });	
+        }).setFunc('onLoad', function() {
+			console.log('onLoad r0');
+		})	
 
         r3 = new armlib.class.Image({
             name: 'r3',
@@ -61,19 +63,19 @@ window.onload = function() {
         action = new armlib.class.Layer({
             container: 'container',
             name: 'action',
-			zindex: 1,
+			zindex: 2,
             width: 300,
             height: 300
         }).setFunc('onLoad', function(){
-			console.log('onLoad l');
+			console.log('onLoad action');
 		}).addChild(obj2);
 
 		
 		armlib.setFunc('onLoad', function() {
-			this._draw();
+			this._onDraw();
 			console.log('onLoad armlib');
 		});
-		armlib._load();
+		armlib.Load();
 	
     })(armlib,gizmo);
 

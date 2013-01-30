@@ -35,32 +35,32 @@ window.framework = window.gizmo;
             _class: {}
         },
         Methods: {
-			_draw: function() {
-                if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+			_onDraw: function() {
+                if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
 
                 for(var i in this._processList) {
-                    this._processList[i]._draw();
+                    this._processList[i]._onDraw();
                 }
             },
-            draw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
+            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
 
-            _begin: function() {
-                if(lib.isSet(this.begin)) {this.begin.call(this, this._layer,armlib,lib)};
+            _onBegin: function() {
+                if(lib.isSet(this.onBegin)) {this.onBegin.call(this, this._layer,armlib,lib)};
 
                 for(var i in this._processList) {
-                    this._processList[i]._begin();
+                    this._processList[i]._onBegin();
                 }
             },
-            begin: function(layer, armlib, lib) {}, // Constructor for object
+            onBegin: function(layer, armlib, lib) {}, // Constructor for object
 
-            _update: function() {
-                if(lib.isSet(this.update)) {this.update.call(this, this._layer,armlib,lib)};
+            _onUpdate: function() {
+                if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
 
                 for(var i in this._processList) {
-                    this._processList[i]._update();
+                    this._processList[i]._onUpdate();
                 }
             },
-            update: function(layer, armlib, lib) {}, // Function which update object
+            onUpdate: function(layer, armlib, lib) {}, // Function which update object
 
             _onLoad: function() {
 				this.loaded = true;
@@ -133,9 +133,9 @@ window.framework = window.gizmo;
             removeLayer: function(O) {
 
             },
-			_load: function() {
+			Load: function() {
 				for(var i in this._list) {
-					this._list[i]._load();
+					this._list[i].Load();
 				}
 			}
         }

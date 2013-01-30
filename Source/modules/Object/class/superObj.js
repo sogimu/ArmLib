@@ -1,6 +1,6 @@
 (function superObj(armlib,lib){
     /**
-     * Описывает супер класс.
+     * Описывает суперкласс.
      *
      * @this {armlib._class.superObj}
      * @author <a href="mailto:sogimu@nxt.ru">Alexander Lizin aka Sogimu</a>
@@ -19,14 +19,14 @@
             scale: {x:1,y:1},
             _context: null,
             _layer: null,
-            owner: null,
+            _owner: null,
             zindex: 0,
             synch: true, // synch or asynch
             loaded: false, // Flag which show load-state of object
             _synchObjectsList: {}, // List with loading objects
             _numberSynchObjects: 0,
 
-            _list: {}, // List with child-objects
+            _list: [], // List with child-objects
             _processList: [], // List with sorted child-objects
 
 			_connected: false,
@@ -34,53 +34,53 @@
             _lib: lib
         },
         Methods: { // Call-back functions of ArmLib object
-            _draw: function() {
+            _onDraw: function() {
 				if(this._connected) {
-					this._draw = function() {
+					this._onDraw = function() {
 						for(var i in this._processList) {
-							this._processList[i]._draw.call(this._processList[i]);
+							this._processList[i]._onDraw.call(this._processList[i]);
 						}
-						if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+						if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
 					}
-					this._draw();
+					this._onDraw();
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
-            draw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
+            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
 
-            _begin: function() {
+            _onBegin: function() {
 				if(this._connected) {
-					this._begin = function() {
+					this._onBegin = function() {
 						for(var i in this._processList) {
-							this._processList[i]._begin();
+							this._processList[i]._onBegin();
 						}
-						if(lib.isSet(this.begin)) {this.begin.call(this, this._layer,armlib,lib)};
+						if(lib.isSet(this.onBegin)) {this.onBegin.call(this, this._layer,armlib,lib)};
 					}
-					this._begin();
+					this._onBegin();
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
-            begin: function(layer, armlib, lib) {}, // Constructor for object
+            onBegin: function(layer, armlib, lib) {}, // Constructor for object
 
-            _update: function() {
+            _onUpdate: function() {
 				if(this._connected) {
-					this._update = function() {
+					this._onUpdate = function() {
 						for(var i in this._processList) {
-							this._processList[i]._update();
+							this._processList[i]._onUpdate();
 						}
-						if(lib.isSet(this.update)) {this.update.call(this, this._layer,armlib,lib)};
+						if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
 					}
-					this._update();
+					this._onUpdate();
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
             },
-            update: function(layer, armlib, lib) {}, // Function which update object
+            onUpdate: function(layer, armlib, lib) {}, // Function which update object
 
             _onLoad: function() {
 				if(lib.isSet(this.owner)) {
@@ -91,7 +91,7 @@
 						this.owner._numberSynchObjects--;
 						if(this.owner._numberSynchObjects == 0) {
 							for(var i in this.owner._synchObjectsList) {
-								this.owner._synchObjectsList[i]._begin();
+								this.owner._synchObjectsList[i]._onBegin();
 							}
 							for(var i in this.owner._synchObjectsList) {
 								this.owner.addToProcessList(this.owner._synchObjectsList[i]);
@@ -151,7 +151,7 @@
 				O.context = this._context;
 				O.layer = this._layer;
 				O.owner = this;
-				this._list[O.name] = O;
+				this._list.push(O);
 				
 				if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
 					this.addToProcessList(O);
@@ -168,6 +168,9 @@
             removeChild: function(O) {
 
             },
+			dd: function() {
+				alert();
+			},
 			_load: function() {
 				for(var i in this._list) {
 					this._list[i]._load();

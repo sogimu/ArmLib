@@ -29,9 +29,19 @@
             name: 1000*Math.random()
         },
         Methods: { // Call-back functions of ArmLib object
-			_draw: function() {
+			_load: function() {
+				if(this._list.length == 0) {
+					this._onLoad.call(this);
+				}
+				for(var i in this._list) {
+					this._list[i]._load();
+				}
+
+				return this;
+			},
+			_onDraw: function() {
 				if(this._connected) {
-					this._draw = function() {
+					this._onDraw = function() {
 						this.context.save();
 							this.context.beginPath();
 								this.context.translate(this.x, this.y);
@@ -40,13 +50,13 @@
 								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
 								this.context.scale(this.scale.x, this.scale.y);								
 									for(var i in this._processList) {
-										this._processList[i]._draw.call(this._processList[i]);
+										this._processList[i]._onDraw.call(this._processList[i]);
 									}
-									if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+									if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
 							this.context.closePath();
 						this.context.restore();						
 					}
-					this._draw();
+					this._onDraw();
 				} else {
 					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
 				}

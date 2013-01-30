@@ -54,9 +54,9 @@
 				}
 				return this;
 			},
-            _draw: function() {
+            _onDraw: function() {
 				if(this._connected) {
-					this._draw = function() {
+					this._onDraw = function() {
 						this.context.save();
 							this.context.beginPath();
 								this.context.translate(this.centralPoint.x, this.centralPoint.y);
@@ -66,20 +66,19 @@
 								this.context.rect(this.x,this.y,this.width,this.height);
 								this.context.fillStyle = this.fill;
 								this.context.strokeStyle = this.stroke;
-								if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
 							this.context.closePath();
 							this.context.fill();
 							this.context.stroke();
 							
 						this.context.restore();
-						if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
+						if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
 					}
-					this._draw();
+					this._onDraw();
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
-            },
+            }
 
         }
     });
