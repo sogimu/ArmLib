@@ -148,33 +148,31 @@
 			},
 			
             addChild: function(O) { // add new child-object and let sort drawList by z-index
-                if(this._connected) {
-					this.addChild = function(O) {
-						O.context = this._context;
-						O.layer = this._layer;
-						O.owner = this;
-						this._list[O.name] = O;
-						
-						if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
-							this.addToProcessList(O);
-						} else if(O.synch && O.loaded == false) { // если загруженный, синхронный объект, то
-							this._synchObjectsList[O.name] = O;
-							this._numberSynchObjects++;
-						} else if(O.loaded == true && O.synch){
-							this._synchObjectsList[O.name] = O;
-						}
-						O._connected = true;
-						return this;
-					}
-					this.addChild(O);
-					return this;
-				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
+				O.context = this._context;
+				O.layer = this._layer;
+				O.owner = this;
+				this._list[O.name] = O;
+				
+				if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
+					this.addToProcessList(O);
+				} else if(O.synch && O.loaded == false) { // если не загруженный, синхронный объект, то
+					this._synchObjectsList[O.name] = O;
+					this._numberSynchObjects++;
+				} else if(O.loaded && O.synch){ // если загруженный, синхронный объект
+					this._synchObjectsList[O.name] = O;
 				}
+				O._connected = true;
+				return this;
+			
             },
             removeChild: function(O) {
 
             },
+			_load: function() {
+				for(var i in this._list) {
+					this._list[i]._load();
+				}
+			},
 			setFunc: function(name,func) {
 				if(lib.isSet(name)) {
 					this[name] = func;
@@ -189,7 +187,7 @@
 
             set context(O) {
                 this._context = O;
-                var list = this._processList;
+                var list = this._list;
                 for(var i in list) {
                     list[i].context = O;
                 }
@@ -200,7 +198,7 @@
 
             set layer(O) {
                 this._layer = O;
-                var list = this._processList;
+                var list = this._list;
                 for(var i in list) {
                     list[i].layer = O;
                 }

@@ -39,13 +39,6 @@
             this.stroke = O.stroke || this.stroke;
 			this.draw = O.draw || this.draw;
 			this.onLoad = O.onLoad || this.onLoad;
-			this.image = new Image();
-			this.image.src = this.src;
-			var self = this;
-			this.image.onload = function() {
-				self._onLoad();
-			};
-
 			return this;
         },
         Statics: {
@@ -57,6 +50,15 @@
             image: null
         },
         Methods: {
+			_load: function() {
+				this.image = new Image();
+				this.image.src = this.src;
+				var self = this;
+				this.image.onload = function() {
+					self._onLoad();
+				};
+				return this;
+			},
             _draw: function() {
 				if(this._connected) {
 					this._draw = function() {

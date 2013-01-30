@@ -43,11 +43,7 @@
 										this._processList[i]._draw.call(this._processList[i]);
 									}
 									if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
-								//this.context.fillStyle = this.fill;
-								//this.context.strokeStyle = this.stroke;
 							this.context.closePath();
-							//this.context.fill();
-							//this.context.stroke();
 						this.context.restore();						
 					}
 					this._draw();

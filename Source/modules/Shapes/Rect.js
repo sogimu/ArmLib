@@ -41,11 +41,19 @@
         },
         Statics: {
             type: 'Rect',
-			loaded: true,
 			width: null,
             height: null,
         },
         Methods: {
+			_load: function() {
+				if(!this.loaded) {
+					this._onLoad.call(this);
+					this._load = function() {
+						return this;
+					}
+				}
+				return this;
+			},
             _draw: function() {
 				if(this._connected) {
 					this._draw = function() {
@@ -56,8 +64,6 @@
 								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
 								this.context.scale(this.scale.x, this.scale.y);
 								this.context.rect(this.x,this.y,this.width,this.height);
-											//this.context.clearRect(this.x,this.y,25,25);
-
 								this.context.fillStyle = this.fill;
 								this.context.strokeStyle = this.stroke;
 								if(lib.isSet(this.draw)) {this.draw.call(this, this._context, this._layer,armlib,lib)};
@@ -73,7 +79,7 @@
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
 
-            }
+            },
 
         }
     });

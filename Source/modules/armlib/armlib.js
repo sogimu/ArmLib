@@ -17,8 +17,8 @@ window.framework = window.gizmo;
 			return this;
         },
         Statics: {
-            name: 'ARMLIB',
-			type: 'ARMLIB',
+            name: 'ArmLib',
+			type: 'ArmLib',
             owner: null,
             synch: true, // synch or asynch
             loaded: false, // Flag which show load-state of object
@@ -133,10 +133,11 @@ window.framework = window.gizmo;
             removeLayer: function(O) {
 
             },
-
-
-            // Setters/Getters
-
+			_load: function() {
+				for(var i in this._list) {
+					this._list[i]._load();
+				}
+			}
         }
     });
 
