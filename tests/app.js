@@ -4,34 +4,91 @@ window.onload = function() {
             name: 'rect0',
             width: 5,
             height: 5,
-			x: 50,
-			y: 50,
+			x: 400,
+			y: 250,
             fill: '#FF0000',
             stroke: '#aa0000'
-        }).setFunc('onLoad', function() {
+        })
+		.setFunc('onLoad', function() {
 			console.log('onLoad r0');
-		})	
+		})
+
+		r1 = new armlib.class.Image({
+            name: 'r1',
+            src: './img/gras.jpg',
+            width: 500,
+            height: 500,
+        })
+		.setFunc('onLoad', function() {
+			console.log('onLoad r3');
+		});
+		obj2 = new armlib.class.Object({
+			name: 'obj2',
+            zindex: 1,
+			x: 50,
+			y: 50,
+		})
+		.setFunc('onLoad', function() {
+			console.log('onLoad obj2');			
+		})
+		.addChild(r0);
+		
+		action = new armlib.class.Layer({
+            container: 'container',
+            name: 'action',
+			fps: 5,
+			zindex: 0,
+        })
+		.setFunc('onLoad', function(){
+			console.log('onLoad action');
+		})
+		.addChild(r1)
+		.addChild(obj2)
 
         r3 = new armlib.class.Image({
             name: 'r3',
-            src: './img/item.png',
+            src: 'http://www.gazprom.ru/f/posts/11/061858/nosov_03.jpg',
             zindex: 3,
+			synch: false,
             width: 50,
             height: 100,
-        }).setFunc('onLoad', function() {
+        })
+		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		});
 
         r5 = new armlib.class.Image({
             name: 'r5',
-            src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFSBRNDcJSw6L6YHkXuIVioEY3MtAImY9Y4EU5M3cdXT_tWBesEQ',
-            x: 50,
+            src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6QEi-g0hm8843xgjoKicbK-pvDQGXcFBpooF8RFo9Y8UEru8v',
+            x: 0,
             y: 0,
             width: 150,
             height: 150,
-        }).setFunc('onLoad', function() {
+			centralPoint: {x: 125, y: 75},
+        })
+		.setFunc('onLoad', function() {
 			console.log('onLoad r5');
-		});
+		})
+		.setFunc('onUpdate', function() { this.angle-=0.01;})
+		.setFunc('preDraw', function(ctx) {
+			ctx.clearRect(-2,-2,this.width+5,this.height+5);
+		})
+		.setFunc('onDraw', function(ctx) {
+			ctx.moveTo(25,25);
+			ctx.lineTo(100,100);
+		})
+		r6 = new armlib.class.Image({
+            name: 'r6',
+            src: 'http://lh5.ggpht.com/-yrD9VPTixAE/Tl34wHv7KvI/AAAAAAAACik/Gvb0fqjTyrk/s512/googlebot-kun-1b.png',
+            x: 150,
+            y: 100,
+            width: 150,
+            height: 150,
+        })
+		.setFunc('onLoad', function() {
+			console.log('onLoad r6');
+		})
+		
 		
 		obj1 = new armlib.class.Object({
 			name: 'obj1',
@@ -40,39 +97,23 @@ window.onload = function() {
 			angle: 0.3
 		}).setFunc('onLoad', function() {
 			console.log('onLoad obj1');			
-		}).addChild(r3).addChild(r5);
-
-		obj2 = new armlib.class.Object({
-			name: 'obj2',
-			x: 50,
-			y: 50,
-		}).setFunc('onLoad', function() {
-			console.log('onLoad obj2');			
-		}).addChild(r0);
+		})
+		.addChild(r3)
+		.addChild(r5)
+		.addChild(r6);
 		
         l = new armlib.class.Layer({
             container: 'container',
             name: 'ground',
-			zindex: 2,
-            width: 300,
-            height: 300
-        }).setFunc('onLoad', function(){
+			zindex: 1,
+        })
+		.setFunc('onLoad', function(){
 			console.log('onLoad l');
-		}).addChild(obj1);
+		})
+		.addChild(obj1);
 
-        action = new armlib.class.Layer({
-            container: 'container',
-            name: 'action',
-			zindex: 2,
-            width: 300,
-            height: 300
-        }).setFunc('onLoad', function(){
-			console.log('onLoad action');
-		}).addChild(obj2);
-
-		
 		armlib.setFunc('onLoad', function() {
-			this._onDraw();
+			this.run();
 			console.log('onLoad armlib');
 		});
 		armlib.Load();

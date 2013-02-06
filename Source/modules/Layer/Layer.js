@@ -21,6 +21,7 @@
         Extend: armlib._class.superObj,
         Initialize: function(O) {
 			this.name = O.name || this.name;
+			this.fps = O.fps || this.fps;
 			if( O.container ) {
                 var container = document.getElementById(O.container);
                 var canvas = document.createElement('canvas');
@@ -43,6 +44,7 @@
         },
         Statics: {
             type: 'Layer',
+			fps: 60,
             width: 500,
             height: 500
         },
@@ -51,6 +53,63 @@
 				for(var i in this._list) {
 					this._list[i]._load();
 				}
+			},
+			run: function() {
+				(function(O) {
+					var onEachFrame;
+					if (window.webkitRequestAnimationFrame) {
+						onEachFrame = function(cb) {
+							var _cb = function() { cb(); webkitRequestAnimationFrame(_cb); }
+							_cb();
+						};
+					} else if (window.mozRequestAnimationFrame) {
+						onEachFrame = function(cb) {
+							var _cb = function() { cb(); mozRequestAnimationFrame(_cb); }
+							_cb();
+						};
+					} else if (window.requestAnimationFrame) {
+						onEachFrame = function(cb) {
+							var _cb = function() { cb(); requestAnimationFrame(_cb); }
+							_cb();
+						};
+					} else if (window.msRequestAnimationFrame) {
+						onEachFrame = function(cb) {
+							var _cb = function() { cb(); msRequestAnimationFrame(_cb); }
+							_cb();
+						};
+					} else {
+						var fps = O.fps;
+						onEachFrame = function(cb) {
+							setInterval(cb, 1000 / fps);
+						}
+					}
+
+					window.onEachFrame = onEachFrame;
+				})(this);
+				
+				var step = (function(O) {
+					var loops = 0, skipTicks = 1000 / O.fps,
+						maxFrameSkip = 10,
+						nextGameTick = (new Date).getTime();
+
+					return function() {
+						loops = 0;
+
+						while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
+							O._onUpdate();
+							nextGameTick += skipTicks;
+							loops++;
+						}
+
+						O._onDraw();
+					};
+				})(this);
+				
+				window.onEachFrame(step);
+				return this;
+			},
+			stop: function() {
+				
 			}
         }
     });

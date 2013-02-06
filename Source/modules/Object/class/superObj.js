@@ -23,7 +23,7 @@
             zindex: 0,
             synch: true, // synch or asynch
             loaded: false, // Flag which show load-state of object
-            _synchObjectsList: {}, // List with loading objects
+            _synchObjectsList: [], // List with loading objects
             _numberSynchObjects: 0,
 
             _list: [], // List with child-objects
@@ -37,10 +37,11 @@
             _onDraw: function() {
 				if(this._connected) {
 					this._onDraw = function() {
+						if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
 						for(var i in this._processList) {
 							this._processList[i]._onDraw.call(this._processList[i]);
 						}
-						if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
+						if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
 					}
 					this._onDraw();
 				} else {
@@ -48,8 +49,9 @@
 				}
 
             },
-            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
-
+            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+            preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
+			
             _onBegin: function() {
 				if(this._connected) {
 					this._onBegin = function() {
@@ -156,10 +158,10 @@
 				if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
 					this.addToProcessList(O);
 				} else if(O.synch && O.loaded == false) { // если не загруженный, синхронный объект, то
-					this._synchObjectsList[O.name] = O;
+					this._synchObjectsList.push(O);
 					this._numberSynchObjects++;
 				} else if(O.loaded && O.synch){ // если загруженный, синхронный объект
-					this._synchObjectsList[O.name] = O;
+					this._synchObjectsList.push(O);
 				}
 				O._connected = true;
 				return this;
@@ -168,9 +170,6 @@
             removeChild: function(O) {
 
             },
-			dd: function() {
-				alert();
-			},
 			_load: function() {
 				for(var i in this._list) {
 					this._list[i]._load();

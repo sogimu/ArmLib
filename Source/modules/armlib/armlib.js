@@ -133,10 +133,19 @@ window.framework = window.gizmo;
             removeLayer: function(O) {
 
             },
+			run: function() {
+				for(var i in this._processList) {
+                    this._processList[i].run();
+                }
+				return this;
+			},
+			stop: function() {
+			},
 			Load: function() {
 				for(var i in this._list) {
 					this._list[i].Load();
 				}
+				return this;
 			}
         }
     });
