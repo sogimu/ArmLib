@@ -25,6 +25,7 @@
             loaded: false, // Flag which show load-state of object
             _synchObjectsList: [], // List with loading objects
             _numberSynchObjects: 0,
+            _numberObjects: 0,
 
             _list: [], // List with child-objects
             _processList: [], // List with sorted child-objects
@@ -87,10 +88,11 @@
             _onLoad: function() {
 				if(lib.isSet(this.owner)) {
 					this.loaded = true;
-					if(lib.isSet(this.onLoad)) { this.onLoad.call(this, armlib,lib);}
+					if(lib.isSet(this.onLoad)) { this.onLoad.call(this, this._layer, armlib,lib);}
 
 					if(this.synch == true) {
 						this.owner._numberSynchObjects--;
+						this.owner._numberObjects--;
 						if(this.owner._numberSynchObjects == 0) {
 							for(var i in this.owner._synchObjectsList) {
 								this.owner._synchObjectsList[i]._onBegin();
@@ -104,6 +106,12 @@
 						}
 					} else {
 						this.owner.addToProcessList(this);
+						this.owner._numberObjects--;
+						this._onBegin();
+						if(this.owner._numberObjects == 0) {
+							this.owner._onLoad();
+						}
+
 					}
 				} else {
 					this.loaded = true;
@@ -154,6 +162,7 @@
 				O.layer = this._layer;
 				O.owner = this;
 				this._list.push(O);
+				this._numberObjects++;
 				
 				if(O.loaded && O.synch == false) { // загруженны, ассинхронный объект, то отображаем
 					this.addToProcessList(O);

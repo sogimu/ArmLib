@@ -20,7 +20,7 @@ window.onload = function() {
             height: 500,
         })
 		.setFunc('onLoad', function() {
-			console.log('onLoad r3');
+			console.log('onLoad r1');
 		});
 		obj2 = new armlib.class.Object({
 			name: 'obj2',
@@ -38,25 +38,27 @@ window.onload = function() {
             name: 'action',
 			fps: 5,
 			zindex: 0,
+			synch: false
         })
 		.setFunc('onLoad', function(){
 			console.log('onLoad action');
+			this.run();
 		})
 		.addChild(r1)
-		.addChild(obj2)
+		//.addChild(obj2)
 
         r3 = new armlib.class.Image({
             name: 'r3',
-            src: 'http://www.gazprom.ru/f/posts/11/061858/nosov_03.jpg',
-            zindex: 3,
-			synch: false,
+            src: 'http://www.gazprom.ru/f/posts/11/061858/nosov_01.jpg',
+            zindex: 6,
             width: 50,
             height: 100,
+			synch: false
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		});
-
+		
         r5 = new armlib.class.Image({
             name: 'r5',
             src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6QEi-g0hm8843xgjoKicbK-pvDQGXcFBpooF8RFo9Y8UEru8v',
@@ -65,9 +67,11 @@ window.onload = function() {
             width: 150,
             height: 150,
 			centralPoint: {x: 125, y: 75},
+			synch: false
         })
-		.setFunc('onLoad', function() {
+		.setFunc('onLoad', function(layer) {
 			console.log('onLoad r5');
+			layer.run();
 		})
 		.setFunc('onUpdate', function() { this.angle-=0.01;})
 		.setFunc('preDraw', function(ctx) {
@@ -84,33 +88,25 @@ window.onload = function() {
             y: 100,
             width: 150,
             height: 150,
+			synch: false
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r6');
 		})
-		
-		
-		obj1 = new armlib.class.Object({
-			name: 'obj1',
-			x: 50,
-			y: 50,
-			angle: 0.3
-		}).setFunc('onLoad', function() {
-			console.log('onLoad obj1');			
-		})
-		.addChild(r3)
-		.addChild(r5)
-		.addChild(r6);
+
 		
         l = new armlib.class.Layer({
             container: 'container',
             name: 'ground',
 			zindex: 1,
+			synch: false
         })
 		.setFunc('onLoad', function(){
 			console.log('onLoad l');
 		})
-		.addChild(obj1);
+		.addChild(r3)
+		.addChild(r5)
+		.addChild(r6);
 
 		armlib.setFunc('onLoad', function() {
 			this.run();

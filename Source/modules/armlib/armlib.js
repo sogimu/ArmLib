@@ -24,7 +24,8 @@ window.framework = window.gizmo;
             loaded: false, // Flag which show load-state of object
             _synchObjectsList: {}, // List with loading objects
             _numberSynchObjects: 0,
-
+            _numberObjects: 0,
+			
             _list: {}, // List with Layer-objects
             _processList: [], // List with sorted layer-objects
 
@@ -118,6 +119,7 @@ window.framework = window.gizmo;
             addLayer: function(O) { // add new layer-object and let sort drawList by z-index
                 O.owner = this;
                 this._list[O.name] = O;
+				this._numberObjects++;
 				
                 if(O.loaded && O.synch == false) {
 					this.addToProcessList(O);
@@ -137,6 +139,9 @@ window.framework = window.gizmo;
 				for(var i in this._processList) {
                     this._processList[i].run();
                 }
+				this.run = function() {
+					return this;
+				}
 				return this;
 			},
 			stop: function() {

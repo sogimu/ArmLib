@@ -47,7 +47,12 @@
             width: null,
             height: null,
             src: null,
-            image: null
+            image: null,
+			_oldX: 0,
+			_oldY: 0,
+			_oldWidth: 10,
+			_oldHeight: 10,
+			_oldLandscape: ''
         },
         Methods: {
 			_load: function() {
@@ -62,27 +67,38 @@
             _onDraw: function() {
 				if(this._connected) {
 					this._onDraw = function() {
-						this.context.save();
-							this.context.beginPath();
-								this.context.translate(this.centralPoint.x, this.centralPoint.y);
-								this.context.rotate(this.angle);
-								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
-								this.context.scale(this.scale.x, this.scale.y);
+						//this._saveChanges();
+						this._context.save();
+							this._context.beginPath();
+								this._context.translate(this.centralPoint.x, this.centralPoint.y);
+								this._context.rotate(this.angle);
+								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+								this._context.scale(this.scale.x, this.scale.y);
 								if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
-								this.context.drawImage(this.image, this.x,this.y,this.width,this.height);
-								this.context.fillStyle = this.fill;
-								this.context.strokeStyle = this.stroke;
+								this._context.drawImage(this.image, this.x,this.y,this.width,this.height);
+								this._context.fillStyle = this.fill;
+								this._context.strokeStyle = this.stroke;
 								if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
-							this.context.closePath();
-							this.context.fill();
-							this.context.stroke();
-						this.context.restore();
+							this._context.closePath();
+							this._context.fill();
+							this._context.stroke();
+						this._context.restore();
 					}
 					this._onDraw();
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
-                            }
+            },
+			_saveChanges: function() {
+				this._oldX = this.x;
+				this._oldY = this.y;
+				this._oldWidth = this.width;
+				this._oldHeight = this.height;
+				this._oldLandscapes = this._context.getImageData(50,50,150,150);
+			},
+			_onClean: function() {
+				this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
+			}
         }
     });
     armlib.class.Image = image;

@@ -26,7 +26,7 @@
         Initialize: function(O) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
-            this.synch = O.synch || this.synch;
+            this.synch = lib.isSet(O.synch)?O.synch:this.synch;
             this.x = O.x || this.x;
             this.y = O.y || this.y;
             this.centralPoint = O.centralPoint || this.centralPoint;

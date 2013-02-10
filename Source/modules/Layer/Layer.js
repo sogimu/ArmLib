@@ -37,7 +37,7 @@
             }
 			this._layer = this;
 			this.owner = armlib;
-			this.synch = O.synch || this.synch;
+			this.synch = lib.isSet(O.synch)?O.synch:this.synch;
 			this.onLoad = O.onLoad || this.onLoad;
 			armlib.addLayer(this);
 			return this;
@@ -106,6 +106,9 @@
 				})(this);
 				
 				window.onEachFrame(step);
+				this.run = function() {
+					return this;
+				}
 				return this;
 			},
 			stop: function() {
