@@ -77,7 +77,7 @@
 							var _cb = function() { cb(); msRequestAnimationFrame(_cb); }
 							_cb();
 						};
-					} else {
+					 } else {
 						var fps = O.fps;
 						onEachFrame = function(cb) {
 							setInterval(cb, 1000 / fps);

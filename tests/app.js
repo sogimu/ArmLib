@@ -16,7 +16,8 @@ window.onload = function() {
 		r1 = new armlib.class.Image({
             name: 'r1',
             src: './img/gras.jpg',
-            width: 500,
+            //centralPoint: {x: 50, y: 50},
+			width: 500,
             height: 500,
         })
 		.setFunc('onLoad', function() {
@@ -37,7 +38,7 @@ window.onload = function() {
 		action = new armlib.class.Layer({
             container: 'container',
             name: 'action',
-			fps: 5,
+			fps: 1,
 			zindex: 0,
 			synch: false
         })
@@ -52,8 +53,12 @@ window.onload = function() {
             name: 'r3',
             src: './img/nosov_01.jpg',
             zindex: 6,
-            width: 50,
+			x: 10,
+			y: 10,
+            width: 100,
             height: 100,
+			//angle: 0.5,
+			centralPoint: {x: 50, y: 50},
 			synch: false
         })
 		.setFunc('onLoad', function() {
@@ -64,10 +69,10 @@ window.onload = function() {
         r5 = new armlib.class.Image({
             name: 'r5',
             src: './img/images (1).jpg',
-            x: 0,
-            y: 0,
-            width: 150,
-            height: 150,
+            x: 100,
+            y: 10,
+            width: 50,
+            height: 50,
 			centralPoint: {x: 125, y: 75},
 			synch: false
         })
@@ -75,7 +80,8 @@ window.onload = function() {
 			console.log('onLoad r5');
 			//layer.run();
 		})
-		.setFunc('onUpdate', function() { this.angle-=0.2;})
+		.setFunc('onUpdate', function() { this.angle-=0.1;
+		})
 		.setFunc('preDraw', function(ctx) {
 			//ctx.clearRect(-2,-2,this.width+5,this.height+5);
 		})
@@ -106,10 +112,11 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function(){
 			console.log('onLoad l');
+			//this.run();
 		})
 		.addChild(r3)
 		.addChild(r5)
-		.addChild(r6);
+		//.addChild(r6);
 
 		armlib.setFunc('onLoad', function() {
 			this.run();

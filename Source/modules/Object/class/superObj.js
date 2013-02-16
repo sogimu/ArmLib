@@ -14,7 +14,7 @@
 			type: '',
             x: 0,
             y: 0,
-            centralPoint: {x:0,y:0},
+            centralPoint: {x:'0',y:'0'},
             angle: 0,
             scale: {x:1,y:1},
             _context: null,

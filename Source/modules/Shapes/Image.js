@@ -37,8 +37,6 @@
             this.scale = O.scale || this.scale;
             this.fill = O.fill || this.fill;
             this.stroke = O.stroke || this.stroke;
-			this.draw = O.draw || this.draw;
-			this.onLoad = O.onLoad || this.onLoad;
 			return this;
         },
         Statics: {
@@ -62,20 +60,25 @@
             _onDraw: function() {
 				if(this._connected) {
 					this._onDraw = function() {
+							
 						this._context.save();
+							
 							this._context.beginPath();
+								if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
+								this._context.fillStyle = this.fill;
+								this._context.strokeStyle = this.stroke;
+								
 								this._context.translate(this.centralPoint.x, this.centralPoint.y);
 								this._context.rotate(this.angle);
 								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
 								this._context.scale(this.scale.x, this.scale.y);
-								if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
+								//this._onClear();
 								this._context.drawImage(this.image, this.x,this.y,this.width,this.height);
-								this._context.fillStyle = this.fill;
-								this._context.strokeStyle = this.stroke;
+								
 								if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
 							this._context.closePath();
-							this._context.fill();
-							this._context.stroke();
+							//this._context.fill();
+							//this._context.stroke();
 						this._context.restore();
 					}
 					this._onDraw();
