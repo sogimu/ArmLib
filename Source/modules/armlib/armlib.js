@@ -37,14 +37,28 @@ window.framework = window.gizmo;
         },
         Methods: {
 			_onDraw: function() {
-                if(lib.isSet(this.onDraw)) {this.onDraw.call(this, this._context, this._layer,armlib,lib)};
-
+				if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)}
                 for(var i in this._processList) {
                     this._processList[i]._onDraw();
                 }
-            },
-            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object
+				if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
 
+            },
+            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+            preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
+
+			_onClear: function() {
+				this._onClear = function() {
+					var len = this._processList.length;
+					for(var i = len; i>=0; i--) {
+						this._processList[i]._onClear.call(this._processList[i]);
+					}
+					if(this.onClear) {this.onClear(this._context, this._layer,armlib,lib)};
+				}
+				this._onClear();
+            },
+            onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+			
             _onBegin: function() {
                 if(lib.isSet(this.onBegin)) {this.onBegin.call(this, this._layer,armlib,lib)};
 

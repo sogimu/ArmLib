@@ -48,11 +48,6 @@
             height: null,
             src: null,
             image: null,
-			_oldX: 0,
-			_oldY: 0,
-			_oldWidth: 10,
-			_oldHeight: 10,
-			_oldLandscape: ''
         },
         Methods: {
 			_load: function() {
@@ -67,7 +62,6 @@
             _onDraw: function() {
 				if(this._connected) {
 					this._onDraw = function() {
-						//this._saveChanges();
 						this._context.save();
 							this._context.beginPath();
 								this._context.translate(this.centralPoint.x, this.centralPoint.y);
@@ -88,17 +82,7 @@
 				} else {
 					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
 				}
-            },
-			_saveChanges: function() {
-				this._oldX = this.x;
-				this._oldY = this.y;
-				this._oldWidth = this.width;
-				this._oldHeight = this.height;
-				this._oldLandscapes = this._context.getImageData(50,50,150,150);
-			},
-			_onClean: function() {
-				this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
-			}
+            }
         }
     });
     armlib.class.Image = image;

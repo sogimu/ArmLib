@@ -53,6 +53,23 @@
             onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
             preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
 			
+			_onClear: function() {
+				if(this._connected) {
+					this._onClear = function() {
+						var len = this._processList.length-1;
+						for(var i = len; i>=0; i--) {
+							this._processList[i]._onClear.call(this._processList[i]);
+						}
+						if(this.onClear) {this.onClear(this._context, this._layer,armlib,lib)};
+					}
+					this._onClear();
+				} else {
+					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
+				}
+
+            },
+            onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+			
             _onBegin: function() {
 				if(this._connected) {
 					this._onBegin = function() {

@@ -21,6 +21,7 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r1');
+			//this._saveChanges();
 		});
 		obj2 = new armlib.class.Object({
 			name: 'obj2',
@@ -42,14 +43,14 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function(){
 			console.log('onLoad action');
-			this.run();
+			//this.run();
 		})
 		.addChild(r1)
 		//.addChild(obj2)
 
         r3 = new armlib.class.Image({
             name: 'r3',
-            src: 'http://www.gazprom.ru/f/posts/11/061858/nosov_01.jpg',
+            src: './img/nosov_01.jpg',
             zindex: 6,
             width: 50,
             height: 100,
@@ -57,11 +58,12 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
+			//this._saveChanges();
 		});
 		
         r5 = new armlib.class.Image({
             name: 'r5',
-            src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6QEi-g0hm8843xgjoKicbK-pvDQGXcFBpooF8RFo9Y8UEru8v',
+            src: './img/images (1).jpg',
             x: 0,
             y: 0,
             width: 150,
@@ -71,19 +73,19 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function(layer) {
 			console.log('onLoad r5');
-			layer.run();
+			//layer.run();
 		})
-		.setFunc('onUpdate', function() { this.angle-=0.01;})
+		.setFunc('onUpdate', function() { this.angle-=0.2;})
 		.setFunc('preDraw', function(ctx) {
-			ctx.clearRect(-2,-2,this.width+5,this.height+5);
+			//ctx.clearRect(-2,-2,this.width+5,this.height+5);
 		})
 		.setFunc('onDraw', function(ctx) {
-			ctx.moveTo(25,25);
-			ctx.lineTo(100,100);
+			ctx.moveTo(this.x + 25, this.y + 25);
+			ctx.lineTo(this.x + 100,this.y + 100);
 		})
 		r6 = new armlib.class.Image({
             name: 'r6',
-            src: 'http://lh5.ggpht.com/-yrD9VPTixAE/Tl34wHv7KvI/AAAAAAAACik/Gvb0fqjTyrk/s512/googlebot-kun-1b.png',
+            src: './img/googlebot-kun-1b.png',
             x: 150,
             y: 100,
             width: 150,
@@ -92,6 +94,7 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r6');
+			//this._saveChanges();
 		})
 
 		

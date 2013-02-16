@@ -100,7 +100,7 @@
 							nextGameTick += skipTicks;
 							loops++;
 						}
-
+						O._onClear();
 						O._onDraw();
 					};
 				})(this);
