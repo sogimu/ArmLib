@@ -242,4 +242,77 @@
   gizmo.Plugins["iframeAJAX"] = {name:"iframeAJAX", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f AJAX \u043d\u0430 iframe"};
   gizmo.iframeAjax = ajax
 })(gizmo);
+(function(gizmo) {
+  var matrix = gizmo.Class({Initialize:function(O) {
+    this.x = this.multiply;
+    return this.setElements(O)
+  }, Statics:{}, Methods:{create:function(elements) {
+    var M = new gizmo.Matrix(elements);
+    return M
+  }, canMultiplyFromLeft:function(matrix) {
+    if(this.elements.length === 0) {
+      return false
+    }
+    var M = matrix.elements || matrix;
+    if(typeof M[0][0] === "undefined") {
+      M = Sylvester.Matrix.create(M).elements
+    }
+    return this.elements[0].length === M.length
+  }, multiply:function(matrix) {
+    if(this.elements.length === 0) {
+      return null
+    }
+    if(!matrix.elements) {
+      return this.map(function(x) {
+        return x * matrix
+      })
+    }
+    var returnVector = matrix.modulus ? true : false;
+    var M = matrix.elements || matrix;
+    if(typeof M[0][0] === "undefined") {
+      M = Sylvester.Matrix.create(M).elements
+    }
+    if(!this.canMultiplyFromLeft(M)) {
+      return null
+    }
+    var i = this.elements.length, nj = M[0].length, j;
+    var cols = this.elements[0].length, c, elements = [], sum;
+    while(i--) {
+      j = nj;
+      elements[i] = [];
+      while(j--) {
+        c = cols;
+        sum = 0;
+        while(c--) {
+          sum += this.elements[i][c] * M[c][j]
+        }
+        elements[i][j] = sum
+      }
+    }
+    var M = this.create(elements);
+    return returnVector ? M.col(1) : M
+  }, setElements:function(els) {
+    var i, j, elements = els.elements || els;
+    if(elements[0] && typeof elements[0][0] !== "undefined") {
+      i = elements.length;
+      this.elements = [];
+      while(i--) {
+        j = elements[i].length;
+        this.elements[i] = [];
+        while(j--) {
+          this.elements[i][j] = elements[i][j]
+        }
+      }
+      return this
+    }
+    var n = elements.length;
+    this.elements = [];
+    for(i = 0;i < n;i++) {
+      this.elements.push([elements[i]])
+    }
+    return this
+  }}});
+  gizmo.Plugins["Matrix"] = {name:"Matrix", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f \u0440\u0430\u0431\u043e\u0442\u044b \u0441 \u043c\u0430\u0442\u0440\u0438\u0446\u0430\u043c\u0438. \u0421\u043e\u0437\u0434\u0430\u043d \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438 http://sylvester.jcoglan.com."};
+  gizmo.Matrix = matrix
+})(gizmo);
 
