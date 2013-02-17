@@ -42,8 +42,6 @@
         Statics: {
             type: 'Image',
 			loaded: false,
-            width: null,
-            height: null,
             src: null,
             image: null,
         },

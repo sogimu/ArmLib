@@ -96,10 +96,10 @@ window.framework = window.gizmo;
             _sortByZindex: function(A,low,high) { // sort: Quicksort
                 var i = low;
                 var j = high;
-                var x = A[Math.round((low+high)/2)].zindex;  // x - опорный элемент посредине между low и high
+                var x = A[Math.round((low+high)/2)]._zindex;  // x - опорный элемент посредине между low и high
                 do {
-                    while(A[i].zindex < x) ++i;  // поиск элемента для переноса в старшую часть
-                    while(A[j].zindex > x) --j;  // поиск элемента для переноса в младшую часть
+                    while(A[i]._zindex < x) ++i;  // поиск элемента для переноса в старшую часть
+                    while(A[j]._zindex > x) --j;  // поиск элемента для переноса в младшую часть
                     if(i <= j){
                         // обмен элементов местами:
                         var temp = A[i];

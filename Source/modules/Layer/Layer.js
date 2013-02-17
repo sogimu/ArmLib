@@ -28,7 +28,7 @@
                 canvas.width = O.width || this.width;
                 canvas.height = O.height || this.height;
                 canvas.id = this.name;
-                canvas.style['z-index'] = O.zindex || this.zindex;
+                canvas.style['z-index'] = O.zindex || this._zindex;
                 canvas.style.position = 'absolute';
                 container.appendChild( canvas );
                 this._context = canvas.getContext('2d');
@@ -46,9 +46,27 @@
             type: 'Layer',
 			fps: 60,
             width: 500,
-            height: 500
+            height: 500,
+			updating: false,
+			_changeList: []
         },
         Methods: {
+			_addChangedObj: function(O) {
+				if(this.updating) {
+					this._changeList[O.id] = 'obj';
+				}
+			},
+			_onUpdate: function() {
+				this.updating = true;
+				for(var i in this._processList) {
+					this._processList[i]._onUpdate();
+				}
+				if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
+				this.updating = false;				
+
+            },
+            onUpdate: function(layer, armlib, lib) {}, // Function which update object
+
 			Load: function() {
 				for(var i in this._list) {
 					this._list[i]._load();

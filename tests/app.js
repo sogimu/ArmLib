@@ -119,7 +119,7 @@ window.onload = function() {
 		//.addChild(r6);
 
 		armlib.setFunc('onLoad', function() {
-			//this.run();
+			this.run();
 			console.log('onLoad armlib');
 		});
 		armlib.Load();

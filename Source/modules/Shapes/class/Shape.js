@@ -13,6 +13,8 @@
         Statics: {
             fill: "#00FF00",
             stroke: "#00aa00",
+			width: 10,
+            height: 10,
 			_oldX: 0,
 			_oldY: 0,
 			_oldWidth: 0,
