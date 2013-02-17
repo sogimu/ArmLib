@@ -12,8 +12,8 @@
         Statics: {
             name: 1000*Math.random(),
 			type: '',
-            x: 0,
-            y: 0,
+            _x: 0,
+            _y: 0,
             centralPoint: {x:'0',y:'0'},
             angle: 0,
             scale: {x:1,y:1},

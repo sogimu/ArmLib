@@ -8,7 +8,7 @@
      */
 
     var object = lib.Class({
-        Extend: armlib._class.superObj,
+        Extend: armlib._class.armObj,
         Initialize: function(O, layer, armlib) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;

@@ -9,7 +9,7 @@
      */
 
     var Shape = lib.Class({
-        Extend: armlib._class.superObj,
+        Extend: armlib._class.armObj,
         Statics: {
             fill: "#00FF00",
             stroke: "#00aa00",
@@ -53,7 +53,8 @@
 				}
 				this._onClear();
 
-			}
+			},
+			
 
 		}
     });
