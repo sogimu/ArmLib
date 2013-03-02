@@ -18,8 +18,9 @@ window.onload = function() {
             name: 'r0',
             width: 5,
             height: 5,
-			x: 400,
-			y: 250,
+            zindex: 15,
+			x: 40,
+			y: 25,
             fill: '#FF0000',
             stroke: '#aa0000'
         })
@@ -56,6 +57,7 @@ window.onload = function() {
         r5 = new armlib.class.Image({
             name: 'r5',
             src: './img/images (1).jpg',
+            zindex: 10,
             x: 100,
             y: 10,
             width: 50,
@@ -80,7 +82,7 @@ window.onload = function() {
 		})
 		.setFunc('onLoad', function() {
 			console.log('onLoad obj2');
-			//l.addChild(obj2);
+			l.addChild(obj2);
 		})
 		.addChild(r5)
 		.addChild(r0)
