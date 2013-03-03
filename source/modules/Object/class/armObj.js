@@ -32,7 +32,7 @@
 			},
             set x(O) {
 				this._x = O;
-				this._addChangedObj();
+				//this._addChangedObj();
 				
 			},
 			get x() {
@@ -40,7 +40,7 @@
 			},
             set y(O) {
 				this._y = O;
-				this._addChangedObj();
+				//this._addChangedObj();
 				
 			},
 			get y(O) {
@@ -51,7 +51,7 @@
 			// },
             set angle(O) {
 				this._angle = O;
-				this._addChangedObj();
+				//this._addChangedObj();
 
 			},
 			get angle() {
