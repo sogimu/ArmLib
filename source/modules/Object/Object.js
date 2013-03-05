@@ -146,8 +146,8 @@
 
 			_sortByZindex: function(A,low,high) { // sort: Quicksort
 				var A = A?A:this._list;
-                var i = low?low:0;
-                var j = high?high:this._list.length-1;
+                var i = low = low?low:0;
+                var j = high = high?high:this._list.length-1;
                 var x = A[Math.round((low+high)/2)]._zindex;  // x - опорный элемент посредине между low и high
                 do {
                     while(A[i]._zindex < x) ++i;  // поиск элемента для переноса в старшую часть
