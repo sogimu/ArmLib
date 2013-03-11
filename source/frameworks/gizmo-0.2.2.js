@@ -206,6 +206,70 @@
   gizmo.Modules["Class"] = {name:"Class", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043e\u0431\u0430\u0432\u043b\u044f\u044e\u0449\u0438\u0439 \u043a\u043b\u0430\u0441\u0441\u044b"}
 })(gizmo);
 (function(gizmo) {
+  gizmo.Quicksort = function(O) {
+    var mas = O.mas ? O.mas : [];
+    var target = O.target ? O.target : ">";
+    if(O.field) {
+      if(target == ">") {
+        mas.sort(function(a, b) {
+          var s1 = a[O.field];
+          var s2 = b[O.field];
+          if(s1 > s2) {
+            return-1
+          }else {
+            if(s1 < s2) {
+              return 1
+            }
+          }
+          return 0
+        })
+      }else {
+        mas.sort(function(a, b) {
+          var s1 = a[O.field];
+          var s2 = b[O.field];
+          if(s1 < s2) {
+            return-1
+          }else {
+            if(s1 > s2) {
+              return 1
+            }
+          }
+          return 0
+        })
+      }
+    }else {
+      if(target == ">") {
+        mas.sort(function(a, b) {
+          var s1 = a;
+          var s2 = b;
+          if(s1 > s2) {
+            return-1
+          }else {
+            if(s1 < s2) {
+              return 1
+            }
+          }
+          return 0
+        })
+      }else {
+        mas.sort(function(a, b) {
+          var s1 = a;
+          var s2 = b;
+          if(s1 < s2) {
+            return-1
+          }else {
+            if(s1 > s2) {
+              return 1
+            }
+          }
+          return 0
+        })
+      }
+    }
+    return mas
+  }, gizmo.Modules["Sorts"] = {name:"Sorts", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043b\u044f \u0432\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043c\u0435\u0442\u043e\u0434\u043e\u0432 \u0440\u0435\u0430\u043b\u0438\u0437\u0443\u044e\u0449\u0438\u0445 \u0441\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u043a\u0438"}
+})(gizmo);
+(function(gizmo) {
   var ajax = gizmo.Class({construct:function(O) {
     this.action = O.action;
     this.formId = O.id;
@@ -244,7 +308,6 @@
 })(gizmo);
 (function(gizmo) {
   var matrix = gizmo.Class({Initialize:function(O) {
-    this.x = this.multiply;
     return this.setElements(O)
   }, Statics:{}, Methods:{create:function(elements) {
     var M = new gizmo.Matrix(elements);
@@ -313,6 +376,7 @@
     return this
   }}});
   gizmo.Plugins["Matrix"] = {name:"Matrix", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f \u0440\u0430\u0431\u043e\u0442\u044b \u0441 \u043c\u0430\u0442\u0440\u0438\u0446\u0430\u043c\u0438. \u0421\u043e\u0437\u0434\u0430\u043d \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438 http://sylvester.jcoglan.com."};
-  gizmo.Matrix = matrix
+  gizmo.Matrix = matrix;
+  gizmo.Matrix.x = matrix.setElements
 })(gizmo);
 

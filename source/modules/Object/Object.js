@@ -8,7 +8,7 @@
      */
 
     var object = lib.Class({
-        Extend: armlib._class.superObj,
+        Extend: armlib._class.ArmObj,
         Initialize: function(O, layer, armlib) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
@@ -20,30 +20,20 @@
 			return this;
         },
         Statics: {
-            type: 'Object',
-			_numberObjects: 0,
+            _type: 'Object',
+			_numberNotLoadedChilds: 0,
 			
             _list: [], // List with child-objects
         },
         Methods: { // Call-back functions of ArmLib object
-			_onLoad: function() {	
-				if(lib.isSet(this.owner)) {
-					this.owner._onLoad();
-					
-				}
 
-				if(lib.isSet(this.onLoad)) { this.onLoad.call(this, this._layer, armlib,lib);}
-				
-			},
-			
 			addChild: function(O) { // add new child-object and let sort drawList by z-index
-				O._connected = true;
-				O.context = this._context;
-				O.layer = this._layer;
-				O.owner = this;
+				O._setContext(this.getContext());
+				O._setLayer(this.getLayer());
+				O._setOwner(this);
 				
 				this._list.push(O);
-				this._numberObjects++;
+				this._numberNotLoadedChilds++;
 				this._sortByZindex();
 
 				return this;
@@ -56,21 +46,81 @@
 			Load: function() {
 				this._load.call(this);
 				return this;
-				
+				this._load();	
 			},
 			_load: function() {
 				for(var i in this._list) {
 					this._list[i]._load.call(this._list[i]);
 				}
 				if(this._list.length == 0) {
-					this._onLoad();
+					this.__onLoad();
 				}
 					
 			},
+
+			/*__onLoad: function() {	
+				if(this.haveOwner()) {
+					this._getOwner()._onLoad();
+				}
+
+				if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}	
+			},
+			_onLoad: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+            */
+
 			
-			_onDraw: function() {
-				if(this._connected) {
-					this._onDraw = function() {
+            _begin: function() {
+				if(this.haveOwner()) {
+					this._begin = function() {
+						for(var i in this._list) {
+							this._list[i]._begin();
+						}
+						if(this.onBegin) {this.onBegin.call(this, this._layer,armlib,lib)};
+					}
+					this._begin();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+            _onBegin: function(layer, armlib, lib) {}, // Constructor for object
+
+            _update: function() {
+				if(this.haveOwner()) {
+					this._update = function() {
+						for(var i in this._list) {
+							this._list[i]._update();
+						}
+						if(this.onUpdate) {this.onUpdate.call(this, this._layer,armlib,lib)};
+					}
+					this._update();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+            _onUpdate: function(layer, armlib, lib) {}, // Function which update object
+
+			_clear: function() {
+				if(this.haveOwner()) {
+					this._clear = function() {
+						var len = this._list.length-1;
+						for(var i = len; i>=0; i--) {
+							this._list[i]._clear.call(this._list[i]);
+						}
+						if(this._onClear) {this._onClear(this._context, this._layer,armlib,lib)};
+					}
+					this._clear();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+            _onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+
+			_draw: function() {
+				if(this.haveOwner()) {
+					this._draw = function() {
 						this.context.save();
 							this.context.beginPath();
 								this.context.translate(this.x, this.y);
@@ -78,93 +128,53 @@
 								this.context.rotate(this.angle);
 								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
 								this.context.scale(this.scale.x, this.scale.y);								
-									if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
-									for(var i in this._list) {
-										this._list[i]._onDraw.call(this._list[i]);
-									}
-									if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
+					
+								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
+								for(var i in this._list) {
+									this._list[i]._draw.call(this._list[i]);
+								}
+								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
+					
 							this.context.closePath();
 						this.context.restore();						
 					}
-					this._onDraw();
+					this._draw();
 				} else {
-					console.log('object with type '+this.type+' and name '+this.name+' have not owner');
+					console.log('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
 				}
 
             },
-            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
-            preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
+            _onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
+            _preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
 			
-			_onClear: function() {
-				if(this._connected) {
-					this._onClear = function() {
-						var len = this._processList.length-1;
-						for(var i = len; i>=0; i--) {
-							this._processList[i]._onClear.call(this._processList[i]);
-						}
-						if(this.onClear) {this.onClear(this._context, this._layer,armlib,lib)};
+			_sortByZindex: function() {
+				this._list = gizmo.Quicksort({mas: this._list,target: '<',field: '_zindex'});
+            },
+            _loadedChild: function() {
+            	this._numberNotLoadedChilds--;
+					if(this._numberNotLoadedChilds == 0) {
+						this._onLoad();								
 					}
-					this._onClear();
-				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
-				}
-
             },
-            onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
-			
-            _onBegin: function() {
-				if(this._connected) {
-					this._onBegin = function() {
-						for(var i in this._processList) {
-							this._processList[i]._onBegin();
-						}
-						if(lib.isSet(this.onBegin)) {this.onBegin.call(this, this._layer,armlib,lib)};
-					}
-					this._onBegin();
-				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
-				}
-
+            getNumberNotLoadedChilds: function() {
+            	return this._numberNotLoadedChilds;	
             },
-            onBegin: function(layer, armlib, lib) {}, // Constructor for object
+            
+            // Setters/Getters
 
-            _onUpdate: function() {
-				if(this._connected) {
-					this._onUpdate = function() {
-						for(var i in this._processList) {
-							this._processList[i]._onUpdate();
-						}
-						if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
-					}
-					this._onUpdate();
-				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
-				}
-
+            _setContext: function(context) {
+                this._context = context;
+                for(var i in this._list) {
+                    this._list[i]._setContext(context);
+                }
             },
-            onUpdate: function(layer, armlib, lib) {}, // Function which update object
 
-			_sortByZindex: function(A,low,high) { // sort: Quicksort
-				var A = A?A:this._list;
-                var i = low = low?low:0;
-                var j = high = high?high:this._list.length-1;
-                var x = A[Math.round((low+high)/2)]._zindex;  // x - опорный элемент посредине между low и high
-                do {
-                    while(A[i]._zindex < x) ++i;  // поиск элемента для переноса в старшую часть
-                    while(A[j]._zindex > x) --j;  // поиск элемента для переноса в младшую часть
-                    if(i <= j){
-                        // обмен элементов местами:
-                        var temp = A[i];
-                        A[i] = A[j];
-                        A[j] = temp;
-                        // переход к следующим элементам:
-                        i++; j--;
-                    }
-                } while(i < j);
-                if(low < j) this._sortByZindex(A, low, j);
-                if(i < high) this._sortByZindex(A, i, high);
-                this._list = A;
-            },
+            _setLayer: function(layer) {
+                this._layer = layer;
+                for(var i in this._list) {
+                    this._list[i]._setLayer(O);
+                }
+            }
 
 		}
     });

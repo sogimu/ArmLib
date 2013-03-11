@@ -14,7 +14,7 @@ window.onload = function() {
         });
 		
 		
-		r0 = new armlib.class.Rect({
+		/*r0 = new armlib.class.Rect({
             name: 'r0',
             width: 5,
             height: 5,
@@ -26,7 +26,7 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r0');
-		});
+		});*/
 
 		r1 = new armlib.class.Image({
             name: 'r1',
@@ -85,7 +85,7 @@ window.onload = function() {
 			l.addChild(obj2);
 		})
 		.addChild(r5)
-		.addChild(r0)
+		//.addChild(r0)
 		.addChild(r1)
 		.addChild(r3)
 		.Load();

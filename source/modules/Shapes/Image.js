@@ -24,11 +24,11 @@
     var image = lib.Class({
         Extend: armlib._class.Shape,
         Initialize: function(O) {
-			this.name = O.name || this.name;
+			this.setName(O.name || this.getName());
             this.src = O.src || this.src;
 			this.zindex = O.zindex || this.zindex;
-            this._x = O.x || this._x;
-            this._y = O.y || this._y;
+            this.x = O.x || this.x;
+            this.y = O.y || this.y;
             this.centralPoint = O.centralPoint || this.centralPoint;
             this.width = O.width || this.width;
             this.height = O.height || this.height
@@ -39,10 +39,10 @@
 			return this;
         },
         Statics: {
-            type: 'Image',
-			loaded: false,
-            src: null,
-            image: null,
+            _type: ['Shape','Image'],
+            _loaded: false,
+            _src: null,
+            _image: null,
         },
         Methods: {
 			_load: function() {
@@ -50,19 +50,18 @@
 				this.image.src = this.src;
 				var self = this;
 				this.image.onload = function() {
-					self.loaded = true;
-					self._onLoad.call(self);
+					self._setLoaded();
+					self.__onLoad.call(self);
 				};
 				return this;
 			},
-            _onDraw: function() {
-				if(this._connected) {
-					this._onDraw = function() {
-							
+            _draw: function() {
+				if(this.haveOwner()) {
+					this._draw = function() {
 						this._context.save();
 							
 							this._context.beginPath();
-								if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
+								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
 								this._context.fillStyle = this.fill;
 								this._context.strokeStyle = this.stroke;
 								
@@ -73,17 +72,35 @@
 								//this._onClear();
 								this._context.drawImage(this.image, this.x,this.y,this.width,this.height);
 								
-								if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
+								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 							this._context.closePath();
 							//this._context.fill();
 							//this._context.stroke();
 						this._context.restore();
 					}
-					this._onDraw();
+					this._draw();
 				} else {
-					throw Error('object with type '+this.type+' and name '+this.name+' have not owner');
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
 				}
-            }
+            },
+
+            // Setters/Getters
+
+            // image
+            set image(image) {
+                this._image = image;
+            },
+            get image() {
+                return this._image;
+            },
+
+            // src
+            set src(url) {
+                this._src = url;
+            },
+            get src() {
+                return this._src;
+            },
         }
     });
     armlib.class.Image = image;
