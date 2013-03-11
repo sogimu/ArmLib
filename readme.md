@@ -6,7 +6,6 @@ ArmLib is JavaScript framework for work into browser with Canvas HTML5 technolog
 Features:
 * Layers (canvas)
 * Object-model 
-* Synchronism and Asynchronism of objects (Layers, objects, primitives)
 * Events (onLoad, onBegin, onUpdate, onDraw, preDraw, onDraw)
 * Modular-structure of framework
 * Drawing optimiztation 
