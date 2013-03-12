@@ -31,11 +31,7 @@
             _lib: lib
         },
         Methods: { // Call-back functions of ArmLib object
-			/*Load: function() {
-				this._load.call(this);
-				return this;
-				
-			},*/
+			
             _begin: function() { /* virtual */},
             _clear: function() { /* virtual */ },
             _update: function() { /* virtual */},

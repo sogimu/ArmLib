@@ -57,17 +57,6 @@
 				}
 					
 			},
-
-			/*__onLoad: function() {	
-				if(this.haveOwner()) {
-					this._getOwner()._onLoad();
-				}
-
-				if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}	
-			},
-			_onLoad: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
-            */
-
 			
             _begin: function() {
 				if(this.haveOwner()) {
@@ -91,7 +80,7 @@
 						for(var i in this._list) {
 							this._list[i]._update();
 						}
-						if(this.onUpdate) {this.onUpdate.call(this, this._layer,armlib,lib)};
+						if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
 					}
 					this._update();
 				} else {
@@ -121,13 +110,13 @@
 			_draw: function() {
 				if(this.haveOwner()) {
 					this._draw = function() {
-						this.context.save();
-							this.context.beginPath();
-								this.context.translate(this.x, this.y);
-								this.context.translate(this.centralPoint.x, this.centralPoint.y);
-								this.context.rotate(this.angle);
-								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
-								this.context.scale(this.scale.x, this.scale.y);								
+						this._context.save();
+							this._context.beginPath();
+								this._context.translate(this.x, this.y);
+								this._context.translate(this.centralPoint.x, this.centralPoint.y);
+								this._context.rotate(this.angle);
+								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+								this._context.scale(this.scale.x, this.scale.y);								
 					
 								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
 								for(var i in this._list) {
@@ -135,8 +124,8 @@
 								}
 								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 					
-							this.context.closePath();
-						this.context.restore();						
+							this._context.closePath();
+						this._context.restore();						
 					}
 					this._draw();
 				} else {
@@ -172,7 +161,7 @@
             _setLayer: function(layer) {
                 this._layer = layer;
                 for(var i in this._list) {
-                    this._list[i]._setLayer(O);
+                    this._list[i]._setLayer(layer);
                 }
             }
 

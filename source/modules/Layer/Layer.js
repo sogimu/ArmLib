@@ -61,12 +61,11 @@
         },
         Methods: {
 			addChild: function(O) { // add new child-object and let sort drawList by z-index
-				O.context = this._context;
-				O.layer = this._layer;
-				O.owner = this;
+				O._setContext(this._context);
+				O._setLayer(this._layer);
+				O._setOwner(this);
 				this._list.push(O);
 				
-				O._connected = true;
 				return this;
 			
             },

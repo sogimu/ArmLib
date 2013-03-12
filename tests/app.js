@@ -84,6 +84,11 @@ window.onload = function() {
 			console.log('onLoad obj2');
 			l.addChild(obj2);
 		})
+		.setFunc('onUpdate', function() {
+			console.log('obj2 update()');
+			this.x+=10;
+			this.angle+=10;
+		})
 		.addChild(r5)
 		//.addChild(r0)
 		.addChild(r1)

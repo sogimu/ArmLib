@@ -60,6 +60,18 @@
 				}
 
 			},
+            _update: function() {
+				if(this.haveOwner()) {
+					this._update = function() {
+						if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
+					}
+					this._update();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+
 
             // Setters/Getters
 
