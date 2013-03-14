@@ -1,0 +1,3 @@
+[submodule "source/frameworks/Gizmo"]
+	path = source/frameworks/Gizmo
+	url = https://github.com/sogimu/Gizmo.git

@@ -137,7 +137,7 @@
             _preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
 
             _sortByZindex: function() {
-                this._list = gizmo.Quicksort({mas: this._list,target: '<',field: '_zindex'});
+                this._list = gizmo.nativeSort({mas: this._list,target: '<',field: '_zindex'});
             },
             _loadedChild: function() {
                 this._numberNotLoadedChilds--;
