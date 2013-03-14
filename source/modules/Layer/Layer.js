@@ -18,9 +18,8 @@
 	 */
 
 	var Layer = lib.Class({
-        Extend: armlib._class.superObj,
         Initialize: function(O) {
-			this.name = O.name || this.name;
+			this._setName(O.name || this.name);
 			this.fps = O.fps || this.fps;
 			if( O.container ) {
                 var container = document.getElementById(O.container);
@@ -35,43 +34,71 @@
             } else {
                 throw Error('The container is not found! Choose right id of container, please!');
             }
-			this._layer = this;
-			this.owner = armlib;
-			this.synch = lib.isSet(O.synch)?O.synch:this.synch;
-			this.onLoad = O.onLoad || this.onLoad;
+			this._setLayer(this);
+			this._setOwner(armlib);
 			armlib.addLayer(this);
 			return this;
         },
         Statics: {
-            type: 'Layer',
-			fps: 60,
-            width: 500,
-            height: 500,
-			updating: false,
-			_changeList: []
+            _type: ['Layer',''],
+            _name: 1000*Math.random(),
+
+            _context: null,
+            _layer: null,
+            _owner: null,
+
+            _width: 500,
+            _height: 500,
+			_fps: 60,
+			_zindex: 0,
+            
+  			_updating: false,
+			_changeList: [],
+            _list: [], // List with child-objects
+			
+			_armlib: armlib,
+            _lib: lib
         },
         Methods: {
-			_addChangedObj: function(O) {
-				if(this.updating) {
-					this._changeList[O.id] = 'obj';
-				}
-			},
-			_onUpdate: function() {
-				this.updating = true;
-				for(var i in this._processList) {
-					this._processList[i]._onUpdate();
-				}
-				if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
-				this.updating = false;				
+			addChild: function(O) { // add new child-object and let sort drawList by z-index
+				O._setContext(this._context);
+				O._setLayer(this._layer);
+				O._setOwner(this);
+				this._list.push(O);
+				
+				return this;
+			
+            },
+            removeChild: function(O) {
 
             },
-            onUpdate: function(layer, armlib, lib) {}, // Function which update object
-
-			Load: function() {
-				for(var i in this._list) {
-					this._list[i]._load();
+			_addChangedObj: function(O) {
+				if(this.updating) {
+					//this._changeList[O.id] = 'obj';
 				}
 			},
+			_clear: function() {
+				for(var i in this._list) {
+					this._list[i]._clear();
+				}
+				
+            },
+			_update: function() {
+				this._updating = true;
+				for(var i in this._list) {
+					this._list[i]._update();
+				}
+				this._updating = false;				
+
+            },
+            _draw: function() {
+				for(var i in this._list) {
+					this._list[i]._draw();
+				}
+				
+            },
+
+            
 			run: function() {
 				(function(O) {
 					var onEachFrame;
@@ -114,12 +141,13 @@
 						loops = 0;
 
 						while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
-							O._onUpdate();
+							O._update();
 							nextGameTick += skipTicks;
 							loops++;
 						}
-						O._onClear();
-						O._onDraw();
+
+						//O._clear();
+						O._draw();
 					};
 				})(this);
 				
@@ -131,7 +159,80 @@
 			},
 			stop: function() {
 				
-			}
+			},
+
+            _setType: function(type) {
+                this._type = type;
+            },
+            getType: function() {
+                return this._type;
+            },
+
+            _setName: function(name) {
+                this._name = name;
+            },
+            getName: function() {
+                return this._name;
+            },
+
+            _setContext: function(context) {
+                this._context = context;
+            },
+            getContext: function() {
+                return this._context;
+            },
+
+            _setLayer: function(layer) {
+                this._layer = layer;
+            },
+            getLayer: function() {
+                return this._layer;
+            },
+
+            _setOwner: function(object) {
+                this._owner = object;
+            },
+            _getOwner: function() {
+                return this._owner;
+            },
+
+            // Setters/Getters
+
+            // width
+            set width(O) {
+                this._width = O;
+            },
+            get width() {
+                return this._width;
+            },
+            
+            // height
+            set height(O) {
+                this._height = O;
+            },
+            get height() {
+                return this._height;
+            },
+
+            // fps
+            set fps(O) {
+                this._fps = O;
+            },
+            get fps() {
+                return this._fps;
+            },
+                        
+            // zindex
+            set zindex(O) {
+                this._zindex = O;
+                if(this.haveOwner()) {
+                    this._getOwner()._sortByZindex();
+                }
+            },
+            get zindex() {
+                return this._zindex;
+            },
+
         }
     });
     armlib.class.Layer = Layer;

@@ -26,7 +26,6 @@
         Initialize: function(O) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
-            this.synch = lib.isSet(O.synch)?O.synch:this.synch;
             this.x = O.x || this.x;
             this.y = O.y || this.y;
             this.centralPoint = O.centralPoint || this.centralPoint;
@@ -36,17 +35,15 @@
             this.scale = O.scale || this.scale;
             this.fill = O.fill || this.fill;
             this.stroke = O.stroke || this.stroke;
-			this.draw = O.draw || this.draw;
 			return this;
         },
         Statics: {
-            type: 'Rect',
-			width: null,
-            height: null,
+            type: 'Rect'
         },
         Methods: {
 			_load: function() {
 				if(!this.loaded) {
+					this.loaded = true;
 					this._onLoad.call(this);
 					this._load = function() {
 						return this;
@@ -57,21 +54,21 @@
             _onDraw: function() {
 				if(this._connected) {
 					this._onDraw = function() {
-						this.context.save();
-							this.context.beginPath();
-								this.context.translate(this.centralPoint.x, this.centralPoint.y);
-								this.context.rotate(this.angle);
-								this.context.translate(-this.centralPoint.x, -this.centralPoint.y);
-								this.context.scale(this.scale.x, this.scale.y);
-								if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)};
-								this.context.rect(this.x,this.y,this.width,this.height);
-								this.context.fillStyle = this.fill;
-								this.context.strokeStyle = this.stroke;
-								if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
-							this.context.closePath();
-							this.context.fill();
-							this.context.stroke();
-						this.context.restore();
+						this._context.save();
+							this._context.beginPath();
+								this._context.translate(this.centralPoint.x, this.centralPoint.y);
+								this._context.rotate(this.angle);
+								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+								this._context.scale(this.scale.x, this.scale.y);
+								if(this.preDraw) {this.preDraw(this.__context, this._layer,armlib,lib)};
+								this._context.rect(this.x,this.y,this.width,this.height);
+								this._context.fillStyle = this.fill;
+								this._context.strokeStyle = this.stroke;
+								if(this.onDraw) {this.onDraw(this.__context, this._layer,armlib,lib)};
+							this._context.closePath();
+							this._context.fill();
+							this._context.stroke();
+						this._context.restore();
 					}
 					this._onDraw();
 				} else {

@@ -13,21 +13,19 @@ window.framework = window.gizmo;
 
     var ArmLib = lib.Class({
         initialize: function(O){
-            this.synch = O.synch;
 			return this;
         },
         Statics: {
             name: 'ArmLib',
 			type: 'ArmLib',
             owner: null,
-            synch: true, // synch or asynch
             loaded: false, // Flag which show load-state of object
-            _synchObjectsList: {}, // List with loading objects
-            _numberSynchObjects: 0,
-            _numberObjects: 0,
 			
             _list: {}, // List with Layer-objects
             _processList: [], // List with sorted layer-objects
+
+            _keybordList: [],
+            _mouseList:[],
 
             _armlib: this,
             _lib: lib,
@@ -36,6 +34,17 @@ window.framework = window.gizmo;
             _class: {}
         },
         Methods: {
+            _init: function() {
+                this.image = new Image();
+                this.image.src = this.src;
+                var self = this;
+                this.image.onload = function() {
+                    self.loaded = true;
+                    self._onLoad.call(self);
+                };
+                return this;
+            },
+
 			_onDraw: function() {
 				if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)}
                 for(var i in this._processList) {
@@ -76,13 +85,6 @@ window.framework = window.gizmo;
                 }
             },
             onUpdate: function(layer, armlib, lib) {}, // Function which update object
-
-            _onLoad: function() {
-				this.loaded = true;
-				if(lib.isSet(this.onLoad)) {this.onLoad.call(this, armlib,lib);}
-				
-            },
-            onLoad: function(armlib, lib) {}, // Function for event load ending
 
             onKeyPress: function(e) {}, // Function for event of keyboard
             onKeyDown: function(e) {},
@@ -159,12 +161,6 @@ window.framework = window.gizmo;
 				return this;
 			},
 			stop: function() {
-			},
-			Load: function() {
-				for(var i in this._list) {
-					this._list[i].Load();
-				}
-				return this;
 			}
         }
     });

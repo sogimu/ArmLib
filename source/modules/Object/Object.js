@@ -8,7 +8,7 @@
      */
 
     var object = lib.Class({
-        Extend: armlib._class.armObj,
+        Extend: armlib._class.ArmObj,
         Initialize: function(O, layer, armlib) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
@@ -26,9 +26,22 @@
         },
         Statics: {
             type: 'Object',
-            name: 1000*Math.random()
+            name: 1000*Math.random(),
+            _list: []
         },
         Methods: { // Call-back functions of ArmLib object
+            addChild: function(O) { // add new child-object and let sort drawList by z-index
+                O._setContext(this._context);
+                O._setLayer(this._layer);
+                O._setOwner(this);
+                this._list.push(O);
+                
+                return this;
+            
+            },
+            removeChild: function(O) {
+
+            },
 			_load: function() {
 				if(this._list.length == 0) {
 					this._onLoad.call(this);
