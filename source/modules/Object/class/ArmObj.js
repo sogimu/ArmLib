@@ -159,6 +159,14 @@
                 return this._height;
             },
             
+            // angle
+            set angle(O) {
+                this._angle = O;
+            },
+            get angle() {
+                return this._angle;
+            },
+
             // centralPoint
             set centralPoint(O) {
                 this._centralPoint = O;
