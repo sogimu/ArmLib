@@ -47,15 +47,15 @@ window.onload = function() {
 			y: 10,
             width: 100,
             height: 100,
-			//angle: 0.5,
+			angle: 0.5,
 			centralPoint: {x: 50, y: 50},
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		})
 		.setFunc('onUpdate', function() {
-			this.x-=0.3;
-			this.y+=0.4;
+			this.x+=0.1;
+			//this.y+=0.4;
 
 		})
 		
@@ -74,7 +74,7 @@ window.onload = function() {
 			console.log('onLoad r5');
 		})
 		.setFunc('onUpdate', function() { 
-			r5.x-=0.05	; 
+			//r5.x-=0.05	; 
 			r5.angle +=0.1;
 		})
 		.setFunc('preDraw', function(ctx) {})
@@ -98,7 +98,7 @@ window.onload = function() {
 		})
 		.setFunc('onUpdate', function() {
 			this.x+=0.1;
-			this.y+=0.1;
+			//this.y+=0.1;
 			
 			this.angle+=0.01;
 		})

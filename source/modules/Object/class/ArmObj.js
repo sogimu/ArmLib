@@ -23,7 +23,7 @@
             _width: 10,
             _height: 10,
             _angle: 0,
-            _centralPoint: {x:0,y:0},
+            _centralPoint: {x:1,y:1},
             _scale: {x:1,y:1},
             _zindex: 0,
 			

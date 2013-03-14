@@ -22,7 +22,45 @@
 
         },
 		Methods: {
-			_saveChanges: function() {
+            _begin: function() {
+				if(this.haveOwner()) {
+					this._begin = function() {
+						if(this._onBegin) {this._onBegin.call(this, this._layer,armlib,lib)};
+					}
+					this._begin();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+
+			_clear: function() {
+				if(this.haveOwner()) {
+					this._saveDisplayUnderPrimitive();
+				
+					this._clear = function() {
+						this._removePrimitiveFromDisplay();
+						this._saveDisplayUnderPrimitive();
+
+					}
+					this._clear();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+			},
+            _update: function() {
+				if(this.haveOwner()) {
+					this._update = function() {
+						if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
+					}
+					this._update();
+				} else {
+					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+				}
+
+            },
+            _saveDisplayUnderPrimitive: function() {
 				var angelRad = this.angle;
 				var m = this.centralPoint.x;
 				var n = this.centralPoint.y;
@@ -46,32 +84,9 @@
 				this._oldLandscapes = this._context.getImageData(this._oldX,this._oldY,this._oldWidth,this._oldHeight);
 			},
 
-			_clear: function() {
-				if(this.haveOwner()) {
-					//this._saveChanges();
-				
-					this._clear = function() {
-						this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
-						this._saveChanges();
-					}
-					this._clear();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
-
-			},
-            _update: function() {
-				if(this.haveOwner()) {
-					this._update = function() {
-						if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
-					}
-					this._update();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
-
+            _removePrimitiveFromDisplay: function() {
+            	this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
             },
-
 
             // Setters/Getters
 

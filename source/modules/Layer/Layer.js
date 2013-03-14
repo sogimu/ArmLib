@@ -77,6 +77,12 @@
 					//this._changeList[O.id] = 'obj';
 				}
 			},
+			_begin: function() {
+				for(var i in this._list) {
+					this._list[i]._begin();
+				}
+				
+            },
 			_clear: function() {
 				for(var i in this._list) {
 					this._list[i]._clear();
@@ -131,7 +137,9 @@
 
 					window.onEachFrame = onEachFrame;
 				})(this);
-				
+
+				this._begin();
+
 				var step = (function(O) {
 					var loops = 0, skipTicks = 1000 / O.fps,
 						maxFrameSkip = 10,
@@ -146,7 +154,7 @@
 							loops++;
 						}
 
-						//O._clear();
+						O._clear();
 						O._draw();
 					};
 				})(this);
