@@ -37,8 +37,14 @@
             _update: function() { /* virtual */},
             _draw: function() { /* virtual */ },
 
-            load: function() {
-                
+            Load: function() {
+                this._load();
+            },
+
+            _load: function() {
+                for(var i in this._list) {
+                    this._list[i]._load();
+                }
             },
 
             __onLoad: function() {
