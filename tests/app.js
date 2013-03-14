@@ -53,6 +53,12 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		})
+		.setFunc('onUpdate', function() {
+			this.x-=0.3;
+			this.y+=0.4;
+
+		})
+		
 		
         r5 = new armlib.class.Image({
             name: 'r5',
@@ -67,7 +73,7 @@ window.onload = function() {
 		.setFunc('onLoad', function(layer) {
 			console.log('onLoad r5');
 		})
-		.setFunc('onUpdate', function() { this.angle-=0.1;})
+		.setFunc('onUpdate', function() { this.x-=0.1;})
 		.setFunc('preDraw', function(ctx) {})
 		.setFunc('onDraw', function(ctx) {
 			ctx.moveTo(this.x + 25, this.y + 25);
@@ -83,10 +89,14 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad obj2');
 			l.addChild(obj2);
+			l.run();
+			console.log('run l');
+
 		})
 		.setFunc('onUpdate', function() {
-			console.log('obj2 update()');
-			this.x+=10;
+			this.x+=0.1;
+			this.y+=0.1;
+			
 			this.angle+=10;
 		})
 		.addChild(r5)
@@ -94,6 +104,8 @@ window.onload = function() {
 		.addChild(r1)
 		.addChild(r3)
 		.Load();
+
+		
 		//debugger
 		
 		// r6 = new armlib.class.Image({

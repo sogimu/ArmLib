@@ -59,7 +59,6 @@
 				if(this.haveOwner()) {
 					this._draw = function() {
 						this._context.save();
-							
 							this._context.beginPath();
 								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
 								this._context.fillStyle = this.fill;

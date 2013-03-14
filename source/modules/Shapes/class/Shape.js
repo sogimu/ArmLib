@@ -47,8 +47,8 @@
 			},
 
 			_clear: function() {
-				if(this._haveOwner()) {
-					this._saveChanges();
+				if(this.haveOwner()) {
+					//this._saveChanges();
 				
 					this._clear = function() {
 						this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
