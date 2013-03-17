@@ -43,6 +43,7 @@
 
             },
 
+
             Load: function() {
                 this._load.call(this);
                 return this;
@@ -148,6 +149,24 @@
             getNumberNotLoadedChilds: function() {
                 return this._numberNotLoadedChilds; 
             },
+
+            __onKeyDown: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onKeyDown(e);
+                }
+            },
+
+            __onKeyPress: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onKeyPress(e);
+                }
+            },
+
+            __onKeyUp: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onKeyUp(e);
+                }
+            },
             
             // Setters/Getters
 
@@ -163,7 +182,7 @@
                 for(var i in this._list) {
                     this._list[i]._setLayer(layer);
                 }
-            }
+            },
 
         }
     });

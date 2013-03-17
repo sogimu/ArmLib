@@ -60,6 +60,7 @@
 				}
 
             },
+
             _saveDisplayUnderPrimitive: function() {
 				var angelRad = this.angle;
 				var m = this.centralPoint.x;
@@ -87,6 +88,23 @@
             _removePrimitiveFromDisplay: function() {
             	this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
             },
+
+            __onKeyDown: function(e) {
+            	if(this._onKeyDown) {
+            		this._onKeyDown(e);
+            	}
+            },
+            __onKeyPress: function(e) {
+            	if(this._onKeyPress) {
+            		this._onKeyPress(e);
+            	}
+            },
+            __onKeyUp: function(e) {
+            	if(this._onKeyUp) {
+            		this._onKeyUp(e);
+            	}
+            }
+
 
             // Setters/Getters
 

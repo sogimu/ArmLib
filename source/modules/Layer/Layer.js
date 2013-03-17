@@ -36,12 +36,13 @@
             }
 			this._setLayer(this);
 			this._setOwner(armlib);
-			armlib.addLayer(this);
+			armlib._addLayer(this);
 			return this;
         },
         Statics: {
             _type: ['Layer',''],
             _name: 1000*Math.random(),
+           	_runStatus: false,
 
             _context: null,
             _layer: null,
@@ -55,6 +56,10 @@
   			_updating: false,
 			_changeList: [],
             _list: [], // List with child-objects
+
+            _onKeyDownList: {},
+            _onKeyPressList: {},
+            _onKeyUpList: {},
 			
 			_armlib: armlib,
             _lib: lib
@@ -72,15 +77,59 @@
             removeChild: function(O) {
 
             },
+
+            _onKeyDown: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyDown(e);    
+	                }
+            	}
+
+            },
+
+            _onKeyPress: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyPress(e);    
+	                }
+            	}
+            },
+
+            _onKeyUp: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyUp(e);    
+	                }
+            	}
+            },
+
+            _addObjforOnKeyDownEvent: function(obj) {
+                if(obj._onKeyDown) {
+                    this._onKeyDownList[obj.getName()] = obj;
+                }
+            },
+            _addObjforOnKeyPressEvent: function(obj) {
+                if(obj._onKeyPress) {
+                    this._onKeyPressList[obj.getName()] = obj;
+                }
+            },
+            _addObjforOnKeyUpEvent: function(obj) {
+                if(obj._onKeyUp) {
+                    this._onKeyUpList[obj.getName()] = obj;
+                }
+            },
+
+            // will delete
 			_addChangedObj: function(O) {
 				if(this.updating) {
 					//this._changeList[O.id] = 'obj';
 				}
 			},
+
 			_begin: function() {
 				for(var i in this._list) {
 					this._list[i]._begin();
-				}
+				}{a: 1}
 				
             },
 			_clear: function() {
@@ -160,6 +209,9 @@
 				})(this);
 				
 				window.onEachFrame(step);
+
+				this._runStatus = true;
+				
 				this.run = function() {
 					return this;
 				}
@@ -181,6 +233,13 @@
             },
             getName: function() {
                 return this._name;
+            },
+
+            _setRunStatus: function(status) {
+                this._runStatus = status;
+            },
+            getRunStatus: function() {
+                return this._runStatus;
             },
 
             _setContext: function(context) {

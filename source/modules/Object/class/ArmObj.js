@@ -55,7 +55,7 @@
 				}
 				
             },
-            _onLoad: function(armlib, lib) {}, // Function for event load ending
+            /*_onLoad: function(armlib, lib) {}, // Function for event load ending
 
             _onKeyPress: function(e) {}, // Function for event of keyboard
             _onKeyDown: function(e) {},
@@ -66,16 +66,13 @@
             _onMouseUp: function(e) {},
             _onShow: function(layer, armlib) {}, // Function for showing and hiding event
             _onHide: function(layer, armlib) {},
-            
+            */
 			setFunc: function(name,func) {
 				if(name && func) {
 					this['_'+name] = func;
+                    
 				}
-                switch(name) {
-                    case "onKeyDown": armlib._addObjforOnKeyDownEvent(this); 
-                    case "onKeyPress": armlib._addObjforOnKeyPressEvent(this); 
-                    case "onKeyUp": armlib._addObjforOnKeyUpEvent(this); 
-                }
+                
 				return this;
 			},
 			getFunc: function(O) {
@@ -88,6 +85,14 @@
                     return false;
                 }
             },
+            haveLayer: function() {
+                if(this._layer) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
 
             _setType: function(type) {
                 this._type = type;

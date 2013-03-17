@@ -11,7 +11,6 @@
 
     var ArmLib = lib.Class({
         Initialize: function() {
-            this._init();
 			return this;
         },
         Statics: {
@@ -19,9 +18,6 @@
             _name: 'ArmLib',
             
             _list: [], // List with Layer-objects
-            _onKeyDownList: {},
-            _onKeyPressList: {},
-            _onKeyUpList: {},
             
             _class: {},
 
@@ -29,68 +25,69 @@
             _lib: lib,
         },
         Methods: {
-            _init: function() {
-                var self = this;
-                window.onkeydown = function(e) {self._onKeyDown(e)};
-                window.onkeypress = function(e) {self._onKeyPress(e)};
-                window.onkeyup = function(e) {self._onKeyUp(e)}; 
-            },
 
-            addLayer: function(O) { // add new child-object and let sort drawList by z-index
+            _addLayer: function(O) { // add new child-object and let sort drawList by z-index
                 O._setOwner(this);
                 this._list.push(O);
                 
                 return this;
 
             },
-            removeLayer: function(O) {
+            
+            _removeLayer: function(O) {
 
             },
 	
 			run: function() {
-				for(var i in this._list) {
+				this._addKeybordMouseEvents();
+                for(var i in this._list) {
                     this._list[i].run();
                 }
-				
+                				
 				return this;
 			},
 			stop: function() {
+                this._removeKeybordMouseEvents();
 			},
 
-            _addObjforOnKeyDownEvent: function(obj) {
-                if(obj._onKeyDown) {
-                    this._onKeyDownList[obj.getName()] = obj;
-                }
-            },
-            _addObjforOnKeyPressEvent: function(obj) {
-                if(obj._onKeyPress) {
-                    this._onKeyPressList[obj.getName()] = obj;
-                }
-            },
-            _addObjforOnKeyUpEvent: function(obj) {
-                if(obj._onKeyUp) {
-                    this._onKeyUpList[obj.getName()] = obj;
-                }
+            _addKeybordMouseEvents: function() {
+                var self = this;
+                window.onkeydown = function(e) {self._onKeyDown(e)};
+                window.onkeypress = function(e) {self._onKeyPress(e)};
+                window.onkeyup = function(e) {self._onKeyUp(e)}; 
             },
 
+            _removeKeybordMouseEvents: function() {
+                var self = this;
+                window.onkeydown = function(e) {};
+                window.onkeypress = function(e) {};
+                window.onkeyup = function(e) {}; 
+            },
+            
             _onKeyDown: function(e) {
                 //console.log(e.keyCode);
-                for(var i in this._onKeyDownList) {
-                    this._onKeyDownList[i]._onKeyDown(e);
+                for(var i in this._list) {
+                    if(this._list[i].getRunStatus()) {
+                        this._list[i]._onKeyDown(e);
+                    }
                 }
+
             },
             _onKeyPress: function(e) {
-                //console.log(e.keyCode);
-                for(var i in this._onKeyPressList) {
-                    this._onKeyPressList[i]._onKeyPress(e);
+                for(var i in this._list) {
+                    if(this._list[i].getRunStatus()) {
+                        this._list[i]._onKeyPress(e);
+                    }
                 }
             },
             _onKeyUp: function(e) {
-                //console.log(e.keyCode);
-                for(var i in this._onKeyUpList) {
-                    this._onKeyUpList[i]._onKeyUp(e);
+                for(var i in this._list) {
+                    if(this._list[i].getRunStatus()) {
+                        this._list[i]._onKeyUp(e);
+                    }
                 }
             }
+
         }
     });
 

@@ -53,11 +53,6 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		})
-		.setFunc('onUpdate', function() {
-			//this.x+=0.1;
-			//this.y+=0.4;
-
-		})
 		.setFunc("onKeyDown", function(e) {
 			//console.log(e.keyCode);
 			if(e.keyCode == 38) {
