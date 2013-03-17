@@ -243,5 +243,5 @@
 
         }
     });
-    armlib.class.Layer = Layer;
-})(armlib,gizmo);
+    armlib.Layer = Layer;
+})(ArmLib,gizmo);

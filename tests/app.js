@@ -7,7 +7,7 @@ window.onload = function() {
 			// zindex: 0
         // });
 		
-		l = new armlib.class.Layer({
+		l = new armlib.Layer({
             container: 'container',
             name: 'l',
 			zindex: 1
@@ -28,7 +28,7 @@ window.onload = function() {
 			console.log('onLoad r0');
 		});*/
 
-		r1 = new armlib.class.Image({
+		r1 = new armlib.Image({
             name: 'r1',
             src: './img/gras.jpg',
 			width: 500,
@@ -39,7 +39,7 @@ window.onload = function() {
 			//action.addChild(this);
 		});
 		
-        r3 = new armlib.class.Image({
+        r3 = new armlib.Image({
             name: 'r3',
             src: './img/nosov_01.jpg',
             zindex: 6,
@@ -54,13 +54,37 @@ window.onload = function() {
 			console.log('onLoad r3');
 		})
 		.setFunc('onUpdate', function() {
-			this.x+=0.1;
+			//this.x+=0.1;
 			//this.y+=0.4;
 
 		})
+		.setFunc("onKeyDown", function(e) {
+			//console.log(e.keyCode);
+			if(e.keyCode == 38) {
+				this.angle+=0.1;
+			}
+			if(e.keyCode == 40) {
+				this.angle-=0.1;
+			}
+		})
+		.setFunc("onKeyPress", function(e) {
+			//console.log(e.keyCode);
+			if(e.keyCode == 97) {
+				this.x-=5;
+			}
+			if(e.keyCode == 100) {
+				this.x+=5;
+			}
+			if(e.keyCode == 119) {
+				this.y-=5;
+			}
+			if(e.keyCode == 115) {
+				this.y+=5;
+			}
+		})
 		
 		
-        r5 = new armlib.class.Image({
+        r5 = new armlib.Image({
             name: 'r5',
             src: './img/images (1).jpg',
             zindex: 10,
@@ -83,7 +107,7 @@ window.onload = function() {
 			ctx.lineTo(this.x + 100,this.y + 100);
 		})
 
-		obj2 = new armlib.class.Object({
+		obj2 = new armlib.Object({
 			name: 'obj2',
             zindex: 1,
 			x: 50,
@@ -92,13 +116,11 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad obj2');
 			l.addChild(obj2);
-			l.run();
-			console.log('run l');
+			armlib.run();
+			console.log('run armlib');
 
 		})
 		.setFunc('onUpdate', function() {
-			this.x+=0.1;
-			//this.y+=0.1;
 			
 			this.angle+=0.01;
 		})
@@ -122,6 +144,6 @@ window.onload = function() {
 			// l.addChild(this);
 		// })
 
-    })(armlib,gizmo);
+    })(ArmLib,gizmo);
 
 }

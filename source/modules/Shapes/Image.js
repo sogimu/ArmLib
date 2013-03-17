@@ -102,5 +102,5 @@
             },
         }
     });
-    armlib.class.Image = image;
-})(armlib,gizmo);
+    armlib.Image = image;
+})(ArmLib,gizmo);

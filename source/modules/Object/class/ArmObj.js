@@ -10,7 +10,7 @@
     var ArmObj = lib.Class({
         Initialize: function(O, layer, armlib) {},
         Statics: {
-            _type: 'ArmObject',
+            _type: ['ArmObject',''],
             _name: 1000*Math.random(),
             _loaded: false, // Flag which show load-state of object 
 
@@ -68,9 +68,14 @@
             _onHide: function(layer, armlib) {},
             
 			setFunc: function(name,func) {
-				if(lib.isSet(name) && lib.isSet(func)) {
+				if(name && func) {
 					this['_'+name] = func;
 				}
+                switch(name) {
+                    case "onKeyDown": armlib._addObjforOnKeyDownEvent(this); 
+                    case "onKeyPress": armlib._addObjforOnKeyPressEvent(this); 
+                    case "onKeyUp": armlib._addObjforOnKeyUpEvent(this); 
+                }
 				return this;
 			},
 			getFunc: function(O) {
@@ -199,4 +204,4 @@
 
     armlib._class.ArmObj = ArmObj;
 
-}(armlib,gizmo));
+}(ArmLib,gizmo));

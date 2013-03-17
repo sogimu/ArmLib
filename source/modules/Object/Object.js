@@ -168,6 +168,6 @@
         }
     });
 
-    armlib.class.Object = object;
+    armlib.Object = object;
 
-}(armlib,gizmo));
+}(ArmLib,gizmo));

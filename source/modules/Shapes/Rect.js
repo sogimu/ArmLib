@@ -79,5 +79,5 @@
 
         }
     });
-    armlib.class.Rect = Rect;
-})(armlib,gizmo);
+    armlib.Rect = Rect;
+})(ArmLib,gizmo);

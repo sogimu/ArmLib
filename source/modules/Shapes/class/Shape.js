@@ -94,4 +94,4 @@
 		}
     });
     armlib._class.Shape = Shape;
-})(armlib,gizmo);
+})(ArmLib,gizmo);

@@ -1,5 +1,3 @@
-window.framework = window.gizmo;
-
 (function ArmLib(lib){
     /**
      * Создает экземпляр ArmLib и сохраняет ссылку на него в глобальной перменной ArmLib.
@@ -12,160 +10,89 @@ window.framework = window.gizmo;
      */
 
     var ArmLib = lib.Class({
-        initialize: function(O){
+        Initialize: function() {
+            this._init();
 			return this;
         },
         Statics: {
-            name: 'ArmLib',
-			type: 'ArmLib',
-            owner: null,
-            loaded: false, // Flag which show load-state of object
-			
-            _list: {}, // List with Layer-objects
-            _processList: [], // List with sorted layer-objects
-
-            _keybordList: [],
-            _mouseList:[],
+            _type: ['ArmLib','ArmLib'],
+            _name: 'ArmLib',
+            
+            _list: [], // List with Layer-objects
+            _onKeyDownList: {},
+            _onKeyPressList: {},
+            _onKeyUpList: {},
+            
+            _class: {},
 
             _armlib: this,
             _lib: lib,
-
-            class: {},
-            _class: {}
         },
         Methods: {
             _init: function() {
-                this.image = new Image();
-                this.image.src = this.src;
                 var self = this;
-                this.image.onload = function() {
-                    self.loaded = true;
-                    self._onLoad.call(self);
-                };
+                window.onkeydown = function(e) {self._onKeyDown(e)};
+                window.onkeypress = function(e) {self._onKeyPress(e)};
+                window.onkeyup = function(e) {self._onKeyUp(e)}; 
+            },
+
+            addLayer: function(O) { // add new child-object and let sort drawList by z-index
+                O._setOwner(this);
+                this._list.push(O);
+                
                 return this;
-            },
 
-			_onDraw: function() {
-				if(this.preDraw) {this.preDraw(this._context, this._layer,armlib,lib)}
-                for(var i in this._processList) {
-                    this._processList[i]._onDraw();
-                }
-				if(this.onDraw) {this.onDraw(this._context, this._layer,armlib,lib)};
-
-            },
-            onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
-            preDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object after drawing
-
-			_onClear: function() {
-				this._onClear = function() {
-					var len = this._processList.length;
-					for(var i = len; i>=0; i--) {
-						this._processList[i]._onClear.call(this._processList[i]);
-					}
-					if(this.onClear) {this.onClear(this._context, this._layer,armlib,lib)};
-				}
-				this._onClear();
-            },
-            onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
-			
-            _onBegin: function() {
-                if(lib.isSet(this.onBegin)) {this.onBegin.call(this, this._layer,armlib,lib)};
-
-                for(var i in this._processList) {
-                    this._processList[i]._onBegin();
-                }
-            },
-            onBegin: function(layer, armlib, lib) {}, // Constructor for object
-
-            _onUpdate: function() {
-                if(lib.isSet(this.onUpdate)) {this.onUpdate.call(this, this._layer,armlib,lib)};
-
-                for(var i in this._processList) {
-                    this._processList[i]._onUpdate();
-                }
-            },
-            onUpdate: function(layer, armlib, lib) {}, // Function which update object
-
-            onKeyPress: function(e) {}, // Function for event of keyboard
-            onKeyDown: function(e) {},
-            onKeyUp: function(e) {},
-            onMouseClick: function(e) {}, // Functions for event of mouse
-            onMouseMove: function(e) {},
-            onMouseDown: function(e) {},
-            onMouseUp: function(e) {},
-            onShow: function(layer, armlib) {}, // Function for showing and hiding event
-            onHide: function(layer, armlib) {},
-            _sortByZindex: function(A,low,high) { // sort: Quicksort
-                var i = low;
-                var j = high;
-                var x = A[Math.round((low+high)/2)]._zindex;  // x - опорный элемент посредине между low и high
-                do {
-                    while(A[i]._zindex < x) ++i;  // поиск элемента для переноса в старшую часть
-                    while(A[j]._zindex > x) --j;  // поиск элемента для переноса в младшую часть
-                    if(i <= j){
-                        // обмен элементов местами:
-                        var temp = A[i];
-                        A[i] = A[j];
-                        A[j] = temp;
-                        // переход к следующим элементам:
-                        i++; j--;
-                    }
-                } while(i < j);
-                if(low < j) this._sortByZindex(A, low, j);
-                if(i < high) this._sortByZindex(A, i, high);
-                this._processList = A;
-            },
-			setFunc: function(name,func) {
-				if(lib.isSet(name)) {
-					this[name] = func;
-				}
-				return this;
-			},
-			getFunc: function(O) {
-			},
-			
-			addToProcessList: function(O) {
-				this._processList.push(O);
-                this._sortByZindex(this._processList,0,this._processList.length-1);
-			},
-			removeFromProcessList: function() {
-				
-			},
-			
-            addLayer: function(O) { // add new layer-object and let sort drawList by z-index
-                O.owner = this;
-                this._list[O.name] = O;
-				this._numberObjects++;
-				
-                if(O.loaded && O.synch == false) {
-					this.addToProcessList(O);
-                } else if(O.synch && O.loaded == false) {
-					this._synchObjectsList[O.name] = O;
-					this._numberSynchObjects++;
-				} else if(O.loaded == true && O.synch) {
-					this._synchObjectsList[O.name] = O;
-                }
-				O._connected = true;	
-				return this;
             },
             removeLayer: function(O) {
 
             },
+	
 			run: function() {
-				for(var i in this._processList) {
-                    this._processList[i].run();
+				for(var i in this._list) {
+                    this._list[i].run();
                 }
-				this.run = function() {
-					return this;
-				}
+				
 				return this;
 			},
 			stop: function() {
-			}
+			},
+
+            _addObjforOnKeyDownEvent: function(obj) {
+                if(obj._onKeyDown) {
+                    this._onKeyDownList[obj.getName()] = obj;
+                }
+            },
+            _addObjforOnKeyPressEvent: function(obj) {
+                if(obj._onKeyPress) {
+                    this._onKeyPressList[obj.getName()] = obj;
+                }
+            },
+            _addObjforOnKeyUpEvent: function(obj) {
+                if(obj._onKeyUp) {
+                    this._onKeyUpList[obj.getName()] = obj;
+                }
+            },
+
+            _onKeyDown: function(e) {
+                //console.log(e.keyCode);
+                for(var i in this._onKeyDownList) {
+                    this._onKeyDownList[i]._onKeyDown(e);
+                }
+            },
+            _onKeyPress: function(e) {
+                //console.log(e.keyCode);
+                for(var i in this._onKeyPressList) {
+                    this._onKeyPressList[i]._onKeyPress(e);
+                }
+            },
+            _onKeyUp: function(e) {
+                //console.log(e.keyCode);
+                for(var i in this._onKeyUpList) {
+                    this._onKeyUpList[i]._onKeyUp(e);
+                }
+            }
         }
     });
 
-    window.armlib = new ArmLib({
-        synch: true
-    });
-}(framework));
+    window.ArmLib = new ArmLib();
+}(window.gizmo));
