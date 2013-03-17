@@ -22,6 +22,7 @@
 			this._setName(O.name || this.name);
 			this.fps = O.fps || this.fps;
 			if( O.container ) {
+				this._setContainerName(O.container);
                 var container = document.getElementById(O.container);
                 var canvas = document.createElement('canvas');
                 canvas.width = O.width || this.width;
@@ -47,6 +48,7 @@
             _context: null,
             _layer: null,
             _owner: null,
+            _container: null,
 
             _width: 500,
             _height: 500,
@@ -56,10 +58,6 @@
   			_updating: false,
 			_changeList: [],
             _list: [], // List with child-objects
-
-            _onKeyDownList: {},
-            _onKeyPressList: {},
-            _onKeyUpList: {},
 			
 			_armlib: armlib,
             _lib: lib
@@ -76,47 +74,6 @@
             },
             removeChild: function(O) {
 
-            },
-
-            _onKeyDown: function(e) {
-                if(this.getRunStatus()) {
-	                for(var i in this._list) {
-                        this._list[i].__onKeyDown(e);    
-	                }
-            	}
-
-            },
-
-            _onKeyPress: function(e) {
-                if(this.getRunStatus()) {
-	                for(var i in this._list) {
-                        this._list[i].__onKeyPress(e);    
-	                }
-            	}
-            },
-
-            _onKeyUp: function(e) {
-                if(this.getRunStatus()) {
-	                for(var i in this._list) {
-                        this._list[i].__onKeyUp(e);    
-	                }
-            	}
-            },
-
-            _addObjforOnKeyDownEvent: function(obj) {
-                if(obj._onKeyDown) {
-                    this._onKeyDownList[obj.getName()] = obj;
-                }
-            },
-            _addObjforOnKeyPressEvent: function(obj) {
-                if(obj._onKeyPress) {
-                    this._onKeyPressList[obj.getName()] = obj;
-                }
-            },
-            _addObjforOnKeyUpEvent: function(obj) {
-                if(obj._onKeyUp) {
-                    this._onKeyUpList[obj.getName()] = obj;
-                }
             },
 
             // will delete
@@ -261,6 +218,57 @@
             },
             _getOwner: function() {
                 return this._owner;
+            },
+            
+            _setContainerName: function(name) {
+            	this._container = name;
+            },
+            _getContainerName: function() {
+            	return this._container;
+            },
+
+            // event from keyboard
+            _onKeyDown: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyDown(e);    
+	                }
+            	}
+
+            },
+
+            _onKeyPress: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyPress(e);    
+	                }
+            	}
+            },
+
+            _onKeyUp: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onKeyUp(e);    
+	                }
+            	}
+            },
+            // event form mouse
+            _onMouseDown: function(e) {
+                if(this.getRunStatus()) {
+	                for(var i in this._list) {
+                        this._list[i].__onMouseDown(e);    
+	                }
+            	}
+
+            },
+
+            _listenMouseEvents: function() {
+            	var container = document.getElementById(this._getContainerName());
+            	var self = this;
+            	container.onmousedown = function(e) {self._onMouseDown(e)};
+            },
+            _notListenMouseEvents: function() {
+
             },
 
             // Setters/Getters

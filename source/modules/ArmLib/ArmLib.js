@@ -39,7 +39,7 @@
             },
 	
 			run: function() {
-				this._addKeybordMouseEvents();
+				this._listenKeybordMouseEvents();
                 for(var i in this._list) {
                     this._list[i].run();
                 }
@@ -47,25 +47,30 @@
 				return this;
 			},
 			stop: function() {
-                this._removeKeybordMouseEvents();
+                this._notListenKeybordMouseEvents();
 			},
 
-            _addKeybordMouseEvents: function() {
+            _listenKeybordMouseEvents: function() {
                 var self = this;
                 window.onkeydown = function(e) {self._onKeyDown(e)};
                 window.onkeypress = function(e) {self._onKeyPress(e)};
-                window.onkeyup = function(e) {self._onKeyUp(e)}; 
+                window.onkeyup = function(e) {self._onKeyUp(e)};
+                for(var i in this._list) {
+                    this._list[i]._listenMouseEvents();
+                } 
             },
 
-            _removeKeybordMouseEvents: function() {
+            _notListenKeybordMouseEvents: function() {
                 var self = this;
                 window.onkeydown = function(e) {};
                 window.onkeypress = function(e) {};
                 window.onkeyup = function(e) {}; 
+                for(var i in this._list) {
+                    this._list[i]._notListenMouseEvents();
+                }
             },
             
             _onKeyDown: function(e) {
-                //console.log(e.keyCode);
                 for(var i in this._list) {
                     if(this._list[i].getRunStatus()) {
                         this._list[i]._onKeyDown(e);

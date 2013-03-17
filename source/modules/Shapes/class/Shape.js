@@ -89,6 +89,8 @@
             	this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
             },
 
+            // private events from keyboard
+            
             __onKeyDown: function(e) {
             	if(this._onKeyDown) {
             		this._onKeyDown(e);
@@ -103,8 +105,16 @@
             	if(this._onKeyUp) {
             		this._onKeyUp(e);
             	}
-            }
+            },
 
+            // private events from mouse
+
+            __onMouseDown: function(e) {
+                if(this._onMouseDown) {
+                	this._onMouseDown(e);
+                }
+
+            },
 
             // Setters/Getters
 

@@ -150,6 +150,7 @@
                 return this._numberNotLoadedChilds; 
             },
 
+            // private events from keyboard 
             __onKeyDown: function(e) {
                 for(var i in this._list) {
                     this._list[i].__onKeyDown(e);
@@ -166,6 +167,15 @@
                 for(var i in this._list) {
                     this._list[i].__onKeyUp(e);
                 }
+            },
+
+            // private events from mouse
+
+            __onMouseDown: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onMouseDown(e);    
+                }
+
             },
             
             // Setters/Getters

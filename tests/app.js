@@ -37,6 +37,10 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad r1');
 			//action.addChild(this);
+		})
+		.setFunc('onMouseDown', function(e) {
+			console.log("X="+e.x);
+			console.log("Y="+e.y);
 		});
 		
         r3 = new armlib.Image({
