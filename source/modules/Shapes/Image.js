@@ -59,7 +59,7 @@
 				if(this.haveOwner()) {
 					this._draw = function() {
 						this._context.save();
-							this._context.beginPath();
+							//this._context.beginPath();
 								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
 								this._context.fillStyle = this.fill;
 								this._context.strokeStyle = this.stroke;
@@ -67,12 +67,12 @@
 								this._context.translate(this.centralPoint.x, this.centralPoint.y);
 								this._context.rotate(this.angle);
 								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-								this._context.scale(this.scale.x, this.scale.y);
+								//this._context.scale(this.scale.x, this.scale.y);
 								//this._onClear();
 								this._context.drawImage(this.image, this.x,this.y,this.width,this.height);
 								
 								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
-							this._context.closePath();
+							//this._context.closePath();
 							//this._context.fill();
 							//this._context.stroke();
 						this._context.restore();
