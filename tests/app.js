@@ -31,14 +31,15 @@ window.onload = function() {
 		r1 = new armlib.Image({
             name: 'r1',
             src: './img/gras.jpg',
-			width: 500,
-            height: 500,
+			width: 250,
+            height: 250,
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r1');
 			//action.addChild(this);
 		})
 		.setFunc('onMouseDown', function(e) {
+			console.log("onKeyDown on r1");
 			console.log("X="+e.x);
 			console.log("Y="+e.y);
 		});
@@ -51,14 +52,13 @@ window.onload = function() {
 			y: 10,
             width: 100,
             height: 100,
-			angle: 0.5,
+			//angle: 0.5,
 			centralPoint: {x: 50, y: 50},
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		})
 		.setFunc("onKeyDown", function(e) {
-			//console.log(e.keyCode);
 			if(e.keyCode == 38) {
 				this.angle+=0.1;
 			}
@@ -98,7 +98,7 @@ window.onload = function() {
 		})
 		.setFunc('onUpdate', function() { 
 			//r5.x-=0.05	; 
-			r5.angle +=0.1;
+			//r5.angle +=0.1;
 		})
 		.setFunc('preDraw', function(ctx) {})
 		.setFunc('onDraw', function(ctx) {
@@ -109,8 +109,8 @@ window.onload = function() {
 		obj2 = new armlib.Object({
 			name: 'obj2',
             zindex: 1,
-			x: 50,
-			y: 50,
+			//x: 50,
+			//y: 50,
 		})
 		.setFunc('onLoad', function() {
 			console.log('onLoad obj2');
@@ -121,7 +121,7 @@ window.onload = function() {
 		})
 		.setFunc('onUpdate', function() {
 			
-			this.angle+=0.01;
+			//this.angle+=0.01;
 		})
 		.addChild(r5)
 		//.addChild(r0)

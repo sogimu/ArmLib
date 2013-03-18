@@ -110,7 +110,7 @@
             // private events from mouse
 
             __onMouseDown: function(e) {
-                if(this._onMouseDown) {
+                if(this._onMouseDown && this._havePoint(e)) {
                 	this._onMouseDown(e);
                 }
 

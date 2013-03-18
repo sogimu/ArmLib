@@ -63,54 +63,7 @@
             _lib: lib
         },
         Methods: {
-			addChild: function(O) { // add new child-object and let sort drawList by z-index
-				O._setContext(this._context);
-				O._setLayer(this._layer);
-				O._setOwner(this);
-				this._list.push(O);
-				
-				return this;
 			
-            },
-            removeChild: function(O) {
-
-            },
-
-            // will delete
-			_addChangedObj: function(O) {
-				if(this.updating) {
-					//this._changeList[O.id] = 'obj';
-				}
-			},
-
-			_begin: function() {
-				for(var i in this._list) {
-					this._list[i]._begin();
-				}{a: 1}
-				
-            },
-			_clear: function() {
-				for(var i in this._list) {
-					this._list[i]._clear();
-				}
-				
-            },
-			_update: function() {
-				this._updating = true;
-				for(var i in this._list) {
-					this._list[i]._update();
-				}
-				this._updating = false;				
-
-            },
-            _draw: function() {
-				for(var i in this._list) {
-					this._list[i]._draw();
-				}
-				
-            },
-
-            
 			run: function() {
 				(function(O) {
 					var onEachFrame;
@@ -177,6 +130,53 @@
 			stop: function() {
 				
 			},
+
+            addChild: function(O) { // add new child-object and let sort drawList by z-index
+                O._setContext(this._context);
+                O._setLayer(this._layer);
+                O._setOwner(this);
+                this._list.push(O);
+                
+                return this;
+            
+            },
+            removeChild: function(O) {
+
+            },
+
+            // will delete
+            _addChangedObj: function(O) {
+                if(this.updating) {
+                    //this._changeList[O.id] = 'obj';
+                }
+            },
+
+            _begin: function() {
+                for(var i in this._list) {
+                    this._list[i]._begin();
+                }{a: 1}
+                
+            },
+            _clear: function() {
+                for(var i in this._list) {
+                    this._list[i]._clear();
+                }
+                
+            },
+            _update: function() {
+                this._updating = true;
+                for(var i in this._list) {
+                    this._list[i]._update();
+                }
+                this._updating = false;             
+
+            },
+            _draw: function() {
+                for(var i in this._list) {
+                    this._list[i]._draw();
+                }
+                
+            },
 
             _setType: function(type) {
                 this._type = type;

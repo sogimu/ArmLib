@@ -83,6 +83,14 @@
 				}
             },
 
+            _havePoint: function(point) {
+                if((point.x >= this.x && point.x <= this.x+this.width) && (point.y >= this.y && point.y <= this.y+this.height)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
             // Setters/Getters
 
             // image
