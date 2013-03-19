@@ -4,15 +4,15 @@ window.onload = function() {
 		l = new armlib.Layer({
             container: 'container',
             name: 'l',
-			zindex: 1,
-			width: 750,
-			height: 750
+			zindex: 0,
+			width: 600,
+			height: 600
         });
 
 		b = new armlib.Layer({
             container: 'container',
             name: 'b',
-			zindex: 0
+			zindex: 2
         });
 		
 		
@@ -63,6 +63,7 @@ window.onload = function() {
 				this.y+=5;
 			}
 		})
+		
 		/*.setFunc('onMouseDown', function(e) {
 			console.log("onKeyDown on r1");
 			console.log("X="+e.x);

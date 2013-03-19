@@ -106,7 +106,6 @@
   var Class = function(params, property) {
     var construct = params.Initialize || function() {
     };
-    var newClass = construct;
     if(params.Extend) {
       var superClass = params.Extend;
       var newClass = function(O) {
@@ -122,6 +121,23 @@
             }
           }
         })(superClass.prototype, this);
+        (function(O, self) {
+          for(var i in O) {
+            switch(gizmo.type(O[i])) {
+              case "Array":
+                self[i] = [].concat(O[i]);
+                break;
+              case "Object":
+                self[i] = gizmo.clone(O[i]);
+                break
+            }
+          }
+        })(params.Statics || {}, this);
+        (function(O, self) {
+          for(var i in O) {
+            self[i] = O[i]
+          }
+        })(params.Methods || {}, this);
         construct.call(this, O)
       };
       var f = function() {
@@ -144,6 +160,27 @@
         }else {
           newClass[m] = superClass[m]
         }
+      }
+    }else {
+      var newClass = function(O) {
+        (function(O, self) {
+          for(var i in O) {
+            switch(gizmo.type(O[i])) {
+              case "Array":
+                self[i] = [].concat(O[i]);
+                break;
+              case "Object":
+                self[i] = gizmo.clone(O[i]);
+                break
+            }
+          }
+        })(params.Statics || {}, this);
+        (function(O, self) {
+          for(var i in O) {
+            self[i] = O[i]
+          }
+        })(params.Methods || {}, this);
+        construct.call(this, O)
       }
     }
     var methods = params.Methods || {};
@@ -270,43 +307,6 @@
   }, gizmo.Modules["Sorts"] = {name:"Sorts", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043b\u044f \u0432\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u043c\u0435\u0442\u043e\u0434\u043e\u0432 \u0440\u0435\u0430\u043b\u0438\u0437\u0443\u044e\u0449\u0438\u0445 \u0441\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u043a\u0438"}
 })(gizmo);
 (function(gizmo) {
-  var ajax = gizmo.Class({construct:function(O) {
-    this.action = O.action;
-    this.formId = O.id;
-    this.onSubmit = O.onSubmit;
-    this.onComplete = O.onComplete;
-    this.createIframe();
-    this.createForm()
-  }, vars:{formId:"", form:{}, iframe:{}, onSubmit:function() {
-  }, onComplete:function() {
-  }}, methods:{createForm:function() {
-    var form = document.getElementById(this.formId);
-    form.action = this.action;
-    form.target = this.iframeName;
-    form.enctype = "multipart/form-data";
-    form.method = "POST";
-    this.form = form
-  }, createIframe:function() {
-    var name = "rFrame";
-    this.iframeName = name;
-    var iframe = document.createElement("iframe");
-    iframe.name = name;
-    iframe.style.display = "none";
-    var body = document.getElementsByTagName("body")[0];
-    body.appendChild(iframe);
-    this.iframe = iframe
-  }, send:function() {
-    if(this.onSubmit() !== false) {
-      this.form.submit();
-      return true
-    }else {
-      return false
-    }
-  }}});
-  gizmo.Plugins["iframeAJAX"] = {name:"iframeAJAX", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f AJAX \u043d\u0430 iframe"};
-  gizmo.iframeAjax = ajax
-})(gizmo);
-(function(gizmo) {
   var matrix = gizmo.Class({Initialize:function(O) {
     return this.setElements(O)
   }, Statics:{}, Methods:{create:function(elements) {
@@ -354,6 +354,8 @@
     }
     var M = this.create(elements);
     return returnVector ? M.col(1) : M
+  }, x:function(matrix) {
+    return this.multiply(matrix)
   }, setElements:function(els) {
     var i, j, elements = els.elements || els;
     if(elements[0] && typeof elements[0][0] !== "undefined") {
@@ -375,145 +377,112 @@
     }
     return this
   }}});
-  gizmo.Plugins["Matrix"] = {name:"Matrix", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f \u0440\u0430\u0431\u043e\u0442\u044b \u0441 \u043c\u0430\u0442\u0440\u0438\u0446\u0430\u043c\u0438. \u0421\u043e\u0437\u0434\u0430\u043d \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438 http://sylvester.jcoglan.com."};
   gizmo.Matrix = matrix;
-  gizmo.Matrix.x = matrix.setElements
+  gizmo.Modules["Matrix"] = {name:"Matrix", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041c\u043e\u0434\u0443\u043b\u044c \u0434\u043b\u044f \u0440\u0430\u0431\u043e\u0442\u044b \u0441 \u043c\u0430\u0442\u0440\u0438\u0446\u0430\u043c\u0438. \u0421\u043e\u0437\u0434\u0430\u043d \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0438 http://sylvester.jcoglan.com."}
 })(gizmo);
-window.framework = window.gizmo;
-(function ArmLib(lib) {
-  var ArmLib = lib.Class({initialize:function(O) {
-    return this
-  }, Statics:{name:"ArmLib", type:"ArmLib", owner:null, loaded:false, _list:{}, _processList:[], _keybordList:[], _mouseList:[], _armlib:this, _lib:lib, "class":{}, _class:{}}, Methods:{_init:function() {
-    this.image = new Image;
-    this.image.src = this.src;
-    var self = this;
-    this.image.onload = function() {
-      self.loaded = true;
-      self._onLoad.call(self)
-    };
-    return this
-  }, _onDraw:function() {
-    if(this.preDraw) {
-      this.preDraw(this._context, this._layer, armlib, lib)
-    }
-    for(var i in this._processList) {
-      this._processList[i]._onDraw()
-    }
-    if(this.onDraw) {
-      this.onDraw(this._context, this._layer, armlib, lib)
-    }
-  }, onDraw:function(ctx, layer, armlib, lib) {
-  }, preDraw:function(ctx, layer, armlib, lib) {
-  }, _onClear:function() {
-    this._onClear = function() {
-      var len = this._processList.length;
-      for(var i = len;i >= 0;i--) {
-        this._processList[i]._onClear.call(this._processList[i])
-      }
-      if(this.onClear) {
-        this.onClear(this._context, this._layer, armlib, lib)
-      }
-    };
-    this._onClear()
-  }, onClear:function(ctx, layer, armlib, lib) {
-  }, _onBegin:function() {
-    if(lib.isSet(this.onBegin)) {
-      this.onBegin.call(this, this._layer, armlib, lib)
-    }
-    for(var i in this._processList) {
-      this._processList[i]._onBegin()
-    }
-  }, onBegin:function(layer, armlib, lib) {
-  }, _onUpdate:function() {
-    if(lib.isSet(this.onUpdate)) {
-      this.onUpdate.call(this, this._layer, armlib, lib)
-    }
-    for(var i in this._processList) {
-      this._processList[i]._onUpdate()
-    }
-  }, onUpdate:function(layer, armlib, lib) {
-  }, onKeyPress:function(e) {
-  }, onKeyDown:function(e) {
-  }, onKeyUp:function(e) {
-  }, onMouseClick:function(e) {
-  }, onMouseMove:function(e) {
-  }, onMouseDown:function(e) {
-  }, onMouseUp:function(e) {
-  }, onShow:function(layer, armlib) {
-  }, onHide:function(layer, armlib) {
-  }, _sortByZindex:function(A, low, high) {
-    var i = low;
-    var j = high;
-    var x = A[Math.round((low + high) / 2)]._zindex;
-    do {
-      while(A[i]._zindex < x) {
-        ++i
-      }
-      while(A[j]._zindex > x) {
-        --j
-      }
-      if(i <= j) {
-        var temp = A[i];
-        A[i] = A[j];
-        A[j] = temp;
-        i++;
-        j--
-      }
-    }while(i < j);
-    if(low < j) {
-      this._sortByZindex(A, low, j)
-    }
-    if(i < high) {
-      this._sortByZindex(A, i, high)
-    }
-    this._processList = A
-  }, setFunc:function(name, func) {
-    if(lib.isSet(name)) {
-      this[name] = func
-    }
-    return this
-  }, getFunc:function(O) {
-  }, addToProcessList:function(O) {
-    this._processList.push(O);
-    this._sortByZindex(this._processList, 0, this._processList.length - 1)
-  }, removeFromProcessList:function() {
-  }, addLayer:function(O) {
-    O.owner = this;
-    this._list[O.name] = O;
-    this._numberObjects++;
-    if(O.loaded && O.synch == false) {
-      this.addToProcessList(O)
+(function(gizmo) {
+  var ajax = gizmo.Class({construct:function(O) {
+    this.action = O.action;
+    this.formId = O.id;
+    this.onSubmit = O.onSubmit;
+    this.onComplete = O.onComplete;
+    this.createIframe();
+    this.createForm()
+  }, vars:{formId:"", form:{}, iframe:{}, onSubmit:function() {
+  }, onComplete:function() {
+  }}, methods:{createForm:function() {
+    var form = document.getElementById(this.formId);
+    form.action = this.action;
+    form.target = this.iframeName;
+    form.enctype = "multipart/form-data";
+    form.method = "POST";
+    this.form = form
+  }, createIframe:function() {
+    var name = "rFrame";
+    this.iframeName = name;
+    var iframe = document.createElement("iframe");
+    iframe.name = name;
+    iframe.style.display = "none";
+    var body = document.getElementsByTagName("body")[0];
+    body.appendChild(iframe);
+    this.iframe = iframe
+  }, send:function() {
+    if(this.onSubmit() !== false) {
+      this.form.submit();
+      return true
     }else {
-      if(O.synch && O.loaded == false) {
-        this._synchObjectsList[O.name] = O;
-        this._numberSynchObjects++
-      }else {
-        if(O.loaded == true && O.synch) {
-          this._synchObjectsList[O.name] = O
-        }
-      }
+      return false
     }
-    O._connected = true;
+  }}});
+  gizmo.Plugins["iframeAJAX"] = {name:"iframeAJAX", version:0.1, author:"Alexander Lizin aka Sogimu", email:"sogimu@nxt.ru", description:"\u041f\u043b\u0430\u0433\u0438\u043d \u0434\u043b\u044f AJAX \u043d\u0430 iframe"};
+  gizmo.iframeAjax = ajax
+})(gizmo);
+(function ArmLib(lib) {
+  var ArmLib = lib.Class({Initialize:function() {
     return this
-  }, removeLayer:function(O) {
+  }, Statics:{_type:["ArmLib", "ArmLib"], _name:"ArmLib", _list:[], _class:{}, _armlib:this, _lib:lib}, Methods:{_addLayer:function(O) {
+    O._setOwner(this);
+    this._list.push(O);
+    return this
+  }, _removeLayer:function(O) {
   }, run:function() {
-    for(var i in this._processList) {
-      this._processList[i].run()
+    this._listenKeybordMouseEvents();
+    for(var i in this._list) {
+      this._list[i].run()
     }
-    this.run = function() {
-      return this
-    };
     return this
   }, stop:function() {
+    this._notListenKeybordMouseEvents()
+  }, _listenKeybordMouseEvents:function() {
+    var self = this;
+    window.onkeydown = function(e) {
+      self._onKeyDown(e)
+    };
+    window.onkeypress = function(e) {
+      self._onKeyPress(e)
+    };
+    window.onkeyup = function(e) {
+      self._onKeyUp(e)
+    };
+    for(var i in this._list) {
+      this._list[i]._listenMouseEvents()
+    }
+  }, _notListenKeybordMouseEvents:function() {
+    var self = this;
+    window.onkeydown = function(e) {
+    };
+    window.onkeypress = function(e) {
+    };
+    window.onkeyup = function(e) {
+    };
+    for(var i in this._list) {
+      this._list[i]._notListenMouseEvents()
+    }
+  }, _onKeyDown:function(e) {
+    for(var i in this._list) {
+      if(this._list[i].getRunStatus()) {
+        this._list[i]._onKeyDown(e)
+      }
+    }
+  }, _onKeyPress:function(e) {
+    for(var i in this._list) {
+      if(this._list[i].getRunStatus()) {
+        this._list[i]._onKeyPress(e)
+      }
+    }
+  }, _onKeyUp:function(e) {
+    for(var i in this._list) {
+      if(this._list[i].getRunStatus()) {
+        this._list[i]._onKeyUp(e)
+      }
+    }
   }}});
-  window.armlib = new ArmLib({synch:true})
-})(framework);
+  window.ArmLib = new ArmLib
+})(window.gizmo);
 (function superObj(armlib, lib) {
   var ArmObj = lib.Class({Initialize:function(O, layer, armlib) {
-  }, Statics:{_type:"ArmObject", _name:1E3 * Math.random(), _loaded:false, _context:null, _layer:null, _owner:null, _x:0, _y:0, _width:10, _height:10, _angle:0, _centralPoint:{x:0, y:0}, _scale:{x:1, y:1}, _zindex:0, _armlib:armlib, _lib:lib}, Methods:{_begin:function() {
-  }, _clear:function() {
+  }, Statics:{_type:["ArmObject"], _name:1E3 * Math.random(), _loaded:false, _owner:null, _armlib:armlib, _lib:lib}, Methods:{_begin:function() {
   }, _update:function() {
-  }, _draw:function() {
   }, Load:function() {
     this._load()
   }, _load:function() {
@@ -527,18 +496,8 @@ window.framework = window.gizmo;
     if(this.haveOwner()) {
       this._getOwner()._loadedChild()
     }
-  }, _onLoad:function(armlib, lib) {
-  }, _onKeyPress:function(e) {
-  }, _onKeyDown:function(e) {
-  }, _onKeyUp:function(e) {
-  }, _onMouseClick:function(e) {
-  }, _onMouseMove:function(e) {
-  }, _onMouseDown:function(e) {
-  }, _onMouseUp:function(e) {
-  }, _onShow:function(layer, armlib) {
-  }, _onHide:function(layer, armlib) {
   }, setFunc:function(name, func) {
-    if(lib.isSet(name) && lib.isSet(func)) {
+    if(name && func) {
       this["_" + name] = func
     }
     return this
@@ -561,6 +520,23 @@ window.framework = window.gizmo;
     this._loaded = true
   }, _setUnloaded:function() {
     this._loaded = false
+  }, _setOwner:function(object) {
+    this._owner = object
+  }, _getOwner:function() {
+    return this._owner
+  }}});
+  armlib._class.ArmObj = ArmObj
+})(ArmLib, gizmo);
+(function visualObj(armlib, lib) {
+  var VisualObj = lib.Class({Extend:armlib._class.ArmObj, Initialize:function(O, layer, armlib) {
+  }, Statics:{_type:["ArmObject", "VisualObj"], _context:null, _layer:null, _x:0, _y:0, _width:10, _height:10, _angle:0, _centralPoint:{x:1, y:1}, _scale:{x:1, y:1}, _zindex:0, _armlib:armlib, _lib:lib}, Methods:{_clear:function() {
+  }, _draw:function() {
+  }, haveLayer:function() {
+    if(this._layer) {
+      return true
+    }else {
+      return false
+    }
   }, _setContext:function(context) {
     this._context = context
   }, getContext:function() {
@@ -569,10 +545,18 @@ window.framework = window.gizmo;
     this._layer = layer
   }, getLayer:function() {
     return this._layer
-  }, _setOwner:function(object) {
-    this._owner = object
-  }, _getOwner:function() {
-    return this._owner
+  }, _setDisplayCoordinates:function(coordinates) {
+    this._displayCoordinates = coordinates
+  }, _getDisplayCoordinates:function() {
+    return this._displayCoordinates
+  }, _setPrevRawCoordinates:function(coordinates) {
+    this._rawCoordinates.prev = coordinates
+  }, _getPrevRawCoordinates:function() {
+    return this._rawCoordinates.prev
+  }, _setCurrentRawCoordinates:function(coordinates) {
+    this._rawCoordinates.current = coordinates
+  }, _getCurrentRawCoordinates:function() {
+    return this._rawCoordinates.current
   }, set x(O) {
     this._x = O
   }, get x() {
@@ -609,29 +593,26 @@ window.framework = window.gizmo;
   }, get zindex() {
     return this._zindex
   }}});
-  armlib._class.ArmObj = ArmObj
-})(armlib, gizmo);
-(function shape(armlib, lib) {
-  var Shape = lib.Class({Extend:armlib._class.ArmObj, Statics:{_type:["Shape", ""], _fill:"#00FF00", _stroke:"#00aa00", _oldX:0, _oldY:0, _oldWidth:0, _oldHeight:0, _oldLandscape:null}, Methods:{_saveChanges:function() {
-    var angelRad = this.angle;
-    var m = this.centralPoint.x;
-    var n = this.centralPoint.y;
-    var MTrans = new gizmo.Matrix([[Math.cos(angelRad), Math.sin(angelRad), 0], [-Math.sin(angelRad), Math.cos(angelRad), 0], [-m * (Math.cos(angelRad) - 1) + n * Math.sin(angelRad), -m * Math.sin(angelRad) - n * (Math.cos(angelRad) - 1), 1]]);
-    var mainPoint = (new gizmo.Matrix([[this.x, this.y, 1], [this.x + this.width, this.y, 1], [this.x + this.width, this.y + this.height, 1], [this.x, this.y + this.height, 1]])).x(MTrans).elements;
-    var x = Math.min(mainPoint[0][0], mainPoint[1][0], mainPoint[2][0], mainPoint[3][0]);
-    var y = Math.min(mainPoint[0][1], mainPoint[1][1], mainPoint[2][1], mainPoint[3][1]);
-    var width = Math.max(mainPoint[0][0], mainPoint[1][0], mainPoint[2][0], mainPoint[3][0]);
-    var height = Math.max(mainPoint[0][1], mainPoint[1][1], mainPoint[2][1], mainPoint[3][1]);
-    this._oldX = x < 0 ? 0 : x;
-    this._oldY = y < 0 ? 0 : y;
-    this._oldWidth = this._oldX + (width <= 0 ? 1 : width);
-    this._oldHeight = this._oldY + (height <= 0 ? 1 : height);
-    this._oldLandscapes = this._context.getImageData(this._oldX, this._oldY, this._oldWidth, this._oldHeight)
+  armlib._class.VisualObj = VisualObj
+})(ArmLib, gizmo);
+(function primitive(armlib, lib) {
+  var Primitive = lib.Class({Extend:armlib._class.VisualObj, Statics:{_type:["Primitive", ""], _fill:"#00FF00", _stroke:"#00aa00", _oldX:0, _oldY:0, _oldWidth:0, _oldHeight:0, _oldLandscape:null}, Methods:{_begin:function() {
+    if(this.haveOwner()) {
+      this._begin = function() {
+        if(this._onBegin) {
+          this._onBegin.call(this, this._layer, armlib, lib)
+        }
+      };
+      this._begin()
+    }else {
+      throw Error("object with type " + this.getType() + " and name " + this.getName() + " have not owner!");
+    }
   }, _clear:function() {
     if(this.haveOwner()) {
+      this._saveDisplayUnderPrimitive();
       this._clear = function() {
-        this._context.putImageData(this._oldLandscapes, this._oldX, this._oldY);
-        this._saveChanges()
+        this._removePrimitiveFromDisplay();
+        this._saveDisplayUnderPrimitive()
       };
       this._clear()
     }else {
@@ -648,11 +629,44 @@ window.framework = window.gizmo;
     }else {
       throw Error("object with type " + this.getType() + " and name " + this.getName() + " have not owner!");
     }
+  }, _saveDisplayUnderPrimitive:function() {
+    var angelRad = this.angle;
+    var m = this.centralPoint.x + this.x;
+    var n = this.centralPoint.y + this.y;
+    var MTrans = new gizmo.Matrix([[Math.cos(angelRad), Math.sin(angelRad), 0], [-Math.sin(angelRad), Math.cos(angelRad), 0], [-m * (Math.cos(angelRad) - 1) + n * Math.sin(angelRad), -m * Math.sin(angelRad) - n * (Math.cos(angelRad) - 1), 1]]);
+    var mainPoint = (new gizmo.Matrix([[this.x, this.y, 1], [this.x + this.width, this.y, 1], [this.x + this.width, this.y + this.height, 1], [this.x, this.y + this.height, 1]])).x(MTrans).elements;
+    var x = Math.min(mainPoint[0][0], mainPoint[1][0], mainPoint[2][0], mainPoint[3][0]);
+    var y = Math.min(mainPoint[0][1], mainPoint[1][1], mainPoint[2][1], mainPoint[3][1]);
+    var width = Math.max(mainPoint[0][0], mainPoint[1][0], mainPoint[2][0], mainPoint[3][0]);
+    var height = Math.max(mainPoint[0][1], mainPoint[1][1], mainPoint[2][1], mainPoint[3][1]);
+    this._oldX = x < 0 ? 0 : x;
+    this._oldY = y < 0 ? 0 : y;
+    this._oldWidth = this._oldX + (width <= 0 ? 1 : width);
+    this._oldHeight = this._oldY + (height <= 0 ? 1 : height);
+    this._oldLandscapes = this._context.getImageData(this._oldX, this._oldY, this._oldWidth, this._oldHeight)
+  }, _removePrimitiveFromDisplay:function() {
+    this._context.putImageData(this._oldLandscapes, this._oldX, this._oldY)
+  }, __onKeyDown:function(e) {
+    if(this._onKeyDown) {
+      this._onKeyDown(e)
+    }
+  }, __onKeyPress:function(e) {
+    if(this._onKeyPress) {
+      this._onKeyPress(e)
+    }
+  }, __onKeyUp:function(e) {
+    if(this._onKeyUp) {
+      this._onKeyUp(e)
+    }
+  }, __onMouseDown:function(e) {
+    if(this._onMouseDown && this._havePoint(e)) {
+      this._onMouseDown(e)
+    }
   }}});
-  armlib._class.Shape = Shape
-})(armlib, gizmo);
+  armlib._class.Primitive = Primitive
+})(ArmLib, gizmo);
 (function object(armlib, lib) {
-  var object = lib.Class({Extend:armlib._class.ArmObj, Initialize:function(O, layer, armlib) {
+  var object = lib.Class({Extend:armlib._class.VisualObj, Initialize:function(O, layer, armlib) {
     this.name = O.name || this.name;
     this.zindex = O.zindex || this.zindex;
     this._x = O.x || this._x;
@@ -731,7 +745,6 @@ window.framework = window.gizmo;
     if(this.haveOwner()) {
       this._draw = function() {
         this._context.save();
-        this._context.beginPath();
         this._context.translate(this.x, this.y);
         this._context.translate(this.centralPoint.x, this.centralPoint.y);
         this._context.rotate(this.angle);
@@ -746,7 +759,6 @@ window.framework = window.gizmo;
         if(this._onDraw) {
           this._onDraw(this._context, this._layer, armlib, lib)
         }
-        this._context.closePath();
         this._context.restore()
       };
       this._draw()
@@ -764,6 +776,22 @@ window.framework = window.gizmo;
     }
   }, getNumberNotLoadedChilds:function() {
     return this._numberNotLoadedChilds
+  }, __onKeyDown:function(e) {
+    for(var i in this._list) {
+      this._list[i].__onKeyDown(e)
+    }
+  }, __onKeyPress:function(e) {
+    for(var i in this._list) {
+      this._list[i].__onKeyPress(e)
+    }
+  }, __onKeyUp:function(e) {
+    for(var i in this._list) {
+      this._list[i].__onKeyUp(e)
+    }
+  }, __onMouseDown:function(e) {
+    for(var i in this._list) {
+      this._list[i].__onMouseDown(e)
+    }
   }, _setContext:function(context) {
     this._context = context;
     for(var i in this._list) {
@@ -775,13 +803,14 @@ window.framework = window.gizmo;
       this._list[i]._setLayer(layer)
     }
   }}});
-  armlib.class.Object = object
-})(armlib, gizmo);
-(function Layer(armlib, lib) {
+  armlib.Object = object
+})(ArmLib, gizmo);
+(function layer(armlib, lib) {
   var Layer = lib.Class({Initialize:function(O) {
     this._setName(O.name || this.name);
     this.fps = O.fps || this.fps;
     if(O.container) {
+      this._setContainerName(O.container);
       var container = document.getElementById(O.container);
       var canvas = document.createElement("canvas");
       canvas.width = O.width || this.width;
@@ -796,33 +825,9 @@ window.framework = window.gizmo;
     }
     this._setLayer(this);
     this._setOwner(armlib);
-    armlib.addLayer(this);
+    armlib._addLayer(this);
     return this
-  }, Statics:{_type:["Layer", ""], _name:1E3 * Math.random(), _context:null, _layer:null, _owner:null, _width:500, _height:500, _fps:60, _zindex:0, _updating:false, _changeList:[], _list:[], _armlib:armlib, _lib:lib}, Methods:{addChild:function(O) {
-    O._setContext(this._context);
-    O._setLayer(this._layer);
-    O._setOwner(this);
-    this._list.push(O);
-    return this
-  }, removeChild:function(O) {
-  }, _addChangedObj:function(O) {
-    if(this.updating) {
-    }
-  }, _clear:function() {
-    for(var i in this._list) {
-      this._list[i]._clear()
-    }
-  }, _update:function() {
-    this._updating = true;
-    for(var i in this._list) {
-      this._list[i]._update()
-    }
-    this._updating = false
-  }, _draw:function() {
-    for(var i in this._list) {
-      this._list[i]._draw()
-    }
-  }, run:function() {
+  }, Statics:{_type:["Layer", ""], _name:1E3 * Math.random(), _runStatus:false, _context:null, _layer:null, _owner:null, _container:null, _width:500, _height:500, _fps:60, _zindex:0, _updating:false, _changeList:[], _list:[], _armlib:armlib, _lib:lib}, Methods:{run:function() {
     (function(O) {
       var onEachFrame;
       if(window.webkitRequestAnimationFrame) {
@@ -871,6 +876,7 @@ window.framework = window.gizmo;
       }
       window.onEachFrame = onEachFrame
     })(this);
+    this._begin();
     var step = function(O) {
       var loops = 0, skipTicks = 1E3 / O.fps, maxFrameSkip = 10, nextGameTick = (new Date).getTime();
       return function() {
@@ -880,15 +886,46 @@ window.framework = window.gizmo;
           nextGameTick += skipTicks;
           loops++
         }
+        O._clear();
         O._draw()
       }
     }(this);
     window.onEachFrame(step);
+    this._runStatus = true;
     this.run = function() {
       return this
     };
     return this
   }, stop:function() {
+  }, addChild:function(O) {
+    O._setContext(this._context);
+    O._setLayer(this._layer);
+    O._setOwner(this);
+    this._list.push(O);
+    return this
+  }, removeChild:function(O) {
+  }, _addChangedObj:function(O) {
+    if(this.updating) {
+    }
+  }, _begin:function() {
+    for(var i in this._list) {
+      this._list[i]._begin()
+    }
+    a:1
+  }, _clear:function() {
+    for(var i in this._list) {
+      this._list[i]._clear()
+    }
+  }, _update:function() {
+    this._updating = true;
+    for(var i in this._list) {
+      this._list[i]._update()
+    }
+    this._updating = false
+  }, _draw:function() {
+    for(var i in this._list) {
+      this._list[i]._draw()
+    }
   }, _setType:function(type) {
     this._type = type
   }, getType:function() {
@@ -897,6 +934,10 @@ window.framework = window.gizmo;
     this._name = name
   }, getName:function() {
     return this._name
+  }, _setRunStatus:function(status) {
+    this._runStatus = status
+  }, getRunStatus:function() {
+    return this._runStatus
   }, _setContext:function(context) {
     this._context = context
   }, getContext:function() {
@@ -909,6 +950,41 @@ window.framework = window.gizmo;
     this._owner = object
   }, _getOwner:function() {
     return this._owner
+  }, _setContainerName:function(name) {
+    this._container = name
+  }, _getContainerName:function() {
+    return this._container
+  }, _onKeyDown:function(e) {
+    if(this.getRunStatus()) {
+      for(var i in this._list) {
+        this._list[i].__onKeyDown(e)
+      }
+    }
+  }, _onKeyPress:function(e) {
+    if(this.getRunStatus()) {
+      for(var i in this._list) {
+        this._list[i].__onKeyPress(e)
+      }
+    }
+  }, _onKeyUp:function(e) {
+    if(this.getRunStatus()) {
+      for(var i in this._list) {
+        this._list[i].__onKeyUp(e)
+      }
+    }
+  }, _onMouseDown:function(e) {
+    if(this.getRunStatus()) {
+      for(var i in this._list) {
+        this._list[i].__onMouseDown(e)
+      }
+    }
+  }, _listenMouseEvents:function() {
+    var container = document.getElementById(this._getContainerName());
+    var self = this;
+    container.onmousedown = function(e) {
+      self._onMouseDown(e)
+    }
+  }, _notListenMouseEvents:function() {
   }, set width(O) {
     this._width = O
   }, get width() {
@@ -922,15 +998,12 @@ window.framework = window.gizmo;
   }, get fps() {
     return this._fps
   }, set zindex(O) {
-    this._zindex = O;
-    if(this.haveOwner()) {
-      this._getOwner()._sortByZindex()
-    }
+    this._zindex = O
   }, get zindex() {
     return this._zindex
   }}});
-  armlib.class.Layer = Layer
-})(armlib, gizmo);
+  armlib.Layer = Layer
+})(ArmLib, gizmo);
 (function Rect(armlib, lib) {
   var Rect = lib.Class({Extend:armlib._class.Shape, Initialize:function(O) {
     this.name = O.name || this.name;
@@ -982,10 +1055,10 @@ window.framework = window.gizmo;
       throw Error("object with type " + this.type + " and name " + this.name + " have not owner");
     }
   }}});
-  armlib.class.Rect = Rect
-})(armlib, gizmo);
+  armlib.Rect = Rect
+})(ArmLib, gizmo);
 (function image(armlib, lib) {
-  var image = lib.Class({Extend:armlib._class.Shape, Initialize:function(O) {
+  var image = lib.Class({Extend:armlib._class.Primitive, Initialize:function(O) {
     this.setName(O.name || this.getName());
     this.src = O.src || this.src;
     this.zindex = O.zindex || this.zindex;
@@ -1012,6 +1085,7 @@ window.framework = window.gizmo;
     if(this.haveOwner()) {
       this._draw = function() {
         this._context.save();
+        this._context.translate(this.x, this.y);
         this._context.beginPath();
         if(this._preDraw) {
           this._preDraw(this._context, this._layer, armlib, lib)
@@ -1021,8 +1095,7 @@ window.framework = window.gizmo;
         this._context.translate(this.centralPoint.x, this.centralPoint.y);
         this._context.rotate(this.angle);
         this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-        this._context.scale(this.scale.x, this.scale.y);
-        this._context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        this._context.drawImage(this.image, 0, 0, this.width, this.height);
         if(this._onDraw) {
           this._onDraw(this._context, this._layer, armlib, lib)
         }
@@ -1033,6 +1106,12 @@ window.framework = window.gizmo;
     }else {
       throw Error("object with type " + this.getType() + " and name " + this.getName() + " have not owner!");
     }
+  }, _havePoint:function(point) {
+    if(point.x >= this.x && point.x <= this.x + this.width && point.y >= this.y && point.y <= this.y + this.height) {
+      return true
+    }else {
+      return false
+    }
   }, set image(image) {
     this._image = image
   }, get image() {
@@ -1042,6 +1121,6 @@ window.framework = window.gizmo;
   }, get src() {
     return this._src
   }}});
-  armlib.class.Image = image
-})(armlib, gizmo);
+  armlib.Image = image
+})(ArmLib, gizmo);
 

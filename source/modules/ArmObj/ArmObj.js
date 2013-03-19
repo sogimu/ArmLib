@@ -37,9 +37,13 @@
             __onLoad: function() {
                 if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
                 
+
+                // !!!error with adding ArmObj to Layer into onLoad event!!!
+
                 if(this.haveOwner()) {                  
                     this._getOwner()._loadedChild();
                 }
+
                 
             },
             
