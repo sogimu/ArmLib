@@ -1,16 +1,18 @@
 window.onload = function() {
     (function(armlib,lib) {
-        // action = new armlib.class.Layer({
-            // container: 'container',
-            // name: 'action',
-			// fps: 1,
-			// zindex: 0
-        // });
 		
 		l = new armlib.Layer({
             container: 'container',
             name: 'l',
-			zindex: 1
+			zindex: 1,
+			width: 750,
+			height: 750
+        });
+
+		b = new armlib.Layer({
+            container: 'container',
+            name: 'b',
+			zindex: 0
         });
 		
 		
@@ -36,27 +38,7 @@ window.onload = function() {
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r1');
-			//action.addChild(this);
-		})
-		.setFunc('onMouseDown', function(e) {
-			console.log("onKeyDown on r1");
-			console.log("X="+e.x);
-			console.log("Y="+e.y);
-		});
-		
-        r3 = new armlib.Image({
-            name: 'r3',
-            src: './img/nosov_01.jpg',
-            zindex: 6,
-			x: 10,
-			y: 10,
-            width: 100,
-            height: 100,
-			//angle: 0.5,
-			centralPoint: {x: 50, y: 50},
-        })
-		.setFunc('onLoad', function() {
-			console.log('onLoad r3');
+			//b.addChild(this);
 		})
 		.setFunc("onKeyDown", function(e) {
 			if(e.keyCode == 38) {
@@ -81,6 +63,53 @@ window.onload = function() {
 				this.y+=5;
 			}
 		})
+		/*.setFunc('onMouseDown', function(e) {
+			console.log("onKeyDown on r1");
+			console.log("X="+e.x);
+			console.log("Y="+e.y);
+		});*/
+		
+        r3 = new armlib.Image({
+            name: 'r3',
+            src: './img/nosov_01.jpg',
+            zindex: 6,
+			x: 20,
+			y: 300,
+            width: 100,
+            height: 100,
+			angle: 0,
+			centralPoint: {x: 50, y: 50},
+        })
+		.setFunc('onLoad', function() {
+			console.log('onLoad r3');
+		})
+		.setFunc('onUpdate', function() {
+			//this.angle += 0.1;
+		})
+		/*
+		.setFunc("onKeyDown", function(e) {
+			if(e.keyCode == 38) {
+				this.angle+=0.1;
+			}
+			if(e.keyCode == 40) {
+				this.angle-=0.1;
+			}
+		})
+		.setFunc("onKeyPress", function(e) {
+			//console.log(e.keyCode);
+			if(e.keyCode == 97) {
+				this.x-=5;
+			}
+			if(e.keyCode == 100) {
+				this.x+=5;
+			}
+			if(e.keyCode == 119) {
+				this.y-=5;
+			}
+			if(e.keyCode == 115) {
+				this.y+=5;
+			}
+		})*/
 		
 		
         r5 = new armlib.Image({
@@ -105,6 +134,7 @@ window.onload = function() {
 			ctx.moveTo(this.x + 25, this.y + 25);
 			ctx.lineTo(this.x + 100,this.y + 100);
 		})
+
 
 		obj2 = new armlib.Object({
 			name: 'obj2',

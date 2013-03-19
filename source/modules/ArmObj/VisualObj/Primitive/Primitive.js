@@ -1,4 +1,4 @@
-(function shape(armlib,lib){
+(function primitive(armlib,lib){
     /**
      * Описывает вспомогательный класс Shape. Данный класс содержит основные методы и свойства всех примитивов
      *
@@ -8,10 +8,10 @@
      * @version 0.1
      */
 
-    var Shape = lib.Class({
-        Extend: armlib._class.ArmObj,
+    var Primitive = lib.Class({
+        Extend: armlib._class.VisualObj,
         Statics: {
-            _type: ['Shape',''],
+            _type: ['Primitive',''],
             _fill: "#00FF00",
             _stroke: "#00aa00",
 			_oldX: 0,
@@ -22,6 +22,7 @@
 
         },
 		Methods: {
+
             _begin: function() {
 				if(this.haveOwner()) {
 					this._begin = function() {
@@ -63,8 +64,8 @@
 
             _saveDisplayUnderPrimitive: function() {
 				var angelRad = this.angle;
-				var m = this.centralPoint.x;
-				var n = this.centralPoint.y;
+				var m = this.centralPoint.x+this.x;
+				var n = this.centralPoint.y+this.y;
 				var MTrans = new gizmo.Matrix([
 					[Math.cos(angelRad),Math.sin(angelRad),0],
 					[-Math.sin(angelRad),Math.cos(angelRad),0],
@@ -87,6 +88,7 @@
 
             _removePrimitiveFromDisplay: function() {
             	this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
+            	
             },
 
             // private events from keyboard
@@ -118,8 +120,7 @@
 
             // Setters/Getters
 
-
 		}
     });
-    armlib._class.Shape = Shape;
+    armlib._class.Primitive = Primitive;
 })(ArmLib,gizmo);

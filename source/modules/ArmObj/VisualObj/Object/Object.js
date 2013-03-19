@@ -8,7 +8,7 @@
      */
 
     var object = lib.Class({
-        Extend: armlib._class.ArmObj,
+        Extend: armlib._class.VisualObj,
         Initialize: function(O, layer, armlib) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
@@ -112,7 +112,7 @@
                 if(this.haveOwner()) {
                     this._draw = function() {
                         this._context.save();
-                            this._context.beginPath();
+                            //this._context.beginPath();
                                 this._context.translate(this.x, this.y);
                                 this._context.translate(this.centralPoint.x, this.centralPoint.y);
                                 this._context.rotate(this.angle);
@@ -125,7 +125,7 @@
                                 }
                                 if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 
-                            this._context.closePath();
+                            //this._context.closePath();
                         this._context.restore();                        
                     }
                     this._draw();
@@ -141,6 +141,7 @@
                 this._list = gizmo.nativeSort({mas: this._list,target: '<',field: '_zindex'});
             },
             _loadedChild: function() {
+                //debugger
                 this._numberNotLoadedChilds--;
                     if(this._numberNotLoadedChilds == 0) {
                         this._onLoad();                             
