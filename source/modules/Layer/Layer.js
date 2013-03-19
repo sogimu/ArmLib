@@ -300,9 +300,6 @@
             // zindex
             set zindex(O) {
                 this._zindex = O;
-                if(this.haveOwner()) {
-                    this._getOwner()._sortByZindex();
-                }
             },
             get zindex() {
                 return this._zindex;

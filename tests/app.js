@@ -135,6 +135,12 @@ window.onload = function() {
 			ctx.lineTo(this.x + 100,this.y + 100);
 		})
 
+		obj1 = new armlib.Object({
+			name: 'obj1',
+            zindex: 1,
+			//x: 50,
+			//y: 50,
+		});
 
 		obj2 = new armlib.Object({
 			name: 'obj2',
