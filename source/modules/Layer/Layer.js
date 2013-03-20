@@ -1,4 +1,4 @@
-(function Layer(armlib,lib){
+(function layer(armlib,lib){
 	/**
 	 * Описывает класс Layer. Данный класс описывает работу с отдельным обектом canvas как работу со "слоем" на
      * котором могут находиться объекты.
@@ -31,6 +31,7 @@
                 canvas.style['z-index'] = O.zindex || this._zindex;
                 canvas.style.position = 'absolute';
                 container.appendChild( canvas );
+                this._canvas = canvas;
                 this._context = canvas.getContext('2d');
             } else {
                 throw Error('The container is not found! Choose right id of container, please!');
@@ -41,7 +42,7 @@
 			return this;
         },
         Statics: {
-            _type: ['Layer',''],
+            _type: ['Layer','',''],
             _name: 1000*Math.random(),
            	_runStatus: false,
 
@@ -49,6 +50,7 @@
             _layer: null,
             _owner: null,
             _container: null,
+            _canvas: null,
 
             _width: 500,
             _height: 500,
@@ -134,7 +136,6 @@
             addChild: function(O) { // add new child-object and let sort drawList by z-index
                 O._setContext(this._context);
                 O._setLayer(this._layer);
-                O._setOwner(this);
                 this._list.push(O);
                 
                 return this;
@@ -300,9 +301,7 @@
             // zindex
             set zindex(O) {
                 this._zindex = O;
-                if(this.haveOwner()) {
-                    this._getOwner()._sortByZindex();
-                }
+                this._canvas.style['z-index'] = O;
             },
             get zindex() {
                 return this._zindex;

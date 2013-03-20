@@ -8,7 +8,7 @@
      */
 
     var object = lib.Class({
-        Extend: armlib._class.ArmObj,
+        Extend: armlib._class.VisualObj,
         Initialize: function(O, layer, armlib) {
             this.name = O.name || this.name;
             this.zindex = O.zindex || this.zindex;
@@ -20,7 +20,7 @@
             return this;
         },
         Statics: {
-            _type: 'Object',
+            _type: ['Object','','ArmObject'],
             _numberNotLoadedChilds: 0,
 
             _list: [], // List with child-objects
@@ -112,7 +112,7 @@
                 if(this.haveOwner()) {
                     this._draw = function() {
                         this._context.save();
-                            this._context.beginPath();
+                            //this._context.beginPath();
                                 this._context.translate(this.x, this.y);
                                 this._context.translate(this.centralPoint.x, this.centralPoint.y);
                                 this._context.rotate(this.angle);
@@ -125,7 +125,7 @@
                                 }
                                 if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 
-                            this._context.closePath();
+                            //this._context.closePath();
                         this._context.restore();                        
                     }
                     this._draw();
@@ -143,7 +143,7 @@
             _loadedChild: function() {
                 this._numberNotLoadedChilds--;
                     if(this._numberNotLoadedChilds == 0) {
-                        this._onLoad();                             
+                        this.__onLoad();                             
                     }
             },
             getNumberNotLoadedChilds: function() {

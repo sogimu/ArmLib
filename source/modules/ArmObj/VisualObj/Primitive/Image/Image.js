@@ -22,14 +22,14 @@
      */
 
     var image = lib.Class({
-        Extend: armlib._class.Shape,
+        Extend: armlib._class.Primitive,
         Initialize: function(O) {
 			this.setName(O.name || this.getName());
             this.src = O.src || this.src;
 			this.zindex = O.zindex || this.zindex;
             this.x = O.x || this.x;
             this.y = O.y || this.y;
-            this.centralPoint = O.centralPoint || this.centralPoint;
+            this.centralPoint = O.centralPoint || this.centralPoint;        
             this.width = O.width || this.width;
             this.height = O.height || this.height
             this.angle = O.angle || this.angle;
@@ -39,7 +39,7 @@
 			return this;
         },
         Statics: {
-            _type: ['Shape','Image'],
+            _type: ['Image','Primitive','ArmObject'],
             _loaded: false,
             _src: null,
             _image: null,
@@ -59,7 +59,9 @@
 				if(this.haveOwner()) {
 					this._draw = function() {
 						this._context.save();
-							//this._context.beginPath();
+							this._context.translate(this.x, this.y);
+                                
+                            this._context.beginPath();
 								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
 								this._context.fillStyle = this.fill;
 								this._context.strokeStyle = this.stroke;
@@ -69,10 +71,10 @@
 								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
 								//this._context.scale(this.scale.x, this.scale.y);
 								//this._onClear();
-								this._context.drawImage(this.image, this.x,this.y,this.width,this.height);
+								this._context.drawImage(this.image, 0,0,this.width,this.height);
 								
 								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
-							//this._context.closePath();
+							this._context.closePath();
 							//this._context.fill();
 							//this._context.stroke();
 						this._context.restore();
