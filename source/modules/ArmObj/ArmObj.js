@@ -10,7 +10,7 @@
     var ArmObj = lib.Class({
         Initialize: function(O, layer, armlib) {},
         Statics: {
-            _type: ['ArmObject'],
+            _type: ['','','ArmObject'],
             _name: 1000*Math.random(),
             _loaded: false, // Flag which show load-state of object 
 
@@ -37,13 +37,9 @@
             __onLoad: function() {
                 if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
                 
-
-                // !!!error with adding ArmObj to Layer into onLoad event!!!
-
                 if(this.haveOwner()) {                  
                     this._getOwner()._loadedChild();
                 }
-
                 
             },
             

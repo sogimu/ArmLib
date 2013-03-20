@@ -4,15 +4,13 @@ window.onload = function() {
 		l = new armlib.Layer({
             container: 'container',
             name: 'l',
-			zindex: 0,
-			width: 600,
-			height: 600
+			zindex: 1,
         });
 
 		b = new armlib.Layer({
             container: 'container',
             name: 'b',
-			zindex: 2
+			zindex: 0
         });
 		
 		
@@ -33,14 +31,18 @@ window.onload = function() {
 		r1 = new armlib.Image({
             name: 'r1',
             src: './img/gras.jpg',
-			width: 250,
-            height: 250,
+			width: b.width,
+            height: b.height,
         })
-		.setFunc('onLoad', function() {
+		r1.setFunc('onLoad', function() {
+			b.addChild(this);
 			console.log('onLoad r1');
-			//b.addChild(this);
+			
 		})
-		.setFunc("onKeyDown", function(e) {
+		r1.setFunc('onUpdate', function() {
+			//this.y += 1;
+		})
+		r1.setFunc("onKeyDown", function(e) {
 			if(e.keyCode == 38) {
 				this.angle+=0.1;
 			}
@@ -48,7 +50,7 @@ window.onload = function() {
 				this.angle-=0.1;
 			}
 		})
-		.setFunc("onKeyPress", function(e) {
+		r1.setFunc("onKeyPress", function(e) {
 			//console.log(e.keyCode);
 			if(e.keyCode == 97) {
 				this.x-=5;
@@ -63,6 +65,7 @@ window.onload = function() {
 				this.y+=5;
 			}
 		})
+		//r1.Load();
 		
 		/*.setFunc('onMouseDown', function(e) {
 			console.log("onKeyDown on r1");
@@ -85,7 +88,8 @@ window.onload = function() {
 			console.log('onLoad r3');
 		})
 		.setFunc('onUpdate', function() {
-			//this.angle += 0.1;
+			this.angle += 0.1;
+			//this.x += 1;
 		})
 		/*
 		.setFunc("onKeyDown", function(e) {
@@ -118,7 +122,7 @@ window.onload = function() {
             src: './img/images (1).jpg',
             zindex: 10,
             x: 100,
-            y: 10,
+          y: 10,
             width: 50,
             height: 50,
 			centralPoint: {x: 125, y: 75}
@@ -141,7 +145,7 @@ window.onload = function() {
             zindex: 1,
 			//x: 50,
 			//y: 50,
-		});
+		})
 
 		obj2 = new armlib.Object({
 			name: 'obj2',
@@ -152,18 +156,30 @@ window.onload = function() {
 		.setFunc('onLoad', function() {
 			console.log('onLoad obj2');
 			l.addChild(obj2);
-			armlib.run();
-			console.log('run armlib');
+			//armlib.run();
+			//console.log('run armlib');
 
 		})
 		.setFunc('onUpdate', function() {
-			
 			//this.angle+=0.01;
 		})
 		.addChild(r5)
 		//.addChild(r0)
-		.addChild(r1)
+		//.addChild(r1)
 		.addChild(r3)
+		//.addChild(obj1);
+		//.Load();
+
+		obj3 = new armlib.Object({
+			name: "obj3",
+		})
+		.addChild(obj2)
+		.addChild(r1)
+		.setFunc("onLoad", function() {
+			console.log("onLoad obj3");
+			//l.addChild(this);
+			armlib.run();
+		})
 		.Load();
 		
 		// r6 = new armlib.class.Image({

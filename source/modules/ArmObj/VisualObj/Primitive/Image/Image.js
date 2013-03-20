@@ -39,7 +39,7 @@
 			return this;
         },
         Statics: {
-            _type: ['Shape','Image'],
+            _type: ['Image','Primitive','ArmObject'],
             _loaded: false,
             _src: null,
             _image: null,

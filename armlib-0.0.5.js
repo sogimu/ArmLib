@@ -121,21 +121,31 @@
             }
           }
         })(superClass.prototype, this);
-        (function(O, self) {
-          for(var i in O) {
-            switch(gizmo.type(O[i])) {
+        (function(statics, self) {
+          for(var i in statics) {
+            switch(gizmo.type(statics[i])) {
               case "Array":
-                self[i] = [].concat(O[i]);
+                self[i] = [].concat(statics[i]);
                 break;
               case "Object":
-                self[i] = gizmo.clone(O[i]);
+                self[i] = gizmo.clone(statics[i]);
                 break
             }
           }
         })(params.Statics || {}, this);
-        (function(O, self) {
-          for(var i in O) {
-            self[i] = O[i]
+        (function(methods, self) {
+          for(var i in methods) {
+            var getter = methods.__lookupGetter__(i), setter = methods.__lookupSetter__(i);
+            if(getter || setter) {
+              if(getter) {
+                self.__defineGetter__(i, getter)
+              }
+              if(setter) {
+                self.__defineSetter__(i, setter)
+              }
+            }else {
+              self[i] = methods[i]
+            }
           }
         })(params.Methods || {}, this);
         construct.call(this, O)
@@ -163,21 +173,31 @@
       }
     }else {
       var newClass = function(O) {
-        (function(O, self) {
-          for(var i in O) {
-            switch(gizmo.type(O[i])) {
+        (function(statics, self) {
+          for(var i in statics) {
+            switch(gizmo.type(statics[i])) {
               case "Array":
-                self[i] = [].concat(O[i]);
+                self[i] = [].concat(statics[i]);
                 break;
               case "Object":
-                self[i] = gizmo.clone(O[i]);
+                self[i] = gizmo.clone(statics[i]);
                 break
             }
           }
         })(params.Statics || {}, this);
-        (function(O, self) {
-          for(var i in O) {
-            self[i] = O[i]
+        (function(methods, self) {
+          for(var i in methods) {
+            var getter = methods.__lookupGetter__(i), setter = methods.__lookupSetter__(i);
+            if(getter || setter) {
+              if(getter) {
+                self.__defineGetter__(i, getter)
+              }
+              if(setter) {
+                self.__defineSetter__(i, setter)
+              }
+            }else {
+              self[i] = methods[i]
+            }
           }
         })(params.Methods || {}, this);
         construct.call(this, O)
@@ -481,7 +501,7 @@
 })(window.gizmo);
 (function superObj(armlib, lib) {
   var ArmObj = lib.Class({Initialize:function(O, layer, armlib) {
-  }, Statics:{_type:["ArmObject"], _name:1E3 * Math.random(), _loaded:false, _owner:null, _armlib:armlib, _lib:lib}, Methods:{_begin:function() {
+  }, Statics:{_type:["", "", "ArmObject"], _name:1E3 * Math.random(), _loaded:false, _owner:null, _armlib:armlib, _lib:lib}, Methods:{_begin:function() {
   }, _update:function() {
   }, Load:function() {
     this._load()
@@ -675,7 +695,7 @@
     this.angle = O.angle || this.angle;
     this.scale = O.scale || this.scale;
     return this
-  }, Statics:{_type:"Object", _numberNotLoadedChilds:0, _list:[]}, Methods:{addChild:function(O) {
+  }, Statics:{_type:["Object", "", "ArmObject"], _numberNotLoadedChilds:0, _list:[]}, Methods:{addChild:function(O) {
     O._setContext(this.getContext());
     O._setLayer(this.getLayer());
     O._setOwner(this);
@@ -772,7 +792,7 @@
   }, _loadedChild:function() {
     this._numberNotLoadedChilds--;
     if(this._numberNotLoadedChilds == 0) {
-      this._onLoad()
+      this.__onLoad()
     }
   }, getNumberNotLoadedChilds:function() {
     return this._numberNotLoadedChilds
@@ -819,6 +839,7 @@
       canvas.style["z-index"] = O.zindex || this._zindex;
       canvas.style.position = "absolute";
       container.appendChild(canvas);
+      this._canvas = canvas;
       this._context = canvas.getContext("2d")
     }else {
       throw Error("The container is not found! Choose right id of container, please!");
@@ -827,7 +848,7 @@
     this._setOwner(armlib);
     armlib._addLayer(this);
     return this
-  }, Statics:{_type:["Layer", ""], _name:1E3 * Math.random(), _runStatus:false, _context:null, _layer:null, _owner:null, _container:null, _width:500, _height:500, _fps:60, _zindex:0, _updating:false, _changeList:[], _list:[], _armlib:armlib, _lib:lib}, Methods:{run:function() {
+  }, Statics:{_type:["Layer", "", ""], _name:1E3 * Math.random(), _runStatus:false, _context:null, _layer:null, _owner:null, _container:null, _canvas:null, _width:500, _height:500, _fps:60, _zindex:0, _updating:false, _changeList:[], _list:[], _armlib:armlib, _lib:lib}, Methods:{run:function() {
     (function(O) {
       var onEachFrame;
       if(window.webkitRequestAnimationFrame) {
@@ -900,7 +921,6 @@
   }, addChild:function(O) {
     O._setContext(this._context);
     O._setLayer(this._layer);
-    O._setOwner(this);
     this._list.push(O);
     return this
   }, removeChild:function(O) {
@@ -998,7 +1018,8 @@
   }, get fps() {
     return this._fps
   }, set zindex(O) {
-    this._zindex = O
+    this._zindex = O;
+    this._canvas.style["z-index"] = O
   }, get zindex() {
     return this._zindex
   }}});
@@ -1072,7 +1093,7 @@
     this.fill = O.fill || this.fill;
     this.stroke = O.stroke || this.stroke;
     return this
-  }, Statics:{_type:["Shape", "Image"], _loaded:false, _src:null, _image:null}, Methods:{_load:function() {
+  }, Statics:{_type:["Image", "Primitive", "ArmObject"], _loaded:false, _src:null, _image:null}, Methods:{_load:function() {
     this.image = new Image;
     this.image.src = this.src;
     var self = this;

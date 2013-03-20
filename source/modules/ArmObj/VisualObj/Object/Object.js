@@ -20,7 +20,7 @@
             return this;
         },
         Statics: {
-            _type: 'Object',
+            _type: ['Object','','ArmObject'],
             _numberNotLoadedChilds: 0,
 
             _list: [], // List with child-objects
@@ -141,10 +141,9 @@
                 this._list = gizmo.nativeSort({mas: this._list,target: '<',field: '_zindex'});
             },
             _loadedChild: function() {
-                //debugger
                 this._numberNotLoadedChilds--;
                     if(this._numberNotLoadedChilds == 0) {
-                        this._onLoad();                             
+                        this.__onLoad();                             
                     }
             },
             getNumberNotLoadedChilds: function() {
