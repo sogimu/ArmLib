@@ -21,7 +21,10 @@
         Initialize: function(O) {
 			this._setName(O.name || this.name);
 			this.fps = O.fps || this.fps;
-			if( O.container ) {
+			this.width = O.width || this.width;
+            this.height = O.height || this.height;
+            
+            if( O.container ) {
 				this._setContainerName(O.container);
                 var container = document.getElementById(O.container);
                 var canvas = document.createElement('canvas');
@@ -39,6 +42,9 @@
 			this._setLayer(this);
 			this._setOwner(armlib);
 			armlib._addLayer(this);
+
+            this._init();
+
 			return this;
         },
         Statics: {
@@ -61,77 +67,48 @@
 			_changeList: [],
             _list: [], // List with child-objects
 			
+            _onEachFrame: null,
+            _cancelAnimationFrame: null,
+            _request: null,
 			_armlib: armlib,
             _lib: lib
         },
         Methods: {
 			
 			run: function() {
-				(function(O) {
-					var onEachFrame;
-					if (window.webkitRequestAnimationFrame) {
-						onEachFrame = function(cb) {
-							var _cb = function() { cb(); webkitRequestAnimationFrame(_cb); }
-							_cb();
-						};
-					} else if (window.mozRequestAnimationFrame) {
-						onEachFrame = function(cb) {
-							var _cb = function() { cb(); mozRequestAnimationFrame(_cb); }
-							_cb();
-						};
-					} else if (window.requestAnimationFrame) {
-						onEachFrame = function(cb) {
-							var _cb = function() { cb(); requestAnimationFrame(_cb); }
-							_cb();
-						};
-					} else if (window.msRequestAnimationFrame) {
-						onEachFrame = function(cb) {
-							var _cb = function() { cb(); msRequestAnimationFrame(_cb); }
-							_cb();
-						};
-					 } else {
-						var fps = O.fps;
-						onEachFrame = function(cb) {
-							setInterval(cb, 1000 / fps);
-						}
-					}
-
-					window.onEachFrame = onEachFrame;
-				})(this);
-
-				this._begin();
+                this.stop();
+				
+                this._begin();
 
 				var step = (function(O) {
-					var loops = 0, skipTicks = 1000 / O.fps,
+					/*var loops = 0, skipTicks = 1000 / O.fps,
 						maxFrameSkip = 10,
 						nextGameTick = (new Date).getTime();
-
+                    */
 					return function() {
-						loops = 0;
+						//loops = 0;
 
-						while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
+						//while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
 							O._update();
-							nextGameTick += skipTicks;
-							loops++;
-						}
+						//	nextGameTick += skipTicks;
+						//	loops++;
+						//}
 
 						O._clear();
 						O._draw();
 					};
 				})(this);
 				
-				window.onEachFrame(step);
+				this._onEachFrame(step);
 
-				this._runStatus = true;
-				
-				this.run = function() {
-					return this;
-				}
+				this._setRunStatus(true);
 				return this;
 			},
 			stop: function() {
-				
-			},
+                if(this._request) {
+                    this._cancelAnimationFrame.call(window,this._request);
+                }
+            },
 
             addChild: function(O) { // add new child-object and let sort drawList by z-index
                 O._setContext(this._context);
@@ -145,11 +122,53 @@
 
             },
 
-            // will delete
-            _addChangedObj: function(O) {
-                if(this.updating) {
-                    //this._changeList[O.id] = 'obj';
+            _init: function() {
+                var self = this;
+
+                var _onEachFrame;
+                if (window.webkitRequestAnimationFrame) {
+                    _onEachFrame = function(cb) {
+                        var _cb = function() { 
+                            cb(); 
+                            self._request = webkitRequestAnimationFrame(_cb);
+                        }
+                        _cb();
+                    };
+                } else if (window.mozRequestAnimationFrame) {
+                    _onEachFrame = function(cb) {
+                        var _cb = function() { 
+                            cb();
+                            self._request = mozRequestAnimationFrame(_cb);
+                        }
+                        _cb();
+                    };
+                } else if (window.requestAnimationFrame) {
+                    _onEachFrame = function(cb) {
+                        var _cb = function() { 
+                            cb();
+                            self._request = requestAnimationFrame(_cb);
+                        }
+                        _cb();
+                    };
+                } else if (window.msRequestAnimationFrame) {
+                    _onEachFrame = function(cb) {
+                        var _cb = function() { 
+                            cb();
+                            self._request = msRequestAnimationFrame(_cb);
+                        }
+                        _cb();
+                    };
+                 } else {
+                    var fps = this.fps;
+                    _onEachFrame = function(cb) {
+                        this._request = setInterval(cb, 1000 / fps);
+                    }
                 }
+
+                this._onEachFrame = _onEachFrame;
+
+                this._cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+                
             },
 
             _begin: function() {

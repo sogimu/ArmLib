@@ -111,8 +111,13 @@
             },
             
             // angle
-            set angle(O) {
-                this._angle = O;
+            set angle(angle) {
+                var twoPI = Math.PI*2;
+                if(angle > twoPI) {
+                    this._angle = twoPI%twoPI;
+                } else {
+                    this._angle = angle;
+                }
             },
             get angle() {
                 return this._angle;

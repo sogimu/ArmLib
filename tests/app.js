@@ -5,12 +5,16 @@ window.onload = function() {
             container: 'container',
             name: 'l',
 			zindex: 1,
+			width: 1300,
+			height: 600
         });
 
 		b = new armlib.Layer({
             container: 'container',
             name: 'b',
-			zindex: 0
+			zindex: 0,
+			width: 1300,
+			height: 600
         });
 		
 		
@@ -28,43 +32,59 @@ window.onload = function() {
 			console.log('onLoad r0');
 		});*/
 
+		r6 = new armlib.Image({
+             name: 'r6',
+             src: './img/googlebot-kun-1b.png',
+             x: 150,
+             y: 100,
+             width: 150,
+             height: 150,
+			 angle: 0.3
+        })
+		.setFunc('onLoad', function() {
+			 console.log('onLoad r6');
+		})
+		.setFunc('onUpdate', function() {
+			//this.angle += 0.01;
+		})
+
 		r1 = new armlib.Image({
             name: 'r1',
             src: './img/gras.jpg',
 			width: b.width,
-            height: b.height,
+            height: b.height
         })
-		r1.setFunc('onLoad', function() {
-			b.addChild(this);
+        .setFunc('onLoad', function() {
+			//b.addChild(this);
 			console.log('onLoad r1');
 			
 		})
-		r1.setFunc('onUpdate', function() {
+		.setFunc('onUpdate', function() {
 			//this.y += 1;
 		})
-		r1.setFunc("onKeyDown", function(e) {
-			if(e.keyCode == 38) {
+		.setFunc("onKeyDown", function(e) {
+			if(e.keyCode === 38) {
 				this.angle+=0.1;
 			}
-			if(e.keyCode == 40) {
+			if(e.keyCode === 40) {
 				this.angle-=0.1;
 			}
 		})
-		r1.setFunc("onKeyPress", function(e) {
+		.setFunc("onKeyPress", function(e) {
 			//console.log(e.keyCode);
-			if(e.keyCode == 97) {
+			if(e.keyCode === 97) {
 				this.x-=5;
 			}
-			if(e.keyCode == 100) {
+			if(e.keyCode === 100) {
 				this.x+=5;
 			}
-			if(e.keyCode == 119) {
+			if(e.keyCode === 119) {
 				this.y-=5;
 			}
-			if(e.keyCode == 115) {
+			if(e.keyCode === 115) {
 				this.y+=5;
 			}
-		})
+		});
 		//r1.Load();
 		
 		/*.setFunc('onMouseDown', function(e) {
@@ -77,20 +97,24 @@ window.onload = function() {
             name: 'r3',
             src: './img/nosov_01.jpg',
             zindex: 6,
-			x: 20,
-			y: 300,
+			x: 0,
+			y: 0,
             width: 100,
             height: 100,
-			angle: 0,
-			centralPoint: {x: 50, y: 50},
+			//angle: 0.3,
+			centralPoint: {x: 0, y: 0}
         })
 		.setFunc('onLoad', function() {
 			console.log('onLoad r3');
 		})
-		.setFunc('onUpdate', function() {
-			this.angle += 0.1;
-			//this.x += 1;
+		.setFunc('onBegin', function() {
+			this.angle = 0.3;
 		})
+		.setFunc('onUpdate', function() {
+			this.angle += 0.01;
+			this.x += 1;
+		});
+
 		/*
 		.setFunc("onKeyDown", function(e) {
 			if(e.keyCode == 38) {
@@ -164,16 +188,40 @@ window.onload = function() {
 			//this.angle+=0.01;
 		})
 		.addChild(r5)
-		//.addChild(r0)
+		.addChild(r6)
 		//.addChild(r1)
 		.addChild(r3)
 		//.addChild(obj1);
 		//.Load();
+	        for(var i=0;i<100;i++) {
+	        obj2.addChild(new armlib.Image({
+	            name: "rf"+i,
+	            src: './img/nosov_01.jpg',
+	            zindex: 6,
+				x: Math.random()*1300,
+				y: Math.random()*600,
+	            width: 150,
+	            height: 150,
+				angle: 0,
+				centralPoint: {x: 50, y: 50},
+	        })
+			.setFunc('onLoad', function() {
+				console.log("onLoad "+"rf"+i);
+			})
+			.setFunc('onUpdate', function() {
+				this.angle += 0.02;
+				//this.width = Math.random()*100;
+				//this.height = Math.random()*100;
+				//this.x+=1;
+				//this.zindex = 1;
+			}));
+    	}
+
 
 		obj3 = new armlib.Object({
-			name: "obj3",
+			name: "obj3"
 		})
-		.addChild(obj2)
+                .addChild(obj2)
 		.addChild(r1)
 		.setFunc("onLoad", function() {
 			console.log("onLoad obj3");
@@ -181,20 +229,6 @@ window.onload = function() {
 			armlib.run();
 		})
 		.Load();
-		
-		// r6 = new armlib.class.Image({
-            // name: 'r6',
-            // src: './img/googlebot-kun-1b.png',
-            // x: 150,
-            // y: 100,
-            // width: 150,
-            // height: 150,
-			// synch: false
-        // })
-		// .setFunc('onLoad', function() {
-			// console.log('onLoad r6');
-			// l.addChild(this);
-		// })
 
     })(ArmLib,gizmo);
 
