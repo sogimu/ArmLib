@@ -59,20 +59,6 @@
 
             },
 
-            _begin: function() {
-                if(this.haveOwner()) {
-                    this._begin = function() {
-                        for(var i in this._list) {
-                            this._list[i]._begin();
-                        }
-                        if(this.onBegin) {this.onBegin.call(this, this._layer,armlib,lib)};
-                    }
-                    this._begin();
-                } else {
-                    throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                }
-
-            },
             _onBegin: function(layer, armlib, lib) {}, // Constructor for object
 
             _update: function() {
@@ -96,6 +82,8 @@
                     this._clear = function() {
                         var len = this._list.length-1;
                         for(var i = len; i>=0; i--) {
+                        //for(var i=this._list.length-1;i>=0;i--) {
+
                             this._list[i]._clear.call(this._list[i]);
                         }
                         if(this._onClear) {this._onClear(this._context, this._layer,armlib,lib)};
@@ -114,16 +102,16 @@
                         this._context.save();
                             //this._context.beginPath();
                                 this._context.translate(this.x, this.y);
-                                this._context.translate(this.centralPoint.x, this.centralPoint.y);
-                                this._context.rotate(this.angle);
-                                this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-                                this._context.scale(this.scale.x, this.scale.y);                                
+                                //this._context.translate(this.centralPoint.x, this.centralPoint.y);
+                                //this._context.rotate(this.angle);
+                                //this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+                                //this._context.scale(this.scale.x, this.scale.y);                                
 
-                                if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
+                                //if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
                                 for(var i in this._list) {
                                     this._list[i]._draw.call(this._list[i]);
                                 }
-                                if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
+                                //if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 
                             //this._context.closePath();
                         this._context.restore();                        
@@ -199,4 +187,4 @@
 
     armlib.Object = object;
 
-}(ArmLib,gizmo));
+}(armlib,gizmo));

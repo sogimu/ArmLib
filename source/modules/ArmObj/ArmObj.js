@@ -26,6 +26,7 @@
             
             Load: function() {
                 this._load();
+                return this;
             },
 
             _load: function() {
@@ -95,4 +96,4 @@
 
     armlib._class.ArmObj = ArmObj;
 
-}(ArmLib,gizmo));
+}(armlib,gizmo));

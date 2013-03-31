@@ -14,100 +14,91 @@
             _type: ['Primitive',''],
             _fill: "#00FF00",
             _stroke: "#00aa00",
-			_oldX: 0,
-			_oldY: 0,
-			_oldWidth: 0,
-			_oldHeight: 0,
-			_oldLandscape: null
+            
+            _drawRect: {drawingRectPos: {p0: {x: 0, y: 0},p1: {x: 0, y: 0}}, drawingRectImage: new Image()},
+            /*_poligon: {
+                        global: [],
+                        local: [new gizmo.Point(this.x,this.y),new gizmo.Point(this.x+this.width,this.y), new gizmo.Point(this.x+this.width, this.y+this.height), new gizmo.Point(this.x, this.y+this.height)]
+                      }*/
 
         },
-		Methods: {
+        Methods: {
+            
+            _clear: function() {
+                this._updateDrawingRectPos();
+                this._saveDrawingRectImage();
 
-            _begin: function() {
-				if(this.haveOwner()) {
-					this._begin = function() {
-						if(this._onBegin) {this._onBegin.call(this, this._layer,armlib,lib)};
-					}
-					this._begin();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
+                this._clear = function() {
+                        //this._context.clearRect(0,0,this._layer.width,this._layer.height);
+
+                        this._removeDrawingRectImage();
+
+                        this._updateDrawingRectPos();
+                        this._saveDrawingRectImage();
+
+                }
+                this._clear();
 
             },
 
+            _saveDrawingRectImage: function() {
+                var rect = this._drawRect.drawingRectPos;
 
-			_clear: function() {
-				if(this.haveOwner()) {
-					this._saveDisplayUnderPrimitive();
-				
-					this._clear = function() {
-						//this._context.clearRect(0,0,this._layer.width,this._layer.height);
+                // bg._context.beginPath();
+                //     bg._context.strokeStyle = "#FF0000";
+                //     bg._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                // bg._context.closePath();
+                // bg._context.stroke();
 
-						this._removePrimitiveFromDisplay();
-						this._saveDisplayUnderPrimitive();
-						
-					}
-					this._clear();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
+                
+                this._drawRect.drawingRectImage = this._context.getImageData(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+            },
 
-			},
+            _removeDrawingRectImage: function() {
+                var rect = this._drawRect.drawingRectPos;
+                this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x, rect.p0.y);
+                //this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x+200, rect.p0.y);
+                var ewe = '';
+            },
+
+            _updateDrawingRectPos: function() {
+                var angelRad = this.angle;
+                var m = this.centralPoint.x + this.x;
+                var n = this.centralPoint.y + this.y;
+
+                var MTrans = new gizmo.Matrix([
+                    [Math.cos(angelRad),Math.sin(angelRad),0],
+                    [-Math.sin(angelRad),Math.cos(angelRad),0],
+                    [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
+                ]);
+
+                var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
+                var mainPoint = points.x(MTrans).elements;
+
+                var x = Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]);
+                var y = Math.min(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]);
+                var width = Math.max(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]) - x;
+                var height = Math.max(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]) - y;
+                
+                this._drawRect.drawingRectPos = {p0: {x: x, y: y},p1: {x: width, y: height}}
+                /*this._oldX = x < 0?0:x;
+                //this._oldX -= 5;
+                this._oldY = y < 0?0:y;
+                //this._oldX -= 5;
+                this._oldWidth = width;//(width <= 0?1:width);
+                //this._oldWidth += 5;
+                this._oldHeight = height;//(height <= 0?1:height);
+                //this._oldHeight += 5;*/
+            },
+
             _update: function() {
-				if(this.haveOwner()) {
-					this._update = function() {
-						if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
-					}
-					this._update();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
+                this._update = function() {
+                    if(this._onUpdate) {
+                        this._onUpdate.call(this, this._layer,armlib,lib)
+                    };
+                }
+                this._update();
 
-            },
-
-            _saveDisplayUnderPrimitive: function() {
-				var angelRad = this.angle;
-				var m = this.centralPoint.x + this.x;
-				var n = this.centralPoint.y + this.y;
-
-				var MTrans = new gizmo.Matrix([
-					[Math.cos(angelRad),Math.sin(angelRad),0],
-					[-Math.sin(angelRad),Math.cos(angelRad),0],
-					[-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
-				]);
-
-				//this.x = 10;
-				//this.y = 10;
-				//this.width = 50;
-				//this.height = 50;
-				var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
-				var mainPoint = points.x(MTrans).elements;
-				
-				var x = Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]);
-				var y = Math.min(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]);
-				var width = Math.max(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]);
-				var height = Math.max(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]);
-				this._oldX = x < 0?0:x;
-				this._oldY = y < 0?0:y;
-				this._oldWidth = /*width;//*/(width <= 0?1:width);
-				this._oldHeight = /*height;//*/(height <= 0?1:height);
-				
-				//if(this.d <1) {
-					//console.log([this._oldX,this._oldY,this._oldWidth,this._oldHeight]);
-					//this._context.beginPath();
-						//l._context.rect(this._oldX,this._oldY,this._oldWidth-this._oldX,this._oldHeight-this._oldY);
-					//this._context.closePath();
-						//this._context.fill();
-						//this._context.stroke();						
-					//this.d+=1;
-				//}
-
-				this._oldLandscapes = this._context.getImageData(this._oldX,this._oldY,this._oldWidth-this._oldX,this._oldHeight-this._oldY);
-			},
-
-            _removePrimitiveFromDisplay: function() {
-            	this._context.putImageData(this._oldLandscapes,this._oldX,this._oldY);
-            	
             },
 
             // private events from keyboard
@@ -142,4 +133,4 @@
 		}
     });
     armlib._class.Primitive = Primitive;
-})(ArmLib,gizmo);
+})(armlib,gizmo);

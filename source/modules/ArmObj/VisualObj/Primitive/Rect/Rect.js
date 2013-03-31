@@ -80,4 +80,4 @@
         }
     });
     armlib.Rect = Rect;
-})(ArmLib,gizmo);
+})(armlib,gizmo);

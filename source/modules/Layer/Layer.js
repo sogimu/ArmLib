@@ -20,25 +20,22 @@
 	var Layer = lib.Class({
         Initialize: function(O) {
 			this._setName(O.name || this.name);
-			this.fps = O.fps || this.fps;
+			if(O.fps) {this.fps = O.fps};
 			this.width = O.width || this.width;
             this.height = O.height || this.height;
             
-            if( O.container ) {
-				this._setContainerName(O.container);
-                var container = document.getElementById(O.container);
-                var canvas = document.createElement('canvas');
-                canvas.width = O.width || this.width;
-                canvas.height = O.height || this.height;
-                canvas.id = this.name;
-                canvas.style['z-index'] = O.zindex || this._zindex;
-                canvas.style.position = 'absolute';
-                container.appendChild( canvas );
-                this._canvas = canvas;
-                this._context = canvas.getContext('2d');
-            } else {
-                throw Error('The container is not found! Choose right id of container, please!');
-            }
+            this._setContainerName(armlib.container);
+            var container = armlib.container;
+            var canvas = document.createElement('canvas');
+            canvas.width = O.width || this.width;
+            canvas.height = O.height || this.height;
+            canvas.id = this.name;
+            canvas.style['z-index'] = O.zindex || this._zindex;
+            canvas.style.position = 'absolute';
+            container.appendChild( canvas );
+            this._canvas = canvas;
+            this._context = canvas.getContext('2d');
+        
 			this._setLayer(this);
 			this._setOwner(armlib);
 			armlib._addLayer(this);
@@ -49,8 +46,8 @@
         },
         Statics: {
             _type: ['Layer','',''],
-            _name: 1000*Math.random(),
-           	_runStatus: false,
+            _name: 100*Math.random(),
+           	_isRuning: false,
 
             _context: null,
             _layer: null,
@@ -60,12 +57,14 @@
 
             _width: 500,
             _height: 500,
-			_fps: 60,
+			_fps: 0,
 			_zindex: 0,
             
   			_updating: false,
 			_changeList: [],
             _list: [], // List with child-objects
+
+            _eventStack: new armlib._class.EventStack(),
 			
             _onEachFrame: null,
             _cancelAnimationFrame: null,
@@ -75,36 +74,48 @@
         },
         Methods: {
 			
-			run: function() {
-                this.stop();
-				
+            run: function() {
                 this._begin();
+                
+                this.run = function() {
+                    this.stop();
 
-				var step = (function(O) {
-					/*var loops = 0, skipTicks = 1000 / O.fps,
-						maxFrameSkip = 10,
-						nextGameTick = (new Date).getTime();
-                    */
-					return function() {
-						//loops = 0;
+                    var step = (function(O) {
+                        /*var loops = 0, skipTicks = 1000 / O.fps,
+                                maxFrameSkip = 10,
+                                nextGameTick = (new Date).getTime();
+                        */
+                        return function() {
+                            //loops = 0;
 
-						//while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
-							O._update();
-						//	nextGameTick += skipTicks;
-						//	loops++;
-						//}
+                            //while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
+                            O._update();
+                            //  nextGameTick += skipTicks;
+                            //  loops++;
+                            //}
 
-						O._clear();
-						O._draw();
-					};
-				})(this);
-				
-				this._onEachFrame(step);
+                            O._clear();
+                            O._draw();
+                            //bg._context.clearRect(0,0,bg.width,bg.height);
+                            
+                        };
+                    })(this);
 
-				this._setRunStatus(true);
-				return this;
-			},
-			stop: function() {
+                    step();
+                    
+                    this._onEachFrame(step);
+
+                    this._setRunStatus(true);
+
+                    return this;
+
+                }
+
+                this.run();
+
+            },
+            
+            stop: function() {
                 if(this._request) {
                     this._cancelAnimationFrame.call(window,this._request);
                 }
@@ -126,7 +137,16 @@
                 var self = this;
 
                 var _onEachFrame;
-                if (window.webkitRequestAnimationFrame) {
+                if(this.fps != 0) {
+                    var fps = this.fps;
+                    _onEachFrame = function(cb) {
+                        this._request = setInterval(cb, 1000 / fps);
+                    }
+
+                    this._cancelAnimationFrame = window.clearInterval;
+
+                } else {
+                    if (window.webkitRequestAnimationFrame) {
                     _onEachFrame = function(cb) {
                         var _cb = function() { 
                             cb(); 
@@ -134,61 +154,58 @@
                         }
                         _cb();
                     };
-                } else if (window.mozRequestAnimationFrame) {
-                    _onEachFrame = function(cb) {
-                        var _cb = function() { 
-                            cb();
-                            self._request = mozRequestAnimationFrame(_cb);
-                        }
-                        _cb();
-                    };
-                } else if (window.requestAnimationFrame) {
-                    _onEachFrame = function(cb) {
-                        var _cb = function() { 
-                            cb();
-                            self._request = requestAnimationFrame(_cb);
-                        }
-                        _cb();
-                    };
-                } else if (window.msRequestAnimationFrame) {
-                    _onEachFrame = function(cb) {
-                        var _cb = function() { 
-                            cb();
-                            self._request = msRequestAnimationFrame(_cb);
-                        }
-                        _cb();
-                    };
-                 } else {
-                    var fps = this.fps;
-                    _onEachFrame = function(cb) {
-                        this._request = setInterval(cb, 1000 / fps);
+                    } else if (window.mozRequestAnimationFrame) {
+                        _onEachFrame = function(cb) {
+                            var _cb = function() { 
+                                cb();
+                                self._request = mozRequestAnimationFrame(_cb);
+                            }
+                            _cb();
+                        };
+                    } else if (window.requestAnimationFrame) {
+                        _onEachFrame = function(cb) {
+                            var _cb = function() { 
+                                cb();
+                                self._request = requestAnimationFrame(_cb);
+                            }
+                            _cb();
+                        };
+                    } else if (window.msRequestAnimationFrame) {
+                        _onEachFrame = function(cb) {
+                            var _cb = function() { 
+                                cb();
+                                self._request = msRequestAnimationFrame(_cb);
+                            }
+                            _cb();
+                        };
                     }
+
+                    this._cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
                 }
 
                 this._onEachFrame = _onEachFrame;
 
-                this._cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+                
                 
             },
 
             _begin: function() {
                 for(var i in this._list) {
                     this._list[i]._begin();
-                }{a: 1}
+                }
                 
             },
             _clear: function() {
-                for(var i in this._list) {
+                for(var i=this._list.length-1;i>=0;i--) {
                     this._list[i]._clear();
                 }
                 
             },
             _update: function() {
-                this._updating = true;
+                this._doEvents();
                 for(var i in this._list) {
                     this._list[i]._update();
-                }
-                this._updating = false;             
+                }             
 
             },
             _draw: function() {
@@ -208,15 +225,12 @@
             _setName: function(name) {
                 this._name = name;
             },
-            getName: function() {
-                return this._name;
-            },
 
             _setRunStatus: function(status) {
-                this._runStatus = status;
+                this._isRuning = status;
             },
             getRunStatus: function() {
-                return this._runStatus;
+                return this._isRuning;
             },
 
             _setContext: function(context) {
@@ -245,6 +259,24 @@
             },
             _getContainerName: function() {
             	return this._container;
+            },
+
+            _doEvents: function() {
+                var event;
+                while (event = this._eventStack.pop()) {
+                    console.log(event);
+                    console.log(this._name);
+                    
+                    switch(event.name) {
+                        case "onKeyDown": this._onKeyDown(event.e); break;
+                        case "onKeyPress": this._onKeyPress(event.e); break;
+                        case "onKeyUp": this._onKeyUp(event.e); break;
+
+                        case "onMouseDown": this._onMouseDown(event.e); break;
+
+                    }
+                }
+                    
             },
 
             // event from keyboard
@@ -282,16 +314,21 @@
 
             },
 
-            _listenMouseEvents: function() {
-            	var container = document.getElementById(this._getContainerName());
-            	var self = this;
-            	container.onmousedown = function(e) {self._onMouseDown(e)};
-            },
-            _notListenMouseEvents: function() {
+            // _listenMouseEvents: function() {
+            // 	var container = document.getElementById(this._getContainerName());
+            // 	var self = this;
+            // 	container.onmousedown = function(e) {self._onMouseDown(e)};
+            // },
+            // _notListenMouseEvents: function() {
 
-            },
+            // },
 
             // Setters/Getters
+
+            // name
+            get name() {
+                return this._name;
+            },
 
             // width
             set width(O) {
@@ -312,6 +349,11 @@
             // fps
             set fps(O) {
                 this._fps = O;
+
+                this.stop();
+                this._init();
+                this.run();
+                
             },
             get fps() {
                 return this._fps;
@@ -329,4 +371,4 @@
         }
     });
     armlib.Layer = Layer;
-})(ArmLib,gizmo);
+})(armlib,gizmo);

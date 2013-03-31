@@ -45,44 +45,52 @@
             _image: null,
         },
         Methods: {
-			_load: function() {
-				this.image = new Image();
-				this.image.src = this.src;
-				var self = this;
-				this.image.onload = function() {
-					self._setLoaded();
-					self.__onLoad.call(self);
-				};
-				return this;
-			},
+            _load: function() {
+                this.image = new Image();
+                this.image.src = this.src;
+                var self = this;
+                this.image.onload = function() {
+                        self._setLoaded();
+                        self.__onLoad.call(self);
+                };
+                return this;
+            },
             _draw: function() {
-				if(this.haveOwner()) {
-					this._draw = function() {
-						this._context.save();
-							this._context.translate(this.x, this.y);
-                                
+                if(this.haveOwner()) {
+                    this._draw = function() {
+                        this._context.save();
+                            this._context.translate(this.x, this.y);
+
                             this._context.beginPath();
-								if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
-								this._context.fillStyle = this.fill;
-								this._context.strokeStyle = this.stroke;
-								
-								this._context.translate(this.centralPoint.x, this.centralPoint.y);
-								this._context.rotate(this.angle);
-								this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-								//this._context.scale(this.scale.x, this.scale.y);
-								//this._onClear();
-								this._context.drawImage(this.image, 0,0,this.width,this.height);
-								
-								if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
-							this._context.closePath();
-							//this._context.fill();
-							//this._context.stroke();
-						this._context.restore();
-					}
-					this._draw();
-				} else {
-					throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-				}
+                            if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
+                            this._context.fillStyle = this.fill;
+                            this._context.strokeStyle = this.stroke;
+
+                            this._context.translate(this.centralPoint.x, this.centralPoint.y);
+                            this._context.rotate(this.angle);
+                            this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+                            //this._context.scale(this.scale.x, this.scale.y);
+                            //this._onClear();
+                            this._context.drawImage(this.image, 0,0,this.width,this.height);
+
+                            if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
+                            this._context.closePath();
+                            //this._context.fill();
+                            //this._context.stroke();
+                        this._context.restore();
+                        var rect = this._drawRect.drawingRectPos;
+
+                        // bg._context.beginPath();
+                        //     bg._context.strokeStyle = "#FF0000";
+                        //     bg._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                        // bg._context.closePath();
+                        // bg._context.stroke();
+                        // var ser = '';
+                    }
+                    this._draw();
+                } else {
+                        throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+                }
             },
 
             _havePoint: function(point) {
@@ -113,4 +121,4 @@
         }
     });
     armlib.Image = image;
-})(ArmLib,gizmo);
+})(armlib,gizmo);

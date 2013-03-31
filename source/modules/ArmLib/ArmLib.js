@@ -16,7 +16,8 @@
         Statics: {
             _type: ['ArmLib','ArmLib'],
             _name: 'ArmLib',
-            
+            _context: null,
+
             _list: [], // List with Layer-objects
             
             _class: {},
@@ -25,6 +26,49 @@
             _lib: lib,
         },
         Methods: {
+
+            bindWithTag: function(O) {
+                if(O.container) {
+                    var tag = document.getElementById("container");
+                    
+                    if(tag) {
+                        this._container = tag;
+                    
+                    } else {
+                        throw Error("have't use tag with id = "+O.container+"!");
+                        createContainer();
+                    
+                    }
+                } else {
+                    createContainer();
+                }
+
+                function createContainer() {
+                    try {
+                        var container = document.createElement('div');
+                        container.id = "ArmLibContainer";
+                        document.body.appendChild( container);
+
+                        this._container = container;
+                    }
+                    catch(e) {
+                        throw Error("Error with creating container!");
+                    }
+                }
+            },
+	
+            run: function() {
+                this._listenKeybordMouseEvents();
+                
+                for(var i in this._list) {
+                    this._list[i].run();
+                    
+                }
+                return this;
+            },
+            stop: function() {
+                this._notListenKeybordMouseEvents();
+            },
 
             _addLayer: function(O) { // add new child-object and let sort drawList by z-index
                 O._setOwner(this);
@@ -37,64 +81,76 @@
             _removeLayer: function(O) {
 
             },
-	
-			run: function() {
-				this._listenKeybordMouseEvents();
-                for(var i in this._list) {
-                    this._list[i].run();
-                }
-                				
-				return this;
-			},
-			stop: function() {
-                this._notListenKeybordMouseEvents();
-			},
+
 
             _listenKeybordMouseEvents: function() {
                 var self = this;
                 window.onkeydown = function(e) {self._onKeyDown(e)};
                 window.onkeypress = function(e) {self._onKeyPress(e)};
                 window.onkeyup = function(e) {self._onKeyUp(e)};
-                for(var i in this._list) {
-                    this._list[i]._listenMouseEvents();
-                } 
+                 
             },
-
             _notListenKeybordMouseEvents: function() {
                 var self = this;
-                window.onkeydown = function(e) {};
-                window.onkeypress = function(e) {};
-                window.onkeyup = function(e) {}; 
+                window.onkeydown = null;
+                window.onkeypress = null;
+                window.onkeyup = null; 
+                
+            },
+
+            _listenMouseEvents: function() {
+                var self = this;
+                this.container.onmousedown = function(e) {self._onMouseDown(e)};
+            },
+            _notListenMouseEvents: function() {
+                this.container.onmousedown = null;
+
+            },
+
+            _sendEvent: function(event) {
                 for(var i in this._list) {
-                    this._list[i]._notListenMouseEvents();
+                    if(this._list[i].getRunStatus()) {
+                        this._list[i]._eventStack.push(event);
+                    }
                 }
             },
             
             _onKeyDown: function(e) {
-                for(var i in this._list) {
-                    if(this._list[i].getRunStatus()) {
-                        this._list[i]._onKeyDown(e);
-                    }
-                }
+                var event = {name:"onKeyDown", type:"keyboard", e: e};
+                this._sendEvent(event);
 
             },
             _onKeyPress: function(e) {
-                for(var i in this._list) {
-                    if(this._list[i].getRunStatus()) {
-                        this._list[i]._onKeyPress(e);
-                    }
-                }
+                var event = {name:"onKeyPress", type:"keyboard", e: e};
+                this._sendEvent(event);
+
             },
             _onKeyUp: function(e) {
-                for(var i in this._list) {
-                    if(this._list[i].getRunStatus()) {
-                        this._list[i]._onKeyUp(e);
-                    }
-                }
-            }
+                var event = {name:"onKeyUp", type:"keyboard", e: e};
+                this._sendEvent(event);
+
+            },
+            
+            _onMouseDown: function(e) {
+                var event = {name:"onMouseDown", type:"mouse", e: e};
+                this._sendEvent(event);
+
+            },
+
+
+            // Setters/Getters
+
+            // container
+            set container(O) {
+                this._container = O;
+            },
+            get container() {
+                return this._container;
+            },
+
 
         }
     });
 
-    window.ArmLib = new ArmLib();
+    window.armlib = new ArmLib();
 }(window.gizmo));
