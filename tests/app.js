@@ -11,12 +11,13 @@ window.onload = function() {
             height: 600
         });
 
-        b = new armlib.Layer({
-            name: "b",
-            zindex: 0,
-            width: 1300,
-            height: 600
-        });
+        // b = new armlib.Layer({
+        //     name: "b",
+        //     zindex: 0,
+        //     width: 1300,
+        //     height: 600
+        // });
+
         bg = new armlib.Layer({
             name: "bg",
             fps: 0.5,
@@ -87,6 +88,8 @@ window.onload = function() {
         
         obj2 = new armlib.Object({
             name: 'obj2',
+            x: 100,
+            //angle: 0.3
         })
         .setFunc('onLoad', function() {
             console.log('onLoad obj2');
@@ -103,6 +106,7 @@ window.onload = function() {
         .setFunc("onLoad", function() {
             console.log('onLoad loadQuane');
             armlib.run();
+            //bg.run();
             //l.stop();
             //b.stop();
         })

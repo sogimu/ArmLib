@@ -21,6 +21,7 @@
         },
         Statics: {
             _type: ['Object','','ArmObject'],
+            _name: "Object "+100*Math.random(),
             _numberNotLoadedChilds: 0,
 
             _list: [], // List with child-objects
@@ -46,8 +47,7 @@
 
             Load: function() {
                 this._load.call(this);
-                return this;
-                this._load();   
+                return this;   
             },
             _load: function() {
                 for(var i in this._list) {
@@ -99,9 +99,9 @@
             _draw: function() {
                 if(this.haveOwner()) {
                     this._draw = function() {
-                        this._context.save();
+                        //this._context.save();
                             //this._context.beginPath();
-                                this._context.translate(this.x, this.y);
+                                //this._context.translate(this.x, this.y);
                                 //this._context.translate(this.centralPoint.x, this.centralPoint.y);
                                 //this._context.rotate(this.angle);
                                 //this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
@@ -114,7 +114,7 @@
                                 //if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
 
                             //this._context.closePath();
-                        this._context.restore();                        
+                        //this._context.restore();                        
                     }
                     this._draw();
                 } else {
@@ -128,14 +128,30 @@
             _sortByZindex: function() {
                 this._list = gizmo.nativeSort({mas: this._list,target: '<',field: '_zindex'});
             },
+            
             _loadedChild: function() {
                 this._numberNotLoadedChilds--;
                     if(this._numberNotLoadedChilds == 0) {
                         this.__onLoad();                             
                     }
             },
+
             getNumberNotLoadedChilds: function() {
                 return this._numberNotLoadedChilds; 
+            },
+
+            _setContext: function(context) {
+                this._context = context;
+                for(var i in this._list) {
+                    this._list[i]._setContext(context);
+                }
+            },
+
+            _setLayer: function(layer) {
+                this._layer = layer;
+                for(var i in this._list) {
+                    this._list[i]._setLayer(layer);
+                }
             },
 
             // private events from keyboard 
@@ -167,20 +183,6 @@
             },
             
             // Setters/Getters
-
-            _setContext: function(context) {
-                this._context = context;
-                for(var i in this._list) {
-                    this._list[i]._setContext(context);
-                }
-            },
-
-            _setLayer: function(layer) {
-                this._layer = layer;
-                for(var i in this._list) {
-                    this._list[i]._setLayer(layer);
-                }
-            },
 
         }
     });

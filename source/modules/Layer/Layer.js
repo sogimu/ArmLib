@@ -79,6 +79,7 @@
                 
                 this.run = function() {
                     this.stop();
+                    armlib.ListenMouseKeyboardEvents();
 
                     var step = (function(O) {
                         /*var loops = 0, skipTicks = 1000 / O.fps,
@@ -113,18 +114,25 @@
 
                 this.run();
 
+                return this;
+
             },
             
             stop: function() {
                 if(this._request) {
+                    armlib.NotListenMouseEvents();
                     this._cancelAnimationFrame.call(window,this._request);
                 }
             },
 
-            addChild: function(O) { // add new child-object and let sort drawList by z-index
-                O._setContext(this._context);
-                O._setLayer(this._layer);
-                this._list.push(O);
+            addChild: function(O) { // add new child-object and sort drawList by z-index
+                if(O.isLoaded) {
+                    O._setContext(this._context);
+                    O._setLayer(this._layer);
+                    this._list.push(O);
+                } else {
+                    console.log("Object "+O.name+" don't loaded!");
+                }
                 
                 return this;
             
@@ -265,7 +273,7 @@
                 var event;
                 while (event = this._eventStack.pop()) {
                     console.log(event);
-                    console.log(this._name);
+                    //console.log(this._name);
                     
                     switch(event.name) {
                         case "onKeyDown": this._onKeyDown(event.e); break;
@@ -314,15 +322,6 @@
 
             },
 
-            // _listenMouseEvents: function() {
-            // 	var container = document.getElementById(this._getContainerName());
-            // 	var self = this;
-            // 	container.onmousedown = function(e) {self._onMouseDown(e)};
-            // },
-            // _notListenMouseEvents: function() {
-
-            // },
-
             // Setters/Getters
 
             // name
@@ -350,9 +349,13 @@
             set fps(O) {
                 this._fps = O;
 
-                this.stop();
-                this._init();
-                this.run();
+                if(this.getRunStatus()) {            
+                    this.stop();
+                    this._init();
+                    this.run();
+                } else {
+                    this._init();
+                }
                 
             },
             get fps() {

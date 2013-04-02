@@ -58,7 +58,7 @@
             },
 	
             run: function() {
-                this._listenKeybordMouseEvents();
+                this.ListenMouseKeyboardEvents();
                 
                 for(var i in this._list) {
                     this._list[i].run();
@@ -67,7 +67,7 @@
                 return this;
             },
             stop: function() {
-                this._notListenKeybordMouseEvents();
+                this.NotListenMouseKeybordEvents();
             },
 
             _addLayer: function(O) { // add new child-object and let sort drawList by z-index
@@ -83,14 +83,14 @@
             },
 
 
-            _listenKeybordMouseEvents: function() {
+            _listenKeybordEvents: function() {
                 var self = this;
                 window.onkeydown = function(e) {self._onKeyDown(e)};
                 window.onkeypress = function(e) {self._onKeyPress(e)};
                 window.onkeyup = function(e) {self._onKeyUp(e)};
                  
             },
-            _notListenKeybordMouseEvents: function() {
+            _notListenKeybordEvents: function() {
                 var self = this;
                 window.onkeydown = null;
                 window.onkeypress = null;
@@ -106,6 +106,18 @@
                 this.container.onmousedown = null;
 
             },
+
+            ListenMouseKeyboardEvents: function() {
+                this._listenKeybordEvents();
+                this._listenMouseEvents();
+
+            },
+            NotListenMouseEvents: function() {
+                this._notListenKeybordEvents();
+                this._notListenMouseEvents();
+
+            },
+
 
             _sendEvent: function(event) {
                 for(var i in this._list) {

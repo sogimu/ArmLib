@@ -34,14 +34,7 @@
             _draw: function() { /* virtual */ },
             
             _begin: function() {
-                if(this.haveOwner()) {
-                    this._begin = function() {
-                            if(this._onBegin) {this._onBegin.call(this, this._layer,armlib,lib)};
-                    }
-                    this._begin();
-                } else {
-                    throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                }
+                if(this._onBegin) {this._onBegin.call(this, this._layer,armlib,lib)};
 
             },
             

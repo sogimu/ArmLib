@@ -24,7 +24,7 @@
     var image = lib.Class({
         Extend: armlib._class.Primitive,
         Initialize: function(O) {
-			this.setName(O.name || this.getName());
+			this._setName(O.name || this.name);
             this.src = O.src || this.src;
 			this.zindex = O.zindex || this.zindex;
             this.x = O.x || this.x;
@@ -40,6 +40,7 @@
         },
         Statics: {
             _type: ['Image','Primitive','ArmObject'],
+            _name: "Image "+100*Math.random(),
             _loaded: false,
             _src: null,
             _image: null,
@@ -56,8 +57,8 @@
                 return this;
             },
             _draw: function() {
-                if(this.haveOwner()) {
-                    this._draw = function() {
+                // if(this.haveOwner()) {
+                //     this._draw = function() {
                         this._context.save();
                             this._context.translate(this.x, this.y);
 
@@ -86,14 +87,14 @@
                         // bg._context.closePath();
                         // bg._context.stroke();
                         // var ser = '';
-                    }
-                    this._draw();
-                } else {
-                        throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                }
+                //     }
+                //     this._draw();
+                // } else {
+                //         throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+                // }
             },
 
-            _havePoint: function(point) {
+            _hasPoint: function(point) {
                 if((point.x >= this.x && point.x <= this.x+this.width) && (point.y >= this.y && point.y <= this.y+this.height)) {
                     return true;
                 } else {

@@ -11,8 +11,8 @@
         Initialize: function(O, layer, armlib) {},
         Statics: {
             _type: ['','','ArmObject'],
-            _name: 1000*Math.random(),
-            _loaded: false, // Flag which show load-state of object 
+            _name: "ArmObj "+100*Math.random(),
+            _isLoaded: false, // Flag which show load-state of object 
 
             _owner: null,
 
@@ -21,26 +21,28 @@
         },
         Methods: { // Call-back functions of ArmLib object
 			
-            _begin: function() { /* virtual */},
-            _update: function() { /* virtual */},
-            
             Load: function() {
                 this._load();
                 return this;
             },
 
+            _begin: function() { /* virtual */},
+            _update: function() { /* virtual */},
+            
             _load: function() {
-                for(var i in this._list) {
-                    this._list[i]._load();
-                }
+                /* viryual */
+                console.log("virtual function");
             },
 
             __onLoad: function() {
-                if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
-                
+                this._setLoaded();
+                                
                 if(this.haveOwner()) {                  
-                    this._getOwner()._loadedChild();
+                    this.owner._loadedChild();
                 }
+
+                if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
+
                 
             },
             
@@ -52,6 +54,10 @@
 				return this;
 			},
 			getFunc: function(O) {
+                if(name && func) {
+                    return this['_'+name];        
+                }
+
 			},
 
             haveOwner: function() {
@@ -65,19 +71,13 @@
             _setType: function(type) {
                 this._type = type;
             },
-            getType: function() {
-                return this._type;
-            },
 
-            setName: function(name) {
+            _setName: function(name) {
                 this._name = name;
-            },
-            getName: function() {
-                return this._name;
             },
 
             _setLoaded: function() {
-                this._loaded = true;
+                this._isLoaded = true;
             },
             _setUnloaded: function() {
                 this._loaded = false;
@@ -86,11 +86,25 @@
             _setOwner: function(object) {
                 this._owner = object;
             },
-            _getOwner: function() {
-                return this._owner;
-            },
 
             // Setters/Getters
+
+            get isLoaded() {
+                return this._isLoaded;
+            },
+
+            get name() {
+                return this._name;
+
+            },
+            get owner() {
+                return this._owner;
+
+            },
+            get type() {
+                return this._type;
+
+            }
         }
     });
 
