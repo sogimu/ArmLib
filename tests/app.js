@@ -3,13 +3,7 @@ window.onload = function() {
 
         armlib.bindWithTag({container: 'container'});
 		
-        l = new armlib.Layer({
-            name: "l",
-            fps: 0,
-            zindex: 1,
-            width: 1300,
-            height: 600
-        });
+        
 
         // b = new armlib.Layer({
         //     name: "b",
@@ -22,6 +16,14 @@ window.onload = function() {
             name: "bg",
             fps: 0.5,
             zindex: 0,
+            width: 1300,
+            height: 600
+        });
+
+        l = new armlib.Layer({
+            name: "l",
+            fps: 20,
+            zindex: 1,
             width: 1300,
             height: 600
         });
@@ -59,8 +61,8 @@ window.onload = function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
-            this.angle += 0.10;
-            //this.x += 1;
+            //this.angle += 0.10;
+            this.x += 1;
         })
 		
         r5 = new armlib.Image({
@@ -89,7 +91,7 @@ window.onload = function() {
         obj2 = new armlib.Object({
             name: 'obj2',
             x: 100,
-            //angle: 0.3
+            angle: 0.3
         })
         .setFunc('onLoad', function() {
             console.log('onLoad obj2');
@@ -106,9 +108,7 @@ window.onload = function() {
         .setFunc("onLoad", function() {
             console.log('onLoad loadQuane');
             armlib.run();
-            //bg.run();
-            //l.stop();
-            //b.stop();
+            //armlib.stop();
         })
         .addChild(r1)
         .addChild(obj2)

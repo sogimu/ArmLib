@@ -36,14 +36,13 @@
 
             __onLoad: function() {
                 this._setLoaded();
-                                
+
+                if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
+
                 if(this.haveOwner()) {                  
                     this.owner._loadedChild();
                 }
 
-                if(this._onLoad) { this._onLoad.call(this, this._layer, armlib,lib);}
-
-                
             },
             
 			setFunc: function(name,func) {

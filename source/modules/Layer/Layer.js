@@ -30,7 +30,7 @@
             canvas.width = O.width || this.width;
             canvas.height = O.height || this.height;
             canvas.id = this.name;
-            canvas.style['z-index'] = O.zindex || this._zindex;
+            canvas.style['zIndex'] = O.zindex || this._zindex;
             canvas.style.position = 'absolute';
             container.appendChild( canvas );
             this._canvas = canvas;
@@ -120,7 +120,7 @@
             
             stop: function() {
                 if(this._request) {
-                    armlib.NotListenMouseEvents();
+                    armlib.NotListenMouseKeyboardEvents();
                     this._cancelAnimationFrame.call(window,this._request);
                 }
             },

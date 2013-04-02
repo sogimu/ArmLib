@@ -67,7 +67,13 @@
                 return this;
             },
             stop: function() {
-                this.NotListenMouseKeybordEvents();
+                this.NotListenMouseKeyboardEvents();
+
+                for(var i in this._list) {
+                    this._list[i].stop();
+                    
+                }
+                return this;
             },
 
             _addLayer: function(O) { // add new child-object and let sort drawList by z-index
@@ -112,7 +118,7 @@
                 this._listenMouseEvents();
 
             },
-            NotListenMouseEvents: function() {
+            NotListenMouseKeyboardEvents: function() {
                 this._notListenKeybordEvents();
                 this._notListenMouseEvents();
 

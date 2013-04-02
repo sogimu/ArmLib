@@ -10,7 +10,7 @@
     var object = lib.Class({
         Extend: armlib._class.VisualObj,
         Initialize: function(O, layer, armlib) {
-            this.name = O.name || this.name;
+            this._setName(O.name || this.name);
             this.zindex = O.zindex || this.zindex;
             this._x = O.x || this._x;
             this._y = O.y || this._y;
@@ -128,7 +128,7 @@
             _sortByZindex: function() {
                 this._list = gizmo.nativeSort({mas: this._list,target: '<',field: '_zindex'});
             },
-            
+
             _loadedChild: function() {
                 this._numberNotLoadedChilds--;
                     if(this._numberNotLoadedChilds == 0) {
