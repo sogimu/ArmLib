@@ -23,17 +23,6 @@
 
         },
         Methods: {
-            
-            _clear: function() {
-                this._updateTransformMatrix();
-                this.updateDrawingRectPos();    
-                this.saveDrawingRectImage();
-               
-                this._clear = function() {                
-                    this.removeDrawingRectImage();
-                    
-                }
-            },
 
             saveDrawingRectImage: function() {
                 var rect = this._drawRect.drawingRectPos;
@@ -46,7 +35,6 @@
 
                 
                 this._drawRect.drawingRectImage = this._context.getImageData(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
-                s ='';
             },
 
             removeDrawingRectImage: function() {
@@ -60,7 +48,6 @@
 
                 var rect = this._drawRect.drawingRectPos;
                 this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x, rect.p0.y);
-                var ewe = '';
             },
 
             updateDrawingRectPos: function() {
@@ -74,7 +61,6 @@
                 //     [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
                 // ]);
                 
-                //this.updateTransformMatrix();
                 var MTrans = this.TransformMatrix;
 
                 var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
@@ -96,9 +82,24 @@
                 //this._oldHeight += 5;*/
             },
 
+            _begin: function() {
+                if(this._onBegin) {
+                    this._onBegin.call(this, this._layer,armlib,lib)
+                };
+
+                if(this.haveChanges()) {
+                    this._updateTransformMatrix();
+                    this.updateDrawingRectPos();
+                    this.saveDrawingRectImage();
+                }
+            },
+            
+            _clear: function() {
+                    this.removeDrawingRectImage();
+
+            },
+
             _update: function() {
-                this._haveChanges = false;
-                
                 if(this._onUpdate) {
                     this._onUpdate.call(this, this._layer,armlib,lib)
                 };
@@ -110,6 +111,13 @@
                 }
 
             },
+
+            _draw: function() {
+                /* virtual */
+                console.log("virtual function");
+                
+            },
+
 
             // private events from keyboard
             

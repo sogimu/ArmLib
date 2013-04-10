@@ -111,6 +111,7 @@
                         // bg._context.closePath();
                         // bg._context.stroke();
                         // var ser = '';
+                        this.setHaveNotChanges();
             },
 
             _hasPoint: function(point) {

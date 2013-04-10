@@ -31,19 +31,19 @@ window.onload = function() {
         r1 = new armlib.Image({
             name: "r1",
             src: "./img/gras.jpg",
-            zindex: 0,
-            x: 0,
-            y: 0,
+            //zindex: 0,
+            //x: 0,
+            //y: 0,
             width: 500,
             height: 500,
-            centralPoint: {x: 70, y: 70}
+            //centralPoint: {x: 70, y: 70}
         })
         .setFunc('onLoad', function() {
             console.log('onLoad r1');
             bg.addChild(this);
         })
         .setFunc("onKeyDown", function(e) {
-            this.x += 50;
+            this.x += 5;
         });
 		
         r3 = new armlib.Image({
@@ -61,8 +61,8 @@ window.onload = function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
-            this.angle += 0.01;
-            //this.x += 1;
+            //this.angle += 0.01;
+            this.x += 1;
         })
 		
         r5 = new armlib.Image({
@@ -80,7 +80,7 @@ window.onload = function() {
          
         })
         .setFunc('onUpdate', function() { 
-            r5.angle -=0.01;
+            //r5.angle -=0.01;
         })
         .setFunc('preDraw', function(ctx) {})
         .setFunc('onDraw', function(ctx) {

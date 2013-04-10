@@ -47,14 +47,32 @@
                 return this._haveChanges;
             },
 
-            _clear: function() { /* virtual */ },
-            _draw: function() { /* virtual */ },
+            setHaveNotChanges: function() {
+                this._haveChanges = false;
+            },
+
+            setHaveChanges: function() {
+                this._haveChanges = true;
+            },
+
+            _clear: function() {
+                /* virtual */
+                console.log("virtual function");
+
+            },
             
             _begin: function() {
-                this._updateTransformMatrix();
-                
-                if(this._onBegin) {this._onBegin.call(this, this._layer,armlib,lib)};
+                /* virtual */
+                console.log("virtual function");
+
             },
+
+            _draw: function() {
+                /* virtual */
+                console.log("virtual function");
+
+            },
+            
             
             _updateTransformMatrix: function() {
                 
@@ -62,7 +80,6 @@
                 var m = this.centralPoint.x;
                 var n = this.centralPoint.y;
 
-                //var mat = MTrans.elements; 
                 var a = Math.cos(angelRad);
                 var b = Math.sin(angelRad);
                 var c = -b;
@@ -70,7 +87,7 @@
                 var f = (-m * (a-1)) + (n * b);
                 var e = (-m * b) - (n * (a-1));
 
-                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, f: f, e: e};
+                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
 
                 var MTrans = new gizmo.Matrix([
                     [a,c,0],
@@ -85,15 +102,9 @@
             _setContext: function(context) {
                 this._context = context;
             },
-            getContext: function() {
-                return this._context;
-            },
 
             _setLayer: function(layer) {
                 this._layer = layer;
-            },
-            getLayer: function() {
-                return this._layer;
             },
             
             // Setters/Getters
@@ -170,23 +181,29 @@
             set zindex(O) {
                 this._zindex = O;
                 if(this.haveOwner()) {
-                    this._getOwner()._sortByZindex();
+                    this.owner._sortByZindex();
                 }
                 this._haveChanges = true;
             },
 
+            // context
+            get context() {
+                return this._context;
+            },
+
+            // layer
+            get layer() {
+                return this._layer;
+            },
+
             get TransformMatrix() {
-                // if(this.haveChanges()) {
-                //     this._updateTransformMatrix();
-                // }
                 return this._transformMatrix;
+
             },
 
             get ParamsTransformMatrix() {
-                // if(this.haveChanges()) {
-                //     this._updateTransformMatrix();
-                // }
                 return this._paramsTransformMatrix;
+
             },
 
         }
