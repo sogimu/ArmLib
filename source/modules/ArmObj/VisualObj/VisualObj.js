@@ -73,21 +73,19 @@
 
             },
             
-            
-            _updateTransformMatrix: function() {
+            initTransformMatrix: function() {
                 
                 var angelRad = this.angle;
-                var m = this.centralPoint.x;
-                var n = this.centralPoint.y;
+                var n = this.centralPoint.x;
+                var m = this.centralPoint.y;
 
                 var a = Math.cos(angelRad);
                 var b = Math.sin(angelRad);
                 var c = -b;
                 var d = a;
-                var f = (-m * (a-1)) + (n * b);
                 var e = (-m * b) - (n * (a-1));
-
-                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
+                var f = (-m * (a-1)) + (n * b);
+                
 
                 var MTrans = new gizmo.Matrix([
                     [a,c,0],
@@ -96,6 +94,64 @@
                 ]);
 
                 this._transformMatrix = MTrans;
+
+                a = this._transformMatrix.elements[0][0];
+                b = this._transformMatrix.elements[0][1];
+                c = this._transformMatrix.elements[1][0];
+                d = this._transformMatrix.elements[1][1];
+                e = this._transformMatrix.elements[2][0];
+                f = this._transformMatrix.elements[2][1];
+
+                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
+
+
+            },
+
+            updateTransformMatrix: function() {
+                
+                var angelRad = this.angle;
+                var n = this.centralPoint.x;
+                var m = this.centralPoint.y;
+
+                var a = Math.cos(angelRad);
+                var b = Math.sin(angelRad);
+                var c = -b;
+                var d = a;
+                var e = (-m * b) - (n * (a-1));
+                var f = (-m * (a-1)) + (n * b);
+                
+                var MTrans = new gizmo.Matrix([
+                    [a,c,0],
+                    [b,d,0],
+                    [e,f,1]
+                ]);
+
+                this._transformMatrix = this._transformMatrix.x(MTrans);
+              
+                //this._transformMatrix = MTrans;
+
+                a = this._transformMatrix.elements[0][0];
+                b = this._transformMatrix.elements[0][1];
+                c = this._transformMatrix.elements[1][0];
+                d = this._transformMatrix.elements[1][1];
+                e = this._transformMatrix.elements[2][0];
+                f = this._transformMatrix.elements[2][1];
+
+                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
+
+            },
+
+            multipluyTransformMatrix: function(reg) {
+                this._transformMatrix = this._transformMatrix.x(reg);
+
+                var a = this._transformMatrix.elements[0][0];
+                var b = this._transformMatrix.elements[0][1];
+                var c = this._transformMatrix.elements[1][0];
+                var d = this._transformMatrix.elements[1][1];
+                var e = this._transformMatrix.elements[2][0];
+                var f = this._transformMatrix.elements[2][1];
+
+                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
 
             },
 
@@ -149,7 +205,7 @@
             set angle(angle) {
                 var twoPI = Math.PI*2;
                 if(angle > twoPI) {
-                    this._angle = twoPI%twoPI;
+                    this._angle = angle%Math.PI;
                 } else {
                     this._angle = angle;
                 }

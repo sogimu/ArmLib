@@ -91,7 +91,7 @@
                         //this._context.translate(this.centralPoint.x, this.centralPoint.y);
 
                         var params = this.ParamsTransformMatrix; 
-                        this._context.transform(params.a, params.c, params.b, params.d, params.e, params.f);
+                        this._context.transform(params.a, params.b, params.c, params.d, params.e, params.f);
 
                         //this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
 

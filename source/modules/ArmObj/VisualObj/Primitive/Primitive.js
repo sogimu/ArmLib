@@ -88,7 +88,7 @@
                 };
 
                 if(this.haveChanges()) {
-                    this._updateTransformMatrix();
+                    this.initTransformMatrix();
                     this.updateDrawingRectPos();
                     this.saveDrawingRectImage();
                 }
@@ -105,7 +105,7 @@
                 };
 
                 if(this.haveChanges()) {
-                    this._updateTransformMatrix();
+                    this.updateTransformMatrix();
                     this.updateDrawingRectPos();
                     this.saveDrawingRectImage();
                 }
@@ -140,7 +140,7 @@
             // private events from mouse
 
             __onMouseDown: function(e) {
-                if(this._onMouseDown && this._havePoint(e)) {
+                if(this._onMouseDown) {
                 	this._onMouseDown(e);
                 }
 
