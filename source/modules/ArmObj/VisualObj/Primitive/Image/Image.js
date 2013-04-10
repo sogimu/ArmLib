@@ -57,29 +57,53 @@
                 return this;
             },
             _draw: function() {
-                // if(this.haveOwner()) {
-                //     this._draw = function() {
-                        this._context.save();
-                            this._context.translate(this.x, this.y);
+                    // if(this._hasChanges) {
+                    //     this.updateDrawingRectPos();
+                    //     this.saveDrawingRectImage();
+                    // }
 
-                            this._context.beginPath();
-                            if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
-                            this._context.fillStyle = this.fill;
-                            this._context.strokeStyle = this.stroke;
+                    this._context.save();
+                        //this._context.translate(this.globalX, this.globalY);
 
-                            this._context.translate(this.centralPoint.x, this.centralPoint.y);
-                            this._context.rotate(this.angle);
-                            this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-                            //this._context.scale(this.scale.x, this.scale.y);
-                            //this._onClear();
-                            this._context.drawImage(this.image, 0,0,this.width,this.height);
+                        this._context.beginPath();
+                        //if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
+                        //this._context.fillStyle = this.fill;
+                        //this._context.strokeStyle = this.stroke;
 
-                            if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
-                            this._context.closePath();
-                            //this._context.fill();
-                            //this._context.stroke();
-                        this._context.restore();
-                        var rect = this._drawRect.drawingRectPos;
+                        /*this._context.translate(this.centralPoint.x, this.centralPoint.y);
+                        this._context.rotate(this.globalAngle);
+                        this._context.translate(-this.centralPoint.x, -this.centralPoint.y);*/
+                        
+                        // var angelRad = this.angle;
+                        // var m = this.centralPoint.x;
+                        // var n = this.centralPoint.y;
+
+                        // var MTrans = new gizmo.Matrix([
+                        //     [Math.cos(angelRad),Math.sin(angelRad),0],
+                        //     [-Math.sin(angelRad),Math.cos(angelRad),0],
+                        //     [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
+                        // ]);
+
+                        // var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
+                        // var mainPoint = points.x(MTrans).elements;
+
+
+                        //this._context.translate(this.centralPoint.x, this.centralPoint.y);
+
+                        var params = this.ParamsTransformMatrix; 
+                        this._context.transform(params.a, params.c, params.b, params.d, params.e, params.f);
+
+                        //this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
+
+
+                        this._context.drawImage(this.image, this.x, this.y ,this.width,this.height);
+
+                        //if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
+                        this._context.closePath();
+                        //this._context.fill();
+                        //this._context.stroke();
+                    this._context.restore();
+                    //var rect = this._drawRect.drawingRectPos;
 
                         // bg._context.beginPath();
                         //     bg._context.strokeStyle = "#FF0000";
@@ -87,11 +111,6 @@
                         // bg._context.closePath();
                         // bg._context.stroke();
                         // var ser = '';
-                //     }
-                //     this._draw();
-                // } else {
-                //         throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                // }
             },
 
             _hasPoint: function(point) {

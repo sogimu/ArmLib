@@ -62,43 +62,37 @@
             _onBegin: function(layer, armlib, lib) {}, // Constructor for object
 
             _update: function() {
-                if(this.haveOwner()) {
-                    this._update = function() {
-                        for(var i in this._list) {
-                            this._list[i]._update();
-                        }
-                        if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
-                    }
-                    this._update();
-                } else {
-                    throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
+                this._hasChanges = false;
+                for(var i in this._list) {
+                    this._list[i]._update();
                 }
+                if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
 
             },
             _onUpdate: function(layer, armlib, lib) {}, // Function which update object
 
             _clear: function() {
-                if(this.haveOwner()) {
-                    this._clear = function() {
-                        var len = this._list.length-1;
-                        for(var i = len; i>=0; i--) {
-                        //for(var i=this._list.length-1;i>=0;i--) {
+                /*if(this.haveOwner()) {
+                    this._clear = function() {*/
+                        //var len = this._list.length-1;
+                        //for(var i = len; i>=0; i--) {
+                        for(var i=this._list.length-1;i>=0;i--) {
 
                             this._list[i]._clear.call(this._list[i]);
                         }
                         if(this._onClear) {this._onClear(this._context, this._layer,armlib,lib)};
-                    }
+                    /*}
                     this._clear();
                 } else {
                     throw Error('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                }
+                }*/
 
             },
             _onClear: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing
 
             _draw: function() {
-                if(this.haveOwner()) {
-                    this._draw = function() {
+                /*if(this.haveOwner()) {
+                    this._draw = function() {*/
                         //this._context.save();
                             //this._context.beginPath();
                                 //this._context.translate(this.x, this.y);
@@ -115,11 +109,11 @@
 
                             //this._context.closePath();
                         //this._context.restore();                        
-                    }
+                /*    }
                     this._draw();
                 } else {
                     console.log('object with type '+this.getType()+' and name '+this.getName()+' have not owner!');
-                }
+                }*/
 
             },
             _onDraw: function(ctx, layer, armlib, lib) {}, // Function which update view of object before drawing

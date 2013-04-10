@@ -26,8 +26,15 @@
                 return this;
             },
 
-            _begin: function() { /* virtual */},
-            _update: function() { /* virtual */},
+            _begin: function() {
+                /* virtual */
+                console.log("virtual function");
+            },
+            
+            _update: function() {
+                /* virtual */
+                console.log("virtual function");
+            },
             
             _load: function() {
                 /* viryual */

@@ -5,12 +5,12 @@ window.onload = function() {
 		
         
 
-        // b = new armlib.Layer({
-        //     name: "b",
-        //     zindex: 0,
-        //     width: 1300,
-        //     height: 600
-        // });
+        b = new armlib.Layer({
+            name: "b",
+            zindex: 2,
+            width: 1300,
+            height: 600
+        });
 
         bg = new armlib.Layer({
             name: "bg",
@@ -22,7 +22,7 @@ window.onload = function() {
 
         l = new armlib.Layer({
             name: "l",
-            fps: 20,
+            fps: 0,
             zindex: 1,
             width: 1300,
             height: 600
@@ -43,55 +43,60 @@ window.onload = function() {
             bg.addChild(this);
         })
         .setFunc("onKeyDown", function(e) {
-            this.x += 1;
+            this.x += 50;
         });
 		
         r3 = new armlib.Image({
             name: 'r3',
             src: './img/nosov_01.jpg',
             zindex: 6,
-            x: 25,
-            y: 35,
+            x: 0,
+            y: 0,
             width: 100,
             height: 100,
             //angle: 0.3,
-            centralPoint: {x: 70, y: 70}
+            centralPoint: {x: 50, y: 50}
         })
         .setFunc('onLoad', function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
-            //this.angle += 0.10;
-            this.x += 1;
+            this.angle += 0.01;
+            //this.x += 1;
         })
 		
         r5 = new armlib.Image({
             name: 'r5',
             src: './img/images (1).jpg',
             zindex: 10,
-            x: 150,
-            y: 10,
+            x: 50,
+            y: 50,
             width: 100,
             height: 100,
-            centralPoint: {x: 25, y: 25}
+            centralPoint: {x: 100, y: 100}
         })
         .setFunc('onLoad', function(layer) {
             console.log('onLoad r5');
          
         })
         .setFunc('onUpdate', function() { 
-            r5.angle -=0.05;
+            r5.angle -=0.01;
         })
         .setFunc('preDraw', function(ctx) {})
         .setFunc('onDraw', function(ctx) {
-            ctx.moveTo(this.x + 25, this.y + 25);
-            ctx.lineTo(this.x + 100,this.y + 100);
+            //ctx.drawImage(this.image, 20,0,this.width,this.height);
+
+            // this._context.beginPath();
+            //     ctx.moveTo(this.x, this.y);
+            //     ctx.lineTo(this.x+250,this.y + 250);
+            // this._context.closePath();
+            // this._context.stroke();
         })
         
         obj2 = new armlib.Object({
             name: 'obj2',
-            x: 100,
-            angle: 0.3
+            x: 0,
+            angle: 0
         })
         .setFunc('onLoad', function() {
             console.log('onLoad obj2');
@@ -102,8 +107,6 @@ window.onload = function() {
         
         loadQuane = new armlib.Object({
             name: "loadQuane",
-            x: 100,
-            y: 100
         })
         .setFunc("onLoad", function() {
             console.log('onLoad loadQuane');
@@ -113,6 +116,10 @@ window.onload = function() {
         .addChild(r1)
         .addChild(obj2)
         .Load();
+
+            //console.log(new gizmo.Matrix([]));
+            //console.log(/*gizmo.clone(*/new gizmo.Matrix/*([])*//*)*/);
+        
         
     })(armlib,gizmo);
 

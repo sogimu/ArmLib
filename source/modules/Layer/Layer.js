@@ -82,23 +82,11 @@
                     armlib.ListenMouseKeyboardEvents();
 
                     var step = (function(O) {
-                        /*var loops = 0, skipTicks = 1000 / O.fps,
-                                maxFrameSkip = 10,
-                                nextGameTick = (new Date).getTime();
-                        */
                         return function() {
-                            //loops = 0;
-
-                            //while ((new Date).getTime() > nextGameTick && loops < maxFrameSkip) {
-                            O._update();
-                            //  nextGameTick += skipTicks;
-                            //  loops++;
-                            //}
-
                             O._clear();
-                            O._draw();
-                            //bg._context.clearRect(0,0,bg.width,bg.height);
-                            
+
+                            O._update();
+                            O._draw();                            
                         };
                     })(this);
 
@@ -204,6 +192,8 @@
                 
             },
             _clear: function() {
+                //for(var i=0;i<this._list.length;i++) {
+                
                 for(var i=this._list.length-1;i>=0;i--) {
                     this._list[i]._clear();
                 }
@@ -217,6 +207,7 @@
 
             },
             _draw: function() {
+                b._context.clearRect(0,0,b.width,b.height);
                 for(var i in this._list) {
                     this._list[i]._draw();
                 }

@@ -25,60 +25,65 @@
         Methods: {
             
             _clear: function() {
-                this._updateDrawingRectPos();
-                this._saveDrawingRectImage();
-
-                this._clear = function() {
-                        //this._context.clearRect(0,0,this._layer.width,this._layer.height);
-
-                        this._removeDrawingRectImage();
-
-                        this._updateDrawingRectPos();
-                        this._saveDrawingRectImage();
-
+                this._updateTransformMatrix();
+                this.updateDrawingRectPos();    
+                this.saveDrawingRectImage();
+               
+                this._clear = function() {                
+                    this.removeDrawingRectImage();
+                    
                 }
-                this._clear();
-
             },
 
-            _saveDrawingRectImage: function() {
+            saveDrawingRectImage: function() {
                 var rect = this._drawRect.drawingRectPos;
 
-                // bg._context.beginPath();
-                //     bg._context.strokeStyle = "#FF0000";
-                //     bg._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
-                // bg._context.closePath();
-                // bg._context.stroke();
+                b._context.beginPath();
+                    b._context.strokeStyle = "#FF0000";
+                    b._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                b._context.closePath();
+                b._context.stroke();
 
                 
                 this._drawRect.drawingRectImage = this._context.getImageData(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                s ='';
             },
 
-            _removeDrawingRectImage: function() {
+            removeDrawingRectImage: function() {
+                var rect = this._drawRect.drawingRectPos;
+
+                b._context.beginPath();
+                    b._context.strokeStyle = "#0000FF";
+                    b._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                b._context.closePath();
+                b._context.stroke();
+
                 var rect = this._drawRect.drawingRectPos;
                 this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x, rect.p0.y);
-                //this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x+200, rect.p0.y);
                 var ewe = '';
             },
 
-            _updateDrawingRectPos: function() {
-                var angelRad = this.angle;
-                var m = this.centralPoint.x + this.x;
-                var n = this.centralPoint.y + this.y;
+            updateDrawingRectPos: function() {
+                // var angelRad = this.angle;
+                // var m = this.centralPoint.x// + this.x;
+                // var n = this.centralPoint.y// + this.y;
 
-                var MTrans = new gizmo.Matrix([
-                    [Math.cos(angelRad),Math.sin(angelRad),0],
-                    [-Math.sin(angelRad),Math.cos(angelRad),0],
-                    [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
-                ]);
+                // var MTrans = new gizmo.Matrix([
+                //     [Math.cos(angelRad),Math.sin(angelRad),0],
+                //     [-Math.sin(angelRad),Math.cos(angelRad),0],
+                //     [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
+                // ]);
+                
+                //this.updateTransformMatrix();
+                var MTrans = this.TransformMatrix;
 
                 var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
                 var mainPoint = points.x(MTrans).elements;
 
-                var x = Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]);
-                var y = Math.min(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]);
-                var width = Math.max(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]) - x;
-                var height = Math.max(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]) - y;
+                var x = Math.floor(Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]));
+                var y = Math.floor(Math.min(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]));
+                var width = Math.ceil(Math.max(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]) - x);
+                var height = Math.ceil(Math.max(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]) - y);
                 
                 this._drawRect.drawingRectPos = {p0: {x: x, y: y},p1: {x: width, y: height}}
                 /*this._oldX = x < 0?0:x;
@@ -92,12 +97,17 @@
             },
 
             _update: function() {
-                this._update = function() {
-                    if(this._onUpdate) {
-                        this._onUpdate.call(this, this._layer,armlib,lib)
-                    };
+                this._haveChanges = false;
+                
+                if(this._onUpdate) {
+                    this._onUpdate.call(this, this._layer,armlib,lib)
+                };
+
+                if(this.haveChanges()) {
+                    this._updateTransformMatrix();
+                    this.updateDrawingRectPos();
+                    this.saveDrawingRectImage();
                 }
-                this._update();
 
             },
 
