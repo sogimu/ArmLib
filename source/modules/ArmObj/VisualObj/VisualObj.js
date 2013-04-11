@@ -126,9 +126,9 @@
                     [e,f,1]
                 ]);
 
-                this._transformMatrix = this._transformMatrix.x(MTrans);
+                //this._transformMatrix = this._transformMatrix.x(MTrans);
               
-                //this._transformMatrix = MTrans;
+                this._transformMatrix = MTrans;
 
                 a = this._transformMatrix.elements[0][0];
                 b = this._transformMatrix.elements[0][1];

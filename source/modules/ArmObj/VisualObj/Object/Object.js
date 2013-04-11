@@ -45,8 +45,8 @@
             },
 
 
-          Load: function() {
-              this._load.call(this);
+            Load: function() {
+                this._load.call(this);
                 return this;   
             },
 
@@ -73,9 +73,9 @@
                     this._list[i]._begin();
                 }             
 
-                if(this.haveChanges()) {
-                    this.initTransformMatrix();
-                }
+                // if(this.haveChanges()) {
+                //     this.initTransformMatrix();
+                // }
             },
 
             _clear: function() {
@@ -91,12 +91,12 @@
             _update: function() {
                 if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
 
-                if(this.haveChanges()) {
+                /*if(this.haveChanges()) {
                     this.updateTransformMatrix();
                     for(var i in this._list) {
                         this._list[i].multipluyTransformMatrix(this.TransformMatrix);
                     }
-                }
+                }*/
 
                 for(var i in this._list) {
                     this._list[i]._update();

@@ -45,6 +45,30 @@ window.onload = function() {
         .setFunc("onKeyDown", function(e) {
             this.x += 5;
         });
+
+        objects = [];
+        for(var i=0;i<100;i++) {
+            objects.push(new armlib.Image({
+                name: i+'e',
+                src: './img/nosov_01.jpg',
+                zindex: 6,
+                x: Math.random()*1100,
+                y: Math.random()*800,
+                width: 100,
+                height: 100,
+                //angle: 0.3,
+                centralPoint: {x: Math.random()*1100, y: Math.random()*800}
+            })
+            .setFunc('onLoad', function() {
+                console.log('onLoad r3');
+                l.addChild(this);
+            })
+            .setFunc('onUpdate', function() {
+                this.angle += 0.05;
+                this.x += 0.1;
+            })
+            .Load())
+        }
 		
         r3 = new armlib.Image({
             name: 'r3',
@@ -61,8 +85,8 @@ window.onload = function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
-            //this.angle += 0.05;
-            //this.x += 0.1;
+            this.angle += 0.05;
+            this.x += 0.1;
         })
         .setFunc("onMouseDown", function(e) {
             this.angle -=0.05;
@@ -107,9 +131,9 @@ window.onload = function() {
         
         obj2 = new armlib.Object({
             name: 'obj2',
-            x: 100,
-            angle: 0.1,
-            centralPoint: {x: 100, y: 100}
+            // x: 100,
+            // angle: 0.1,
+            // centralPoint: {x: 100, y: 100}
         })
         .setFunc('onLoad', function() {
             console.log('onLoad obj2');
