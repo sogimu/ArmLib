@@ -87,7 +87,7 @@
                 var f = (-m * (a-1)) + (n * b);
                 
 
-                var MTrans = new gizmo.Matrix([
+                var MTrans = new gizmo.Math.Matrix([
                     [a,c,0],
                     [b,d,0],
                     [e,f,1]
@@ -120,7 +120,7 @@
                 var e = (-m * b) - (n * (a-1));
                 var f = (-m * (a-1)) + (n * b);
                 
-                var MTrans = new gizmo.Matrix([
+                var MTrans = new gizmo.Math.Matrix([
                     [a,c,0],
                     [b,d,0],
                     [e,f,1]
@@ -240,6 +240,11 @@
                     this.owner._sortByZindex();
                 }
                 this._haveChanges = true;
+            },
+
+            get zindex(O) {
+                return this._zindex;
+
             },
 
             // context

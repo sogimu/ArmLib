@@ -63,7 +63,7 @@
                 
                 var MTrans = this.TransformMatrix;
 
-                var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
+                var points = new gizmo.Math.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
                 var mainPoint = points.x(MTrans).elements;
 
                 var x = Math.floor(Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]));
