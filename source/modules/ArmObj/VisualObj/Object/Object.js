@@ -65,9 +65,13 @@
             },
 
             _begin: function() {
+                this.setHaveChanges();
+                
                 if(this._onBegin) {
                     this._onBegin.call(this, this._layer,armlib,lib)
                 };
+
+                this.initSkeleton();
 
                 for(var i in this._list) {
                     this._list[i]._begin();
@@ -91,12 +95,10 @@
             _update: function() {
                 if(this._onUpdate) {this._onUpdate.call(this, this._layer,armlib,lib)};
 
-                /*if(this.haveChanges()) {
-                    this.updateTransformMatrix();
-                    for(var i in this._list) {
-                        this._list[i].multipluyTransformMatrix(this.TransformMatrix);
-                    }
-                }*/
+                if(this.haveChanges()) {
+                    //this.updateSkeleton();
+
+                }
 
                 for(var i in this._list) {
                     this._list[i]._update();
@@ -164,6 +166,21 @@
                 }
 
             },
+
+            __onMouseUp: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onMouseUp(e);    
+                }
+
+            },
+
+            __onMouseMove: function(e) {
+                for(var i in this._list) {
+                    this._list[i].__onMouseMove(e);    
+                }
+
+            },
+
             
             // Setters/Getters
 

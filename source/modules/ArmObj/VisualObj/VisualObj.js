@@ -18,17 +18,19 @@
                         
             _x: 0,
             _y: 0,
-            _width: 10,
-            _height: 10,
             _angle: 0,
             _centralPoint: {x:1,y:1},
             _scale: {x:1,y:1},
             _zindex: 0,
+            _globalAlpha: 1,
 
-            _transformMatrix: [],
+            __transformMatrix: [],
             _paramsTransformMatrix: [],
 
+            _skeleton: {},
+
             _haveChanges: true,
+            _changes: {x:0, y:0, width:0, height:0, angle:0, scale: {x:1,y:1}, centralPoint: {x:0, y:0}},
             
             _armlib: armlib,
             _lib: lib
@@ -48,6 +50,7 @@
             },
 
             setHaveNotChanges: function() {
+                this._changes = {x:0, y:0, width:0, height:0, angle:0, scale: {x:0,y:0}, centralPoint: {x:0, y:0}, zindex: 0, globalAlpha: 1};
                 this._haveChanges = false;
             },
 
@@ -88,19 +91,19 @@
                 
 
                 var MTrans = new gizmo.Math.Matrix([
-                    [a,c,0],
-                    [b,d,0],
-                    [e,f,1]
+                    [a,c,e],
+                    [b,d,f],
+                    [0,0,1]
                 ]);
 
                 this._transformMatrix = MTrans;
 
                 a = this._transformMatrix.elements[0][0];
-                b = this._transformMatrix.elements[0][1];
-                c = this._transformMatrix.elements[1][0];
+                b = this._transformMatrix.elements[1][0];
+                c = this._transformMatrix.elements[0][1];
                 d = this._transformMatrix.elements[1][1];
-                e = this._transformMatrix.elements[2][0];
-                f = this._transformMatrix.elements[2][1];
+                e = this._transformMatrix.elements[0][2];
+                f = this._transformMatrix.elements[1][2];
 
                 this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
 
@@ -117,13 +120,13 @@
                 var b = Math.sin(angelRad);
                 var c = -b;
                 var d = a;
-                var e = (-m * b) - (n * (a-1));
-                var f = (-m * (a-1)) + (n * b);
+                var e = (-m * (a-1)) + (n * b);
+                var f = (-m * b) - (n * (a-1));
                 
                 var MTrans = new gizmo.Math.Matrix([
-                    [a,c,0],
-                    [b,d,0],
-                    [e,f,1]
+                    [a,c,e],
+                    [b,d,f],
+                    [0,0,1]
                 ]);
 
                 //this._transformMatrix = this._transformMatrix.x(MTrans);
@@ -131,27 +134,51 @@
                 this._transformMatrix = MTrans;
 
                 a = this._transformMatrix.elements[0][0];
-                b = this._transformMatrix.elements[0][1];
-                c = this._transformMatrix.elements[1][0];
+                b = this._transformMatrix.elements[1][0];
+                c = this._transformMatrix.elements[0][1];
                 d = this._transformMatrix.elements[1][1];
-                e = this._transformMatrix.elements[2][0];
-                f = this._transformMatrix.elements[2][1];
+                e = this._transformMatrix.elements[0][2];
+                f = this._transformMatrix.elements[1][2];
 
                 this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
 
             },
 
-            multipluyTransformMatrix: function(reg) {
-                this._transformMatrix = this._transformMatrix.x(reg);
+            initSkeleton: function() {
+                var skeleton = new armlib._class.Skeleton([]);
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x,this.y));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width,this.y));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width,this.y+this.height));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x,this.y+this.height));
+                
+                this.Skeleton = skeleton;
+                //this.Skeleton.prev = prev;
+                
+            },
 
-                var a = this._transformMatrix.elements[0][0];
-                var b = this._transformMatrix.elements[0][1];
-                var c = this._transformMatrix.elements[1][0];
-                var d = this._transformMatrix.elements[1][1];
-                var e = this._transformMatrix.elements[2][0];
-                var f = this._transformMatrix.elements[2][1];
+            updateSkeleton: function() {
+                this.Skeleton.Transform(this.TransformMatrix.transpose());
 
-                this._paramsTransformMatrix = {a: a, b: b, c: c, d: d, e: e, f: f};
+                var skeleton = this.Skeleton._polygoneOfChangedPoints._points;
+
+                var ctx = b._context;
+
+                b._context.strokeStyle = "#000000";
+                    
+                ctx.clearRect(0,0,500,500);
+                
+                ctx.beginPath();
+
+                ctx.moveTo(skeleton[0].x,skeleton[0].y);
+                for(var i in skeleton){
+                    ctx.lineTo(skeleton[i*1].x,skeleton[i*1].y);
+                }
+                ctx.lineTo(skeleton[0].x,skeleton[0].y);
+                
+                ctx.closePath();
+                ctx.stroke();
+                var d;
+                //ctx.fill();
 
             },
 
@@ -167,6 +194,7 @@
 
             // x
             set x(O) {
+                this._changes.x = (O - this._x);
                 this._x = O;
                 this._haveChanges = true;
             },
@@ -176,6 +204,7 @@
             
             // y
             set y(O) {
+                this._changes.y = (O - this._y);
                 this._y = O;
                 this._haveChanges = true;
             },
@@ -185,6 +214,7 @@
             
             // width
             set width(O) {
+                this._changes.width = (O - this._width);
                 this._width = O;
                 this._haveChanges = true;
             },
@@ -194,6 +224,7 @@
             
             // height
             set height(O) {
+                this._changes.height = (O - this._height);
                 this._height = O;
                 this._haveChanges = true;
             },
@@ -205,8 +236,10 @@
             set angle(angle) {
                 var twoPI = Math.PI*2;
                 if(angle > twoPI) {
+                    this._changes.angle = (angle - this._angle);
                     this._angle = angle%Math.PI;
                 } else {
+                    this._changes.angle = (angle - this._angle);
                     this._angle = angle;
                 }
                 this._haveChanges = true;
@@ -217,6 +250,8 @@
 
             // centralPoint
             set centralPoint(O) {
+                this._changes.centralPoint.x = (O.x - this.centralPoint.x);
+                this._changes.centralPoint.y = (O.y - this.centralPoint.y);
                 this._centralPoint = O;
                 this._haveChanges = true;
             },
@@ -226,6 +261,8 @@
             
             // scale
             set scale(O) {
+                this._changes.scale.x = (O.x - this._scale.x);
+                this._changes.scale.y = (O.y - this._scale.y);
                 this._scale = O;
                 this._haveChanges = true;
             },
@@ -235,6 +272,7 @@
             
             // zindex
             set zindex(O) {
+                this._changes.zindex = (O - this._zindex);
                 this._zindex = O;
                 if(this.haveOwner()) {
                     this.owner._sortByZindex();
@@ -246,6 +284,25 @@
                 return this._zindex;
 
             },
+
+            // globalAlpha
+            set globalAlpha(value) {
+                if(value >= 0 && value <= 1) {
+                    this._changes.globalAlpha = (value - this._globalAlpha);
+                    this._globalAlpha = value;
+                } else if(value < 0) {
+                    this._changes.globalAlpha = (0 - this._globalAlpha);
+                    this._globalAlpha = 0;
+                } else if(value > 1) {
+                    this._changes.globalAlpha = (1 - this._globalAlpha);
+                    this._globalAlpha = 1;
+                }
+                this._haveChanges = true;
+            },
+            get globalAlpha() {
+                return this._globalAlpha;
+            },
+
 
             // context
             get context() {
@@ -261,11 +318,17 @@
                 return this._transformMatrix;
 
             },
+            set _transformMatrix(reg) {
+                this.__transformMatrix = reg;
+            },
+            get _transformMatrix() {
+                return this.__transformMatrix;
+            },
 
             get ParamsTransformMatrix() {
                 return this._paramsTransformMatrix;
 
-            },
+            }
 
         }
     });

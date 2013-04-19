@@ -16,7 +16,6 @@
         Statics: {
             _type: ['ArmLib','ArmLib'],
             _name: 'ArmLib',
-            _context: null,
 
             _list: [], // List with Layer-objects
             
@@ -107,9 +106,14 @@
             _listenMouseEvents: function() {
                 var self = this;
                 this.container.onmousedown = function(e) {self._onMouseDown(e)};
+                this.container.onmouseup = function(e) {self._onMouseUp(e)};
+                this.container.onmousemove = function(e) {self._onMouseMove(e)};
+
             },
             _notListenMouseEvents: function() {
                 this.container.onmousedown = null;
+                this.container.onmouseup = null;
+                this.container.onmousemove = null;
 
             },
 
@@ -151,6 +155,18 @@
             
             _onMouseDown: function(e) {
                 var event = {name:"onMouseDown", type:"mouse", e: e};
+                this._sendEvent(event);
+
+            },
+
+            _onMouseUp: function(e) {
+                var event = {name:"onMouseUp", type:"mouse", e: e};
+                this._sendEvent(event);
+
+            },
+
+            _onMouseMove: function(e) {
+                var event = {name:"onMouseMove", type:"mouse", e: e};
                 this._sendEvent(event);
 
             },

@@ -35,15 +35,21 @@
             this.angle = O.angle || this.angle;
             this.scale = O.scale || this.scale;
             this.fill = O.fill || this.fill;
+            this.globalAlpha = O.globalAlpha || this.globalAlpha;
             this.stroke = O.stroke || this.stroke;
 			return this;
         },
         Statics: {
             _type: ['Image','Primitive','ArmObject'],
             _name: "Image "+100*Math.random(),
-            _loaded: false,
+
+            _width: 10,
+            _height: 10,
+
             _src: null,
             _image: null,
+            _loaded: false,
+            
         },
         Methods: {
             _load: function() {
@@ -57,69 +63,18 @@
                 return this;
             },
             _draw: function() {
-                    // if(this._hasChanges) {
-                    //     this.updateDrawingRectPos();
-                    //     this.saveDrawingRectImage();
-                    // }
-
-                    this._context.save();
-                        //this._context.translate(this.globalX, this.globalY);
-
-                        this._context.beginPath();
-                        //if(this._preDraw) {this._preDraw(this._context, this._layer,armlib,lib)};
-                        //this._context.fillStyle = this.fill;
-                        //this._context.strokeStyle = this.stroke;
-
-                        /*this._context.translate(this.centralPoint.x, this.centralPoint.y);
-                        this._context.rotate(this.globalAngle);
-                        this._context.translate(-this.centralPoint.x, -this.centralPoint.y);*/
-                        
-                        // var angelRad = this.angle;
-                        // var m = this.centralPoint.x;
-                        // var n = this.centralPoint.y;
-
-                        // var MTrans = new gizmo.Matrix([
-                        //     [Math.cos(angelRad),Math.sin(angelRad),0],
-                        //     [-Math.sin(angelRad),Math.cos(angelRad),0],
-                        //     [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
-                        // ]);
-
-                        // var points = new gizmo.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
-                        // var mainPoint = points.x(MTrans).elements;
-
-
-                        //this._context.translate(this.centralPoint.x, this.centralPoint.y);
-
+                this._context.save();
+                    this._context.beginPath();
+                        this._context.globalAlpha = this.globalAlpha;
                         var params = this.ParamsTransformMatrix; 
-                        this._context.transform(params.a, params.b, params.c, params.d, params.e, params.f);
-
-                        //this._context.translate(-this.centralPoint.x, -this.centralPoint.y);
-
+                        this._context.setTransform(params.a, params.b, params.c, params.d, params.e, params.f);
 
                         this._context.drawImage(this.image, this.x, this.y ,this.width,this.height);
 
-                        //if(this._onDraw) {this._onDraw(this._context, this._layer,armlib,lib)};
-                        this._context.closePath();
-                        //this._context.fill();
-                        //this._context.stroke();
-                    this._context.restore();
-                    //var rect = this._drawRect.drawingRectPos;
+                    this._context.closePath();
+                this._context.restore();
 
-                        // bg._context.beginPath();
-                        //     bg._context.strokeStyle = "#FF0000";
-                        //     bg._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
-                        // bg._context.closePath();
-                        // bg._context.stroke();
-                        // var ser = '';
-                        this.setHaveNotChanges();
-            },
-
-            _hasPoint: function(point) {
-                if((point.x >= this.x && point.x <= this.x+this.width) && (point.y >= this.y && point.y <= this.y+this.height)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                this.setHaveNotChanges();
             },
 
             // Setters/Getters

@@ -207,7 +207,7 @@
 
             },
             _draw: function() {
-                b._context.clearRect(0,0,b.width,b.height);
+                //b._context.clearRect(0,0,b.width,b.height);
                 for(var i in this._list) {
                     this._list[i]._draw();
                 }
@@ -263,7 +263,7 @@
             _doEvents: function() {
                 var event;
                 while (event = this._eventStack.pop()) {
-                    console.log(event);
+                    //console.log(event);
                     //console.log(this._name);
                     
                     switch(event.name) {
@@ -272,6 +272,9 @@
                         case "onKeyUp": this._onKeyUp(event.e); break;
 
                         case "onMouseDown": this._onMouseDown(event.e); break;
+                        case "onMouseUp": this._onMouseUp(event.e); break;
+                        case "onMouseMove": this._onMouseMove(event.e); break;
+
 
                     }
                 }
@@ -312,6 +315,25 @@
             	}
 
             },
+
+            _onMouseUp: function(e) {
+                if(this.getRunStatus()) {
+                    for(var i in this._list) {
+                        this._list[i].__onMouseUp(e);    
+                    }
+                }
+
+            },
+
+            _onMouseMove: function(e) {
+                if(this.getRunStatus()) {
+                    for(var i in this._list) {
+                        this._list[i].__onMouseMove(e);    
+                    }
+                }
+
+            },
+
 
             // Setters/Getters
 

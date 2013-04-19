@@ -14,12 +14,8 @@
             _type: ['Primitive',''],
             _fill: "#00FF00",
             _stroke: "#00aa00",
-            
+
             _drawRect: {drawingRectPos: {p0: {x: 0, y: 0},p1: {x: 0, y: 0}}, drawingRectImage: new Image()},
-            /*_poligon: {
-                        global: [],
-                        local: [new gizmo.Point(this.x,this.y),new gizmo.Point(this.x+this.width,this.y), new gizmo.Point(this.x+this.width, this.y+this.height), new gizmo.Point(this.x, this.y+this.height)]
-                      }*/
 
         },
         Methods: {
@@ -30,6 +26,8 @@
                 b._context.beginPath();
                     b._context.strokeStyle = "#FF0000";
                     b._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                    b._context.rect(this.centralPoint.x-2,this.centralPoint.y-2,4,4);
+                    
                 b._context.closePath();
                 b._context.stroke();
 
@@ -51,25 +49,19 @@
             },
 
             updateDrawingRectPos: function() {
-                // var angelRad = this.angle;
-                // var m = this.centralPoint.x// + this.x;
-                // var n = this.centralPoint.y// + this.y;
-
-                // var MTrans = new gizmo.Matrix([
-                //     [Math.cos(angelRad),Math.sin(angelRad),0],
-                //     [-Math.sin(angelRad),Math.cos(angelRad),0],
-                //     [-m*(Math.cos(angelRad)-1)+n*Math.sin(angelRad),-m*Math.sin(angelRad)-n*(Math.cos(angelRad)-1),1]
-                // ]);
-                
                 var MTrans = this.TransformMatrix;
 
-                var points = new gizmo.Math.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
-                var mainPoint = points.x(MTrans).elements;
+                //var points = new gizmo.Math.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
+                
+                //var points = new gizmo.Math.Matrix([[this.x,this.y,1],[this.x+this.width,this.y,1],[this.x+this.width,this.y+this.height,1],[this.x,this.y+this.height,1]]);
+                var points = new gizmo.Math.Matrix([[this.x,this.x+this.width,this.x+this.width,this.x],[this.y,this.y,this.y+this.height,this.y+this.height],[1,1,1,1]]);
+                
+                var mainPoint = MTrans.x(points).elements;
 
-                var x = Math.floor(Math.min(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]));
-                var y = Math.floor(Math.min(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]));
-                var width = Math.ceil(Math.max(mainPoint[0][0],mainPoint[1][0],mainPoint[2][0],mainPoint[3][0]) - x);
-                var height = Math.ceil(Math.max(mainPoint[0][1],mainPoint[1][1],mainPoint[2][1],mainPoint[3][1]) - y);
+                var x = Math.floor(Math.min(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3]));
+                var y = Math.floor(Math.min(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3]));
+                var width = Math.ceil(Math.max(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3]) - x);
+                var height = Math.ceil(Math.max(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3]) - y);
                 
                 this._drawRect.drawingRectPos = {p0: {x: x, y: y},p1: {x: width, y: height}}
                 /*this._oldX = x < 0?0:x;
@@ -83,15 +75,17 @@
             },
 
             _begin: function() {
+                this.setHaveChanges();
+                
                 if(this._onBegin) {
                     this._onBegin.call(this, this._layer,armlib,lib)
                 };
 
-                if(this.haveChanges()) {
-                    this.initTransformMatrix();
-                    this.updateDrawingRectPos();
-                    this.saveDrawingRectImage();
-                }
+                this.initTransformMatrix();
+                this.initSkeleton();
+                this.updateDrawingRectPos();
+                this.saveDrawingRectImage();
+        
             },
             
             _clear: function() {
@@ -106,6 +100,8 @@
 
                 if(this.haveChanges()) {
                     this.updateTransformMatrix();
+                    this.updateSkeleton();
+                    
                     this.updateDrawingRectPos();
                     this.saveDrawingRectImage();
                 }
@@ -140,13 +136,35 @@
             // private events from mouse
 
             __onMouseDown: function(e) {
-                if(this._onMouseDown) {
+                if(this._onMouseDown && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
                 	this._onMouseDown(e);
                 }
 
             },
 
+            __onMouseUp: function(e) {
+                if(this._onMouseUp && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                    this._onMouseUp(e);
+                }
+
+            },
+
+            __onMouseMove: function(e) {
+                if(this._onMouseMove && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                    this._onMouseMove(e);
+                }
+
+            },
+
             // Setters/Getters
+            set Skeleton(skeleton) {
+                this._skeleton = skeleton;
+            },
+
+            get Skeleton() {
+                return this._skeleton;
+            },
+
 
 		}
     });
