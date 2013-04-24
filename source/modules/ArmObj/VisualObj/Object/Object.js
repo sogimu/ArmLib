@@ -71,7 +71,7 @@
                     this._onBegin.call(this, this._layer,armlib,lib)
                 };
 
-                this.initSkeleton();
+                //this.initSkeleton();
 
                 for(var i in this._list) {
                     this._list[i]._begin();
@@ -97,7 +97,8 @@
 
                 if(this.haveChanges()) {
                     //this.updateSkeleton();
-
+                    //this.updateTransformMatrix();
+                    
                 }
 
                 for(var i in this._list) {

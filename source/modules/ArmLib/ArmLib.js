@@ -90,9 +90,9 @@
 
             _listenKeybordEvents: function() {
                 var self = this;
-                window.onkeydown = function(e) {self._onKeyDown(e)};
-                window.onkeypress = function(e) {self._onKeyPress(e)};
-                window.onkeyup = function(e) {self._onKeyUp(e)};
+                window.onkeydown = function(e) {self.__onKeyDown(e)};
+                window.onkeypress = function(e) {self.__onKeyPress(e)};
+                window.onkeyup = function(e) {self.__onKeyUp(e)};
                  
             },
             _notListenKeybordEvents: function() {
@@ -105,9 +105,11 @@
 
             _listenMouseEvents: function() {
                 var self = this;
-                this.container.onmousedown = function(e) {self._onMouseDown(e)};
-                this.container.onmouseup = function(e) {self._onMouseUp(e)};
-                this.container.onmousemove = function(e) {self._onMouseMove(e)};
+                this.container.onmousedown = function(e) {
+                    self.__onMouseDown(e)
+                };
+                this.container.onmouseup = function(e) {self.__onMouseUp(e)};
+                this.container.onmousemove = function(e) {self.__onMouseMove(e)};
 
             },
             _notListenMouseEvents: function() {
@@ -137,35 +139,35 @@
                 }
             },
             
-            _onKeyDown: function(e) {
+            __onKeyDown: function(e) {
                 var event = {name:"onKeyDown", type:"keyboard", e: e};
                 this._sendEvent(event);
 
             },
-            _onKeyPress: function(e) {
+            __onKeyPress: function(e) {
                 var event = {name:"onKeyPress", type:"keyboard", e: e};
                 this._sendEvent(event);
 
             },
-            _onKeyUp: function(e) {
+            __onKeyUp: function(e) {
                 var event = {name:"onKeyUp", type:"keyboard", e: e};
                 this._sendEvent(event);
 
             },
             
-            _onMouseDown: function(e) {
+            __onMouseDown: function(e) {
                 var event = {name:"onMouseDown", type:"mouse", e: e};
                 this._sendEvent(event);
 
             },
 
-            _onMouseUp: function(e) {
+            __onMouseUp: function(e) {
                 var event = {name:"onMouseUp", type:"mouse", e: e};
                 this._sendEvent(event);
 
             },
 
-            _onMouseMove: function(e) {
+            __onMouseMove: function(e) {
                 var event = {name:"onMouseMove", type:"mouse", e: e};
                 this._sendEvent(event);
 

@@ -26,6 +26,9 @@ window.onload = function() {
             zindex: 1,
             width: 1300,
             height: 600
+        })
+        .setFunc("onMouseDown", function(e) {
+            console.log("wefwef");
         });
         
         r1 = new armlib.Image({
@@ -43,6 +46,7 @@ window.onload = function() {
             bg.addChild(this);
         })
         .setFunc("onKeyDown", function(e) {
+            console.log(e.keyCode)
             this.x += 5;
         });
 		
@@ -52,38 +56,39 @@ window.onload = function() {
             name: 'r3',
             src: './img/nosov_01.jpg',
             zindex: 6,
-            x: 0,
-            y: 0,
+            x: 250,
+            y: 250,
             width: 100,
             height: 100,
-            angle: 0.3,
-            globalAlpha: 0.1,
-            centralPoint: {x: 100, y: 100}
+            angle: 0,
+            globalAlpha: 0.5,
+            centralPoint: {x: 300, y: 300}
         })
         .setFunc('onLoad', function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
+            this.x += 0.5
             this.angle += 0.01;
-            if(this.globalAlpha == 1) {
-                inc *= -1;
-            }
-            if(this.globalAlpha == 0) {
-                inc *= -1;
-            }
-            this.globalAlpha += inc;
-            //this.x += 0.1;
+            // if(this.globalAlpha == 1) {
+            //     inc *= -1;
+            // }
+            // if(this.globalAlpha == 0) {
+            //     inc *= -1;
+            // }
+            // this.globalAlpha += inc;
+            // //this.x += 0.1;
         })
         .setFunc("onMouseDown", function(e) {
-            this.angle -=0.05;
-            var x = e.layerY;
-            var y = e.layerX;
-            // this.x = x-this.width/2;
-            // this.y = y-this.height/2;
+            //this.angle -=0.05;
+            var x = e.layerX;
+            var y = e.layerY;
+            this.x = x-this.width/2;
+            this.y = y-this.height/2;
             console.log(this.x,this.y)
 
-            this.centralPoint.x = x;
-            this.centralPoint.y = y;
+            this.centralPoint = {x:x, y:y};
+            
         })
 		
         r5 = new armlib.Image({
@@ -136,7 +141,7 @@ window.onload = function() {
             
         })
         .addChild(r3)
-        .addChild(r5)
+        //.addChild(r5)
         
         loadQuane = new armlib.Object({
             name: "loadQuane",

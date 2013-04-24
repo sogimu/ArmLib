@@ -73,7 +73,7 @@
             _lib: lib
         },
         Methods: {
-			
+	
             run: function() {
                 this._begin();
                 
@@ -126,6 +126,21 @@
             
             },
             removeChild: function(O) {
+
+            },
+
+            setFunc: function(name,func) {
+                if(name && func) {
+                    this['_'+name] = func;        
+                }
+                
+                return this;
+            },
+
+            getFunc: function(O) {
+                if(name && func) {
+                    return this['_'+name];        
+                }
 
             },
 
@@ -267,13 +282,13 @@
                     //console.log(this._name);
                     
                     switch(event.name) {
-                        case "onKeyDown": this._onKeyDown(event.e); break;
-                        case "onKeyPress": this._onKeyPress(event.e); break;
-                        case "onKeyUp": this._onKeyUp(event.e); break;
+                        case "onKeyDown": this.__onKeyDown(event.e); break;
+                        case "onKeyPress": this.__onKeyPress(event.e); break;
+                        case "onKeyUp": this.__onKeyUp(event.e); break;
 
-                        case "onMouseDown": this._onMouseDown(event.e); break;
-                        case "onMouseUp": this._onMouseUp(event.e); break;
-                        case "onMouseMove": this._onMouseMove(event.e); break;
+                        case "onMouseDown": this.__onMouseDown(event.e); break;
+                        case "onMouseUp": this.__onMouseUp(event.e); break;
+                        case "onMouseMove": this.__onMouseMove(event.e); break;
 
 
                     }
@@ -282,7 +297,10 @@
             },
 
             // event from keyboard
-            _onKeyDown: function(e) {
+            __onKeyDown: function(e) {
+                if(this._onKeyDown) {
+                    this._onKeyDown(e);
+                }
                 if(this.getRunStatus()) {
 	                for(var i in this._list) {
                         this._list[i].__onKeyDown(e);    
@@ -291,7 +309,10 @@
 
             },
 
-            _onKeyPress: function(e) {
+            __onKeyPress: function(e) {
+                if(this._onKeyPress) {
+                    this._onKeyPress(e);
+                }
                 if(this.getRunStatus()) {
 	                for(var i in this._list) {
                         this._list[i].__onKeyPress(e);    
@@ -299,15 +320,22 @@
             	}
             },
 
-            _onKeyUp: function(e) {
+            __onKeyUp: function(e) {
+                if(this._onKeyUp) {
+                    this._onKeyUp(e);
+                }
                 if(this.getRunStatus()) {
 	                for(var i in this._list) {
                         this._list[i].__onKeyUp(e);    
 	                }
             	}
             },
+
             // event form mouse
-            _onMouseDown: function(e) {
+            __onMouseDown: function(e) {
+                if(this._onMouseDown) {
+                    this._onMouseDown(e);
+                }
                 if(this.getRunStatus()) {
 	                for(var i in this._list) {
                         this._list[i].__onMouseDown(e);    
@@ -316,7 +344,10 @@
 
             },
 
-            _onMouseUp: function(e) {
+            __onMouseUp: function(e) {
+                if(this._onMouseUp) {
+                    this._onMouseUp(e);
+                }
                 if(this.getRunStatus()) {
                     for(var i in this._list) {
                         this._list[i].__onMouseUp(e);    
@@ -325,7 +356,10 @@
 
             },
 
-            _onMouseMove: function(e) {
+            __onMouseMove: function(e) {
+                if(this._onMouseMove) {
+                    this._onMouseMove(e);
+                }
                 if(this.getRunStatus()) {
                     for(var i in this._list) {
                         this._list[i].__onMouseMove(e);    

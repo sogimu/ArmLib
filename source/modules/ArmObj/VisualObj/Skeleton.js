@@ -23,37 +23,63 @@
         },
         Statics: {
             _unchangedPoints: [],
-            _matrixOfUnchangedPoints: {},
+            _translatedPoints: [],
+            _transformedPoints: [],
             
-            _changedPoints: [],
-            _polygoneOfChangedPoints: {}
+            _matrixOfTranslatePoints: {},
+            _matrixOfTransformedPoints: {},
+            
+            _polygoneOfTransformedPoints: {}
 
         },
         Methods: {
 
             AddPoint: function(point) {
-                this._unchangedPoints.push(point);
-                this._changedPoints.push(point);
+                this._unchangedPoints.push(new gizmo.Math.Point2D(point.x,point.y));
+                this._translatedPoints.push(new gizmo.Math.Point2D(point.x,point.y));
+                this._transformedPoints.push(new gizmo.Math.Point2D(point.x,point.y));
+
 
                 this._updateMatrixOfUnchangedPoints();
                 return this;
             },
 
             HasPoint: function(point) {
-                return this._polygoneOfChangedPoints.HasPoint(point);
+                return this._polygoneOfTransformedPoints.HasPoint(point);
+            },
+
+            Translate: function(x,y) {
+                arrMatrix = [];
+                var unchangedPoints = this._unchangedPoints;
+             
+                
+                for(var i in unchangedPoints) {
+                    var unX = unchangedPoints[i].x;
+                    var unY = unchangedPoints[i].y;
+
+                    this._translatedPoints[i].x = unX + x;
+                    this._translatedPoints[i].y = unY + y;
+                }
+
+                var translatedPoints = this._translatedPoints;
+                for(var i in translatedPoints) {
+                    arrMatrix.push([translatedPoints[i].x,translatedPoints[i].y,1]);
+                }
+                this._matrixOfTranslatePoints = new gizmo.Math.Matrix(arrMatrix);
+
             },
 
             Transform: function(transformMatrix) {
-                var matrixOfChangedPoints = this._matrixOfUnchangedPoints.x(transformMatrix);
+                var matrixOfTransformedPoints = this._matrixOfTranslatePoints.x(transformMatrix);
                 
-                var elementsOfChangedPoints = matrixOfChangedPoints.elements;
-                for(var i in elementsOfChangedPoints) {
-                    this._changedPoints[i].x = elementsOfChangedPoints[i][0];
-                    this._changedPoints[i].y = elementsOfChangedPoints[i][1];
+                var elementsOfTransformedPoints = matrixOfTransformedPoints.elements;
+                for(var i in elementsOfTransformedPoints) {
+                    this._transformedPoints[i].x = elementsOfTransformedPoints[i][0];
+                    this._transformedPoints[i].y = elementsOfTransformedPoints[i][1];
                     
                 }
-                this._updatePolygoneOfChangedPoints();
-                return matrixOfChangedPoints;
+                this._updatePolygoneOfTransformedPoints();
+                return matrixOfTransformedPoints;
 
             },
 
@@ -67,13 +93,13 @@
 
             },
 
-            _updatePolygoneOfChangedPoints: function() {
+            _updatePolygoneOfTransformedPoints: function() {
                 arrVectors = [];
-                var changedPoints = this._changedPoints;
-                for(var i in changedPoints) {
-                    arrVectors.push(new gizmo.Math.Vector2D(changedPoints[i].x,changedPoints[i].y));
+                var transformedPoints = this._transformedPoints;
+                for(var i in transformedPoints) {
+                    arrVectors.push(new gizmo.Math.Vector2D(transformedPoints[i].x,transformedPoints[i].y));
                 }
-                this._polygoneOfChangedPoints = new gizmo.Math.Polygone(arrVectors);
+                this._polygoneOfTransformedPoints = new gizmo.Math.Polygone(arrVectors);
             }
 
             // Setters/Getters

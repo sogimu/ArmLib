@@ -31,18 +31,17 @@
                 b._context.closePath();
                 b._context.stroke();
 
-                
+                var rect = this._drawRect.drawingRectPos;                
                 this._drawRect.drawingRectImage = this._context.getImageData(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
             },
 
             removeDrawingRectImage: function() {
-                var rect = this._drawRect.drawingRectPos;
-
-                b._context.beginPath();
-                    b._context.strokeStyle = "#0000FF";
-                    b._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
-                b._context.closePath();
-                b._context.stroke();
+                // var rect = this._drawRect.drawingRectPos;
+                // b._context.beginPath();
+                //     b._context.strokeStyle = "#0000FF";
+                //     b._context.rect(rect.p0.x,rect.p0.y,rect.p1.x,rect.p1.y);
+                // b._context.closePath();
+                // b._context.stroke();
 
                 var rect = this._drawRect.drawingRectPos;
                 this._context.putImageData(this._drawRect.drawingRectImage, rect.p0.x, rect.p0.y);
@@ -83,6 +82,7 @@
 
                 this.initTransformMatrix();
                 this.initSkeleton();
+                
                 this.updateDrawingRectPos();
                 this.saveDrawingRectImage();
         
@@ -101,7 +101,8 @@
                 if(this.haveChanges()) {
                     this.updateTransformMatrix();
                     this.updateSkeleton();
-                    
+                    //this.initSkeleton();
+
                     this.updateDrawingRectPos();
                     this.saveDrawingRectImage();
                 }

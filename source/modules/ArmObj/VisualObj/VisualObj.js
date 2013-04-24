@@ -86,8 +86,8 @@
                 var b = Math.sin(angelRad);
                 var c = -b;
                 var d = a;
-                var e = (-m * b) - (n * (a-1));
                 var f = (-m * (a-1)) + (n * b);
+                var e = (-m * b) - (n * (a-1));
                 
 
                 var MTrans = new gizmo.Math.Matrix([
@@ -120,17 +120,15 @@
                 var b = Math.sin(angelRad);
                 var c = -b;
                 var d = a;
-                var e = (-m * (a-1)) + (n * b);
-                var f = (-m * b) - (n * (a-1));
-                
+                var f = (-m * (a-1)) + (n * -b);
+                var e = (-m * -b) - (n * (a-1));
+                                
                 var MTrans = new gizmo.Math.Matrix([
                     [a,c,e],
                     [b,d,f],
                     [0,0,1]
                 ]);
 
-                //this._transformMatrix = this._transformMatrix.x(MTrans);
-              
                 this._transformMatrix = MTrans;
 
                 a = this._transformMatrix.elements[0][0];
@@ -146,20 +144,21 @@
 
             initSkeleton: function() {
                 var skeleton = new armlib._class.Skeleton([]);
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x,this.y));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width,this.y));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width,this.y+this.height));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x,this.y+this.height));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y-this.y));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y-this.y));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x+50,this.y-this.y+50));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y+this.height-this.y));
+                skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y+this.height-this.y));
                 
                 this.Skeleton = skeleton;
-                //this.Skeleton.prev = prev;
-                
+                this.Skeleton.Translate(0,0);
             },
 
             updateSkeleton: function() {
+                this.Skeleton.Translate(this.x,this.y);
                 this.Skeleton.Transform(this.TransformMatrix.transpose());
 
-                var skeleton = this.Skeleton._polygoneOfChangedPoints._points;
+                var skeleton = this.Skeleton._polygoneOfTransformedPoints._points;
 
                 var ctx = b._context;
 
@@ -177,8 +176,7 @@
                 
                 ctx.closePath();
                 ctx.stroke();
-                var d;
-                //ctx.fill();
+     
 
             },
 

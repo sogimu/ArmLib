@@ -24,7 +24,7 @@
             },
 
             pop: function() {
-                var event = this._stack.pop();
+                var event = this._stack.shift();
                 if(event != undefined) {
                     return event;
                 } else {
