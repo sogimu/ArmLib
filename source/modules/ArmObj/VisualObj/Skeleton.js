@@ -83,6 +83,26 @@
 
             },
 
+            Show: function(layer) {
+                var skeleton = this._polygoneOfTransformedPoints._points;
+
+                var ctx = layer._context;
+
+                ctx.strokeStyle = "#000000";
+                    
+                ctx.clearRect(0,0,layer.width,layer.height);
+                
+                ctx.beginPath();
+                    ctx.moveTo(skeleton[0].x,skeleton[0].y);
+                    for(var i in skeleton){
+                        ctx.lineTo(skeleton[i*1].x,skeleton[i*1].y);
+                    }
+                    ctx.lineTo(skeleton[0].x,skeleton[0].y);
+                ctx.closePath();
+                ctx.stroke();
+
+            },
+
             _updateMatrixOfUnchangedPoints: function() {
                 arrMatrix = [];
                 var unchangedPoints = this._unchangedPoints;

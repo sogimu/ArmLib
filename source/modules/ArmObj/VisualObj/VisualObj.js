@@ -142,14 +142,21 @@
 
             },
 
-            initSkeleton: function() {
+            initSkeleton: function(points) {
                 var skeleton = new armlib._class.Skeleton([]);
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y-this.y));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y-this.y));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x+50,this.y-this.y+50));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y+this.height-this.y));
-                skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y+this.height-this.y));
                 
+                if(points) {
+                    for(var index in points) {
+                        skeleton.AddPoint(new gizmo.Math.Point2D(points[index].x, points[index].y));
+
+                    }
+                } else {
+                    skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y-this.y));
+                    skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y-this.y));
+                    skeleton.AddPoint(new gizmo.Math.Point2D(this.x+this.width-this.x,this.y+this.height-this.y));
+                    skeleton.AddPoint(new gizmo.Math.Point2D(this.x-this.x,this.y+this.height-this.y));
+                    
+                }
                 this.Skeleton = skeleton;
                 this.Skeleton.Translate(0,0);
             },
@@ -158,25 +165,7 @@
                 this.Skeleton.Translate(this.x,this.y);
                 this.Skeleton.Transform(this.TransformMatrix.transpose());
 
-                var skeleton = this.Skeleton._polygoneOfTransformedPoints._points;
-
-                var ctx = b._context;
-
-                b._context.strokeStyle = "#000000";
-                    
-                ctx.clearRect(0,0,500,500);
-                
-                ctx.beginPath();
-
-                ctx.moveTo(skeleton[0].x,skeleton[0].y);
-                for(var i in skeleton){
-                    ctx.lineTo(skeleton[i*1].x,skeleton[i*1].y);
-                }
-                ctx.lineTo(skeleton[0].x,skeleton[0].y);
-                
-                ctx.closePath();
-                ctx.stroke();
-     
+                //this.Skeleton.Show(b);
 
             },
 

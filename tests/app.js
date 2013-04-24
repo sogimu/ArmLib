@@ -8,27 +8,34 @@ window.onload = function() {
         b = new armlib.Layer({
             name: "b",
             zindex: 2,
-            width: 1300,
-            height: 600
+            width: 500,
+            height: 500
         });
 
         bg = new armlib.Layer({
             name: "bg",
             fps: 0.5,
             zindex: 0,
-            width: 1300,
-            height: 600
+            width: 500,
+            height: 500
         });
 
         l = new armlib.Layer({
             name: "l",
-            fps: 0,
+            fps: 30,
             zindex: 1,
-            width: 1300,
-            height: 600
+            width: 500,
+            height: 500
         })
-        .setFunc("onMouseDown", function(e) {
-            console.log("wefwef");
+        .setFunc("onMouseMove", function(e) {
+            var x = e.layerX;
+            var y = e.layerY;
+            var obj = r3;
+            obj.x = x-obj.width/2;
+            obj.y = y-obj.height/2;
+          
+            obj.centralPoint = {x:x, y:y};
+
         });
         
         r1 = new armlib.Image({
@@ -61,33 +68,33 @@ window.onload = function() {
             width: 100,
             height: 100,
             angle: 0,
-            globalAlpha: 0.5,
+            //globalAlpha: 0.5,
             centralPoint: {x: 300, y: 300}
         })
         .setFunc('onLoad', function() {
             console.log('onLoad r3');
         })
         .setFunc('onUpdate', function() {
-            this.x += 0.5
+            //this.x += 0.5
             this.angle += 0.01;
-            // if(this.globalAlpha == 1) {
-            //     inc *= -1;
-            // }
-            // if(this.globalAlpha == 0) {
-            //     inc *= -1;
-            // }
-            // this.globalAlpha += inc;
-            // //this.x += 0.1;
+            if(this.globalAlpha == 1) {
+                inc *= -1;
+            }
+            if(this.globalAlpha == 0) {
+                inc *= -1;
+            }
+            this.globalAlpha += inc;
+            //this.x += 0.1;
         })
         .setFunc("onMouseDown", function(e) {
             //this.angle -=0.05;
-            var x = e.layerX;
-            var y = e.layerY;
-            this.x = x-this.width/2;
-            this.y = y-this.height/2;
-            console.log(this.x,this.y)
-
-            this.centralPoint = {x:x, y:y};
+            // var x = e.layerX;
+            // var y = e.layerY;
+            // this.x = x-this.width/2;
+            // this.y = y-this.height/2;
+          
+            // this.centralPoint = {x:x, y:y};
+            this.zindex += 1;
             
         })
 		
@@ -141,7 +148,7 @@ window.onload = function() {
             
         })
         .addChild(r3)
-        //.addChild(r5)
+        .addChild(r5)
         
         loadQuane = new armlib.Object({
             name: "loadQuane",
