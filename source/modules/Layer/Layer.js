@@ -45,7 +45,7 @@
 			return this;
         },
         Statics: {
-            _type: ['Layer','',''],
+            _type: ["Layer","",""],
             _name: 100*Math.random(),
            	_isRuning: false,
 
@@ -73,7 +73,18 @@
             _lib: lib
         },
         Methods: {
-	
+
+
+
+
+
+
+
+
+
+
+
+            
             run: function() {
                 this._begin();
                 

@@ -16,7 +16,8 @@
      * @param {object} O.scale         Масштабирование по x и y. Например: {x: 2, y: 3}
      * @param {string} O.fill          Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
      * @param {string} O.stroke        Цвет линии, может быть как цветом ("#FFaa00"), так и градиентом
-     * @this {armlib.class.Image}
+     * @param {string} O.globalAlpha   Уровень прозрачности, можно изменять от 0..1     
+     * @this {armlib.Image}
      * @author <a href="mailto:sogimu@nxt.ru">Alexander Lizin aka Sogimu</a>
      * @version 0.1
      */

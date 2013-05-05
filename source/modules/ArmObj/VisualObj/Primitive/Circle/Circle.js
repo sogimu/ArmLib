@@ -1,40 +1,36 @@
 
-(function Rect(armlib,lib){
+(function Circle(armlib,lib){
     /**
-     * Описывает класс Rect. Данный класс описывает объект "прямоугольник".
+     * Описывает класс Circle Данный класс описывает объект "окружность".
      *
      * @constructor
      * @param {object} O
-     * @param {string} O.name          Имя прямоугольника
+     * @param {string} O.name          Имя окружности
      * @param {number} O.zindex        z-индекс объекта относительно объекта родителя
      * @param {bool}   O.synch         Тип обекта, бывает синхронным и асинхронным, true или false, соответственно
-     * @param {number} O.x             X
+     * @param {number} O.x             X 
      * @param {number} O.y             Y
-     * @param {number} O.width         Ширина прямоугольника
-     * @param {number} O.height        Высота прямоугольника
+     * @param {number} O.radius         Радиус окружности
      * @param {object} O.centralPoint  Точка вокруг которой происходит поворот
-     * @param {number} O.angle         Угол поворота
      * @param {object} O.scale         Масштабирование по x и y. Например: {x: 2, y: 3}
      * @param {string} O.fill          Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
      * @param {string} O.stroke        Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
      * @param {number} O.globalAlpha   Уровень прозрачности, можно изменять от 0..1     
-     * @param {number} O.lineWidth     толщина контура     
+     * @param {number} O.lineWidth     толщина контура  
      * @this {armlib.Rect}
      * @author <a href="mailto:sogimu@nxt.ru">Alexander Lizin aka Sogimu</a>
      * @version 0.1
      */
 
-    var Rect = lib.Class({
+    var Circle = lib.Class({
         Extend: armlib._class.Primitive,
         Initialize: function(O) {
             this._setName(O.name || this.name);
             this.zindex = O.zindex || this.zindex;
             this.x = O.x || this.x;
             this.y = O.y || this.y;
+            this.radius = O.radius || this.radius;
             this.centralPoint = O.centralPoint || this.centralPoint;        
-            this.width = O.width || this.width;
-            this.height = O.height || this.height
-            this.angle = O.angle || this.angle;
             this.scale = O.scale || this.scale;
             this.fill = O.fill || this.fill;
             this.globalAlpha = O.globalAlpha || this.globalAlpha;
@@ -43,11 +39,10 @@
             return this;
         },
         Statics: {
-            _type: ['Rect','Primitive','ArmObject'],
-            _name: "Rect "+100*Math.random(),
+            _type: ['Circle','Primitive','ArmObject'],
+            _name: "Circle "+100*Math.random(),
 
-            _width: 10,
-            _height: 10,
+            _radius: 10,
             _lineWidth: 1,
 
             _loaded: false,
@@ -73,7 +68,7 @@
 
                         var params = this.ParamsTransformMatrix; 
                         this._context.setTransform(params.a, params.b, params.c, params.d, params.e, params.f);
-                        this._context.rect(this.x,this.y,this.width,this.height);
+                        this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
 
                     this._context.closePath();
                     this._context.stroke();
@@ -87,21 +82,21 @@
             updateDrawingRectPos: function() {
                 var MTrans = this.TransformMatrix;
 
-                var points = new gizmo.Math.Matrix([[this.x,this.x+this.width,this.x+this.width,this.x],[this.y,this.y,this.y+this.height,this.y+this.height],[1,1,1,1]]);
+                var points = new gizmo.Math.Matrix([[this.x-this.radius,this.x+this.radius,this.x+this.radius,this.x-this.radius],[this.y-this.radius,this.y-this.radius,this.y+this.radius,this.y+this.radius],[1,1,1,1]]);
                 
                 var mainPoint = MTrans.x(points).elements;
 
-                var x = Math.floor(Math.min(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3])) -
+                var x1 = Math.floor(Math.min(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3])) -
                     this.lineWidth;
-                var y = Math.floor(Math.min(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3])) -
+                var y1 = Math.floor(Math.min(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3])) -
                     this.lineWidth;
-                var width = Math.ceil(Math.max(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3]) - x) +
+                var x2 = Math.ceil(Math.max(mainPoint[0][0],mainPoint[0][1],mainPoint[0][2],mainPoint[0][3]) - x1) +
                     this.lineWidth;
-                var height = Math.ceil(Math.max(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3]) - y) +
+                var y2 = Math.ceil(Math.max(mainPoint[1][0],mainPoint[1][1],mainPoint[1][2],mainPoint[1][3]) - y1) +
                     this.lineWidth;
                 
-                this._drawRect.drawingRectPos = {p0: {x: x    , y: y     },
-                                                 p1: {x: width, y: height}}
+                this._drawRect.drawingRectPos = {p0: {x: x1, y: y1},
+                                                 p1: {x: x2, y: y2}}
 
             },
 
@@ -115,8 +110,16 @@
                 return this._lineWidth;
             },
 
+            // radius
+            set radius(radius) {
+                this._radius = radius;
+            },
+            get radius() {
+                return this._radius;
+            },
+
 
         }
     });
-    armlib.Rect = Rect;
+    armlib.Circle = Circle;
 })(armlib,gizmo);

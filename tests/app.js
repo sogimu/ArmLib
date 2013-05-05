@@ -35,6 +35,9 @@ window.onload = function() {
             obj.y = y-obj.height/2;
           
             obj.centralPoint = {x:x, y:y};
+            r7.x = obj.x + 50;
+            r9.y = obj.y + 50;
+
 
         });
         
@@ -87,13 +90,6 @@ window.onload = function() {
             //this.x += 0.1;
         })
         .setFunc("onMouseDown", function(e) {
-            //this.angle -=0.05;
-            // var x = e.layerX;
-            // var y = e.layerY;
-            // this.x = x-this.width/2;
-            // this.y = y-this.height/2;
-          
-            // this.centralPoint = {x:x, y:y};
             this.zindex += 1;
             
         })
@@ -113,17 +109,79 @@ window.onload = function() {
          
         })
         .setFunc('onUpdate', function() { 
+            r5.angle -=0.01;
+        })
+
+        r7 = new armlib.Rect({
+            name: 'r7',
+            zindex: 10,
+            x: 250,
+            y: 250,
+            width: 100,
+            height: 100,
+            centralPoint: {x: 100, y: 100},
+            fill: "#ff0000",
+            stroke: "#00ff00",
+            lineWidth: 5
+        })
+        .setFunc('onLoad', function(layer) {
+            console.log('onLoad r7');
+         
+        })
+        .setFunc('onUpdate', function() { 
             //r5.angle -=0.01;
         })
-        .setFunc('preDraw', function(ctx) {})
-        .setFunc('onDraw', function(ctx) {
-            //ctx.drawImage(this.image, 20,0,this.width,this.height);
 
-            // this._context.beginPath();
-            //     ctx.moveTo(this.x, this.y);
-            //     ctx.lineTo(this.x+250,this.y + 250);
-            // this._context.closePath();
-            // this._context.stroke();
+        r8 = new armlib.Line({
+            name: 'r8',
+            zindex: 10,
+            x1: 50,
+            y1: 50,
+            x2: 250,
+            y2: 250,
+            lineWidth: 2,
+            
+            centralPoint: {x: 100, y: 100},
+            stroke: "#aa0000"
+        })
+        .setFunc('onLoad', function(layer) {
+            console.log('onLoad r8');
+         
+        })
+        .setFunc('onUpdate', function() { 
+            r8.angle -=0.01;
+            r8.centralPoint.x += 0.1;
+            r8.centralPoint.y += 0.1;
+
+        })
+
+        r9 = new armlib.Circle({
+            name: 'r9',
+            zindex: 10,
+            x: 150,
+            y: 150,
+            radius: 50,
+            lineWidth: 2,
+            
+            centralPoint: {x: 100, y: 100},
+            fill: "#ff0000",
+            stroke: "#00ff00",
+            globalAlpha: 0.5
+        })
+        .setFunc('onLoad', function(layer) {
+            console.log('onLoad r9');
+         
+        })
+        .setFunc('onUpdate', function() { 
+            this.angle += 0.1;
+            if(this.globalAlpha == 1) {
+                inc *= -1;
+            }
+            if(this.globalAlpha == 0) {
+                inc *= -1;
+            }
+            this.globalAlpha += inc;
+            
         })
         
         obj2 = new armlib.Object({
@@ -149,6 +207,10 @@ window.onload = function() {
         })
         .addChild(r3)
         .addChild(r5)
+        .addChild(r7)
+        .addChild(r8)
+        .addChild(r9)
+
         
         loadQuane = new armlib.Object({
             name: "loadQuane",

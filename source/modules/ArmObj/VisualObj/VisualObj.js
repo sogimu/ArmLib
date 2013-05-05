@@ -267,7 +267,7 @@
                 this._haveChanges = true;
             },
 
-            get zindex(O) {
+            get zindex() {
                 return this._zindex;
 
             },

@@ -1,53 +1,52 @@
 
-(function Rect(armlib,lib){
+(function Line(armlib,lib){
     /**
-     * Описывает класс Rect. Данный класс описывает объект "прямоугольник".
+     * Описывает класс Line. Данный класс описывает объект "линия".
      *
      * @constructor
      * @param {object} O
-     * @param {string} O.name          Имя прямоугольника
+     * @param {string} O.name          Имя линии
      * @param {number} O.zindex        z-индекс объекта относительно объекта родителя
      * @param {bool}   O.synch         Тип обекта, бывает синхронным и асинхронным, true или false, соответственно
-     * @param {number} O.x             X
-     * @param {number} O.y             Y
-     * @param {number} O.width         Ширина прямоугольника
-     * @param {number} O.height        Высота прямоугольника
+     * @param {number} O.x1            X первой точки
+     * @param {number} O.y1            Y первой точки
+     * @param {number} O.x2            X второй точки
+     * @param {number} O.y2            Y второй точки
      * @param {object} O.centralPoint  Точка вокруг которой происходит поворот
      * @param {number} O.angle         Угол поворота
      * @param {object} O.scale         Масштабирование по x и y. Например: {x: 2, y: 3}
-     * @param {string} O.fill          Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
      * @param {string} O.stroke        Цвет закраски, может быть как цветом ("#FFaa00"), так и градиентом
      * @param {number} O.globalAlpha   Уровень прозрачности, можно изменять от 0..1     
-     * @param {number} O.lineWidth     толщина контура     
-     * @this {armlib.Rect}
+     * @param {number} O.lineWidth     толщина контура    
+     * @this {armlib.Line}
      * @author <a href="mailto:sogimu@nxt.ru">Alexander Lizin aka Sogimu</a>
      * @version 0.1
      */
 
-    var Rect = lib.Class({
+    var Line = lib.Class({
         Extend: armlib._class.Primitive,
         Initialize: function(O) {
             this._setName(O.name || this.name);
             this.zindex = O.zindex || this.zindex;
-            this.x = O.x || this.x;
-            this.y = O.y || this.y;
+            this.x = O.x1 || this.x;
+            this.y = O.y1 || this.y;
+            this.x2 = O.x2 || this.x2;
+            this.y2 = O.y2 || this.y2;
             this.centralPoint = O.centralPoint || this.centralPoint;        
-            this.width = O.width || this.width;
-            this.height = O.height || this.height
             this.angle = O.angle || this.angle;
             this.scale = O.scale || this.scale;
-            this.fill = O.fill || this.fill;
             this.globalAlpha = O.globalAlpha || this.globalAlpha;
             this.stroke = O.stroke || this.stroke;
             this.lineWidth = O.lineWidth || this.lineWidth;
+
             return this;
         },
         Statics: {
-            _type: ['Rect','Primitive','ArmObject'],
-            _name: "Rect "+100*Math.random(),
+            _type: ['Line','Primitive','ArmObject'],
+            _name: "Line "+100*Math.random(),
 
-            _width: 10,
-            _height: 10,
+            _x2: 10,
+            _y2: 10,
             _lineWidth: 1,
 
             _loaded: false,
@@ -59,7 +58,7 @@
                 var self = this;
                 self._setLoaded();
                 self.__onLoad.call(self);
-
+                
                 return this;
             },
 
@@ -73,11 +72,11 @@
 
                         var params = this.ParamsTransformMatrix; 
                         this._context.setTransform(params.a, params.b, params.c, params.d, params.e, params.f);
-                        this._context.rect(this.x,this.y,this.width,this.height);
+                        this._context.moveTo(this.x, this.y);
+                        this._context.lineTo(this.x2,this.y2);
 
                     this._context.closePath();
                     this._context.stroke();
-                    this._context.fill();
 
                 this._context.restore();
 
@@ -87,7 +86,9 @@
             updateDrawingRectPos: function() {
                 var MTrans = this.TransformMatrix;
 
-                var points = new gizmo.Math.Matrix([[this.x,this.x+this.width,this.x+this.width,this.x],[this.y,this.y,this.y+this.height,this.y+this.height],[1,1,1,1]]);
+                var points = new gizmo.Math.Matrix([[this.x,this.x2,this.x2,this.x],
+                                                    [this.y,this.y,this.y2,this.y2],
+                                                    [1,     1,     1,            1]]);
                 
                 var mainPoint = MTrans.x(points).elements;
 
@@ -114,9 +115,24 @@
             get lineWidth() {
                 return this._lineWidth;
             },
+            
+            // x2
+            set x2(x) {
+                this._x2 = x;
+            },
+            get x2() {
+                return this._x2;
+            },
 
+            // y2
+            set y2(y) {
+                this._y2 = y;
+            },
+            get y2() {
+                return this._y2;
+            },
 
         }
     });
-    armlib.Rect = Rect;
+    armlib.Line = Line;
 })(armlib,gizmo);
