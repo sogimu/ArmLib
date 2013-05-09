@@ -41,6 +41,7 @@ window.onload = function() {
 
         });
         
+        
         r1 = new armlib.Image({
             name: "r1",
             src: "./img/gras.jpg",
@@ -197,19 +198,46 @@ window.onload = function() {
         .setFunc('onUpdate', function() {
             //this.angle -= 0.01;
         })
-        .setFunc("onMouseMove", function(e) {
-            //alert("am here!");
-            var x = e.layerX;
-            var y = e.layerY;
-            r5.x = x;
-            r5.y = y;
-            
-        })
         .addChild(r3)
-        .addChild(r5)
-        .addChild(r7)
+        //.addChild(r5)
+        //.addChild(r7)
         .addChild(r8)
         .addChild(r9)
+
+        obj3 = new armlib.Object({
+            name: 'obj3',
+            // x: 100,
+            // angle: 0.1,
+            // centralPoint: {x: 100, y: 100}
+        })
+        .setFunc('onLoad', function() {
+            console.log('onLoad obj3');
+            l.addChild(this)
+        })
+        .setFunc("onMouseDown", function(e) {
+            alert(e);
+        })
+        .setFunc("onMouseMove", function(e) {
+            //alert(e+"Move");
+            //var f = new armlib.Rect({name:"wfwef", x: e.x, y: e.y, width: 100, height: 100});
+            var f = new armlib.Rect({
+                name: 'wefef'+e.x,
+                zindex: 10,
+                x: 250,
+                y: 250,
+                width: 100,
+                height: 100,
+                centralPoint: {x: 100, y: 100},
+                fill: "#ff0000",
+                stroke: "#00ff00",
+                lineWidth: 5
+            })
+            f.Load();
+            console.log(f);
+            l.addChild(f);
+        })
+        .addChild(r5)
+        .addChild(r7);
 
         
         loadQuane = new armlib.Object({
@@ -222,6 +250,7 @@ window.onload = function() {
         })
         .addChild(r1)
         .addChild(obj2)
+        .addChild(obj3)
         .Load();
 
     })(armlib,gizmo);

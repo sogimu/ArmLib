@@ -24,9 +24,10 @@
             _zindex: 0,
             _globalAlpha: 1,
 
-            __transformMatrix: [],
+            _transformMatrix: [],
             _paramsTransformMatrix: [],
-
+            _initialProperties: new armlib._class.InitialProperties({x:0,y:0,angle:0.3,centralPoint: {x: 100, y:100}}),
+            
             _skeleton: {},
 
             _haveChanges: true,
@@ -305,15 +306,20 @@
                 return this._transformMatrix;
 
             },
-            set _transformMatrix(reg) {
+            set transformMatrix(reg) {
                 this.__transformMatrix = reg;
             },
-            get _transformMatrix() {
-                return this.__transformMatrix;
+            get transformMatrix() {
+                return this._transformMatrix;
             },
 
             get ParamsTransformMatrix() {
                 return this._paramsTransformMatrix;
+
+            },
+                    
+            get initialProperties() {
+                return this._initialProperties;
 
             }
 

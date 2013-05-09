@@ -25,7 +25,7 @@
     var image = lib.Class({
         Extend: armlib._class.Primitive,
         Initialize: function(O) {
-			this._setName(O.name || this.name);
+            this._setName(O.name || this.name);
             this.src = O.src || this.src;
 			this.zindex = O.zindex || this.zindex;
             this.x = O.x || this.x;
@@ -67,8 +67,12 @@
                 this._context.save();
                     this._context.beginPath();
                         this._context.globalAlpha = this.globalAlpha;
-                        var params = this.ParamsTransformMatrix; 
-                        this._context.setTransform(params.a, params.b, params.c, params.d, params.e, params.f);
+                        this.initialProperties.update();
+                        var initParams = this.initialProperties.paramsTransformMatrix; 
+                        var params = this.ParamsTransformMatrix;
+                        
+                        this._context.transform(initParams.a, initParams.b, initParams.c, initParams.d, initParams.e, initParams.f);
+                        this._context.transform(params.a, params.b, params.c, params.d, params.e, params.f);
 
                         this._context.drawImage(this.image, this.x, this.y ,this.width,this.height);
 

@@ -147,22 +147,46 @@
             // private events from mouse
 
             __onMouseDown: function(e) {
-                if(this._onMouseDown && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                if(this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                    if(this._onMouseDown) {
                 	this._onMouseDown(e);
+                     
+                    }
+                    
+                    if(this.haveOwner() && this.owner._onMouseDown) {
+                        this.owner._onMouseDown.call(this,e);
+                    }
+                    
                 }
 
             },
 
             __onMouseUp: function(e) {
-                if(this._onMouseUp && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
-                    this._onMouseUp(e);
+                if(this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                    if(this._onMouseUp) {
+                	this._onMouseUp(e);
+                     
+                    }
+                    
+                    if(this.haveOwner() && this.owner._onMouseUp) {
+                        this.owner._onMouseUp.call(this,e);
+                    }
+                    
                 }
 
             },
 
             __onMouseMove: function(e) {
-                if(this._onMouseMove && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
-                    this._onMouseMove(e);
+                if(this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                    if(this._onMouseMove) {
+                	this._onMouseMove(e);
+                     
+                    }
+                    
+                    if(this.haveOwner() && this.owner._onMouseMove) {
+                        this.owner._onMouseMove.call(this,e);
+                    }
+                    
                 }
 
             },

@@ -73,18 +73,6 @@
             _lib: lib
         },
         Methods: {
-
-
-
-
-
-
-
-
-
-
-
-            
             run: function() {
                 this._begin();
                 
