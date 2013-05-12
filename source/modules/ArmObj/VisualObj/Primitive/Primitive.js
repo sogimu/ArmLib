@@ -147,21 +147,21 @@
             // private events from mouse
 
             __onMouseDown: function(e) {
-                if(this._onMouseDown && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                if(this._onMouseDown && this.Skeleton.HasPoint({x: e.layerX, y: e.layerY})) {
                 	this._onMouseDown(e);
                 }
 
             },
 
             __onMouseUp: function(e) {
-                if(this._onMouseUp && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                if(this._onMouseUp && this.Skeleton.HasPoint({x: e.layerX, y: e.layerY})) {
                     this._onMouseUp(e);
                 }
 
             },
 
             __onMouseMove: function(e) {
-                if(this._onMouseMove && this.Skeleton.HasPoint({x: e.x, y: e.y})) {
+                if(this._onMouseMove && this.Skeleton.HasPoint({x: e.layerX, y: e.layerY})) {
                     this._onMouseMove(e);
                 }
 

@@ -31,6 +31,7 @@
             canvas.height = O.height || this.height;
             canvas.id = this.name;
             canvas.style['zIndex'] = O.zindex || this._zindex;
+            
             canvas.style.position = 'absolute';
             container.appendChild( canvas );
             this._canvas = canvas;
@@ -44,6 +45,7 @@
 
 			return this;
         },
+
         Statics: {
             _type: ["Layer","",""],
             _name: 100*Math.random(),
@@ -72,19 +74,9 @@
 			_armlib: armlib,
             _lib: lib
         },
+
         Methods: {
-
-
-
-
-
-
-
-
-
-
-
-            
+  
             run: function() {
                 this._begin();
                 
@@ -294,13 +286,12 @@
                     
                     switch(event.name) {
                         case "onKeyDown": this.__onKeyDown(event.e); break;
-                        case "onKeyPress": this.__onKeyPress(event.e); break;
                         case "onKeyUp": this.__onKeyUp(event.e); break;
-
+                        case "onKeyPress": this.__onKeyPress(event.e); break;
+                        
+                        case "onMouseMove": this.__onMouseMove(event.e); break;
                         case "onMouseDown": this.__onMouseDown(event.e); break;
                         case "onMouseUp": this.__onMouseUp(event.e); break;
-                        case "onMouseMove": this.__onMouseMove(event.e); break;
-
 
                     }
                 }
